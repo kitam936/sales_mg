@@ -39,6 +39,18 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Dashboard
                                 </NavLink>
+                                <NavLink
+                                    :href="route('menu')"
+                                    :active="route().current('menu')"
+                                >
+                                    Menu
+                                </NavLink>
+                                <NavLink
+                                    :href="route('admin.data.data_menu')"
+                                    :active="route().current('admin.data.data_menu')"
+                                >
+                                    Data管理
+                                </NavLink>
                             </div>
                         </div>
 
@@ -145,6 +157,19 @@ const showingNavigationDropdown = ref(false);
                             :active="route().current('dashboard')"
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('menu')"
+                            :active="route().current('menu')"
+                        >
+                            Menu
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            :href="route('admin.data.data_menu')"
+                            :active="route().current('admin.data.data_menu')"
+                        >
+                            Data管理
                         </ResponsiveNavLink>
                     </div>
 

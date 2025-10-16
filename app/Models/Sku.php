@@ -18,6 +18,7 @@ class Sku extends Model
         'hinban_id',
         'col_id',
         'size_id',
+        'sku_image'
     ];
 
     public function hinban()
