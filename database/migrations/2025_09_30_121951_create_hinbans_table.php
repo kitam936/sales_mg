@@ -25,6 +25,7 @@ return new class extends Migration
             ->nullable();
             $table->text('hinban_info')->nullable();
             $table->integer('vendor_id');
+            $table->integer('designer_id');
             $table->string('face')->nullable();
             $table->timestamps();
         });

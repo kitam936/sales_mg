@@ -13,6 +13,7 @@ class Unit extends Model
 
     protected $fillable = [
         'id',
+        'unit_code',
         'season_id',
         'season_name',
 

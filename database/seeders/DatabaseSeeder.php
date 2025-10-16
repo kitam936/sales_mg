@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
                 BrandSeeder::class,
                 UnitSeeder::class,
                 FaceSeeder::class,
+                DesignerSeeder::class,
             ]);
     }
 

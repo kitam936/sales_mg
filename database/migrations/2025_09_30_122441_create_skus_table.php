@@ -18,6 +18,7 @@ return new class extends Migration
             ->onDelete('cascade');
             $table->foreignId('col_id')->constrained();
             $table->foreignId('size_id')->constrained();
+            $table->string('sku_image')->nullable();
             $table->timestamps();
         });
     }
