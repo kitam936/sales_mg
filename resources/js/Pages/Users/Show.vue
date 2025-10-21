@@ -75,16 +75,16 @@ const goBack = () => {
                                     </div>
                                     <div class="flex ml-2 w-full">
                                         <div class="p-0 relative">
-                                            <label for="shop_id" class="w-32 leading-7 text-sm text-gray-600">属性</label>
-                                            <!-- <select id="shop_id" name="shop_id"  class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                                                <option value="" disabled>Shop選択</option>
-                                                <option v-for="shop in shops" :key="shop.id" :value="shop.id">{{ shop.shop_name }}</option>
+                                            <label for="dept_id" class="w-32 leading-7 text-sm text-gray-600">所属</label>
+                                            <!-- <select id="dept_id" name="dept_id"  class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                <option value="" disabled>dept選択</option>
+                                                <option v-for="dept in depts" :key="dept.id" :value="dept.id">{{ dept.dept_name }}</option>
                                             </select> -->
-                                            <div type="shop_id" id="shop_id" name="shop_id" class="w-32 bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ user.shop_name }}</div>
+                                            <div type="dept_id" id="dept_id" name="dept_id" class="w-32 bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ user.dept_name }}</div>
 
                                         </div>
                                         <div class="p-0 w-40 ml-2 relative">
-                                            <label for="role_id" class="leading-7 text-sm text-gray-600">Role</label>
+                                            <label for="role_id" class="leading-7 text-sm text-gray-600">権限</label>
                                             <!-- <select id="role_id" name="role_id"  class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                                 <option value="" disabled>Role選択</option>
                                                 <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.role_name }}</option>
@@ -100,24 +100,8 @@ const goBack = () => {
                                     </div>
                                     </div>
 
-                                    <div class="ml-2 w-full"></div>
-                                    <div class="ml-2 w-full">
-                                        <div class="relative">
-                                            <label for="postcode" class="leading-7 text-sm text-gray-600">郵便番号</label>
-                                            <div type="text" id="postcode" name="postcode" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ user.postcode }}</div>
 
-                                        </div>
-                                        <div class="relative">
-                                            <label for="address" class="leading-7 text-sm text-gray-600">住所</label>
-                                            <div type="text" id="address" name="address" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ user.address }}</div>
 
-                                        </div>
-                                        <div class="relative">
-                                            <label for="tel" class="leading-7 text-sm text-gray-600">TEL</label>
-                                            <div type="text" id="tel" name="tel" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ user.tel }}</div>
-
-                                        </div>
-                                    </div>
                                 </div>
 
 

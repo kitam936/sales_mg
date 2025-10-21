@@ -46,6 +46,30 @@ const showingNavigationDropdown = ref(false);
                                     Menu
                                 </NavLink>
                                 <NavLink
+                                :href="route('users.index')"
+                                :active="route().current('users.index')"
+                                >
+                                    User管理
+                                </NavLink>
+                                <NavLink
+                                :href="route('company.index')"
+                                :active="route().current('company.index')"
+                                >
+                                    取引先管理
+                                </NavLink>
+                                <NavLink
+                                :href="route('shops.index')"
+                                :active="route().current('shops.index')"
+                                >
+                                    店舗管理
+                                </NavLink>
+                                <NavLink
+                                :href="route('hinbans.index')"
+                                :active="route().current('hinbans.index')"
+                                >
+                                    商品管理
+                                </NavLink>
+                                <NavLink
                                     :href="route('admin.data.data_menu')"
                                     :active="route().current('admin.data.data_menu')"
                                 >
@@ -164,6 +188,34 @@ const showingNavigationDropdown = ref(false);
                         >
                             Menu
                         </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            :href="route('users.index')"
+                            :active="route().current('users.index')"
+                        >
+                            User管理
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            :href="route('company.index')"
+                            :active="route().current('company.index')"
+                        >
+                            取引先管理
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('shops.index')"
+                            :active="route().current('shops.index')"
+                        >
+                            店舗管理
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            :href="route('hinbans.index')"
+                            :active="route().current('hinbans.index')"
+                        >
+                            品番管理
+                        </ResponsiveNavLink>
+
 
                         <ResponsiveNavLink
                             :href="route('admin.data.data_menu')"

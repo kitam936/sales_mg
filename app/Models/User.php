@@ -6,6 +6,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Role;
+use App\Models\Shop;
+use App\Models\Dept;
+
 
 class User extends Authenticatable
 {
@@ -50,4 +54,31 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function scopeSearchUsers($query, $input = null)
+        {
+            if(!empty($input)){
+                if(User::where('name', 'like', '%'.$input . '%' )
+                ->orWhere('user_info', 'like', '%'.$input . '%')->exists())
+                {
+                return $query->where('name', 'like', '%'.$input . '%' )
+                ->orWhere('user_info', 'like', '%'.$input . '%');
+                }
+            }
+        }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class, 'shop_id');
+    }
+
+    public function dept()
+    {
+        return $this->belongsTo(Dept::class, 'dept_id');
+    }
+
 }

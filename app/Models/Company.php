@@ -23,4 +23,16 @@ class Company extends Model
     {
         return $this->hasMany(Shop::class);
     }
+
+    public function scopeSearchCompanies($query, $input = null)
+    {
+        if(!empty($input)){
+            if(Company::where('co_name', 'like', '%'.$input . '%' )
+            ->orWhere('co_info', 'like', '%'.$input . '%')->exists())
+            {
+            return $query->where('co_name', 'like', '%'.$input . '%' )
+            ->orWhere('co_info', 'like', '%'.$input . '%');
+            }
+        }
+    }
 }

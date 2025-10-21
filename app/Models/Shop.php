@@ -48,4 +48,13 @@ class Shop extends Model
     {
         return $this->hasMany(Report::class);
     }
+
+    public function scopeSearchShops($query, $search)
+    {
+        if ($search) {
+            return $query->where('shop_name', 'like', '%' . $search . '%')
+                         ->orWhere('shop_info', 'like', '%' . $search . '%');
+        }
+        return $query;
+    }
 }
