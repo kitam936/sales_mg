@@ -8,19 +8,19 @@
 
     defineProps({
         users: Object,
-        shops:Array
+        depts:Array
     });
 
     const search = ref('')
-    const shop_id = ref('')
+    const dept_id = ref('')
     // ref の値を取得するには .valueが必要
     const searchUsers = () => {
-        Inertia.get(route('users.index', { search: search.value ,shop_id: shop_id.value}))
+        Inertia.get(route('users.index', { search: search.value ,dept_id: dept_id.value}))
     }
 
     const resetFilters = () => {
         search.value = '';
-        shop_id.value = '';
+        dept_id.value = '';
         Inertia.get(route('users.index'), { preserveState: true, preserveScroll: true });
     }
 
@@ -54,17 +54,17 @@
                     <div class="p-2 text-gray-900">
 
                         <div class="md:flex md:ml-12 mb-2">
-                            <div class="p-2 relative mt-2 ">
+                            <div class="p-2 relative mt-0 ">
                                 <!-- <label for="role_id" class="leading-7 text-sm text-gray-600">Role</label> -->
-                                <select id="shop_id" name="shop_id" v-model="shop_id" class="h-8 w-32 rounded border border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
-                                    <option value="" selected>Shop選択</option> <!-- 変更: 選択なしのオプションを追加 -->
-                                    <option v-for="shop in shops" :key="shop.id" :value="shop.id">{{ shop.shop_name }}</option>
+                                <select id="dept_id" name="dept_id" v-model="dept_id" class="h-8 w-32 rounded border border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
+                                    <option value="" selected>dept選択</option> <!-- 変更: 選択なしのオプションを追加 -->
+                                    <option v-for="dept in depts" :key="dept.id" :value="dept.id">{{ dept.dept_name }}</option>
                                 </select>
                             </div>
 
                             <div class="flex ml-2 h-8 mr-8 mt-2 mb-4">
 
-                                <input class="h-8 w-60 rounded" type="text" name="search" v-model="search" placeholder="ワード検索/ 空欄で検索すれば全件表示">
+                                <input class="h-8 w-60 rounded" type="text" name="search" v-model="search" placeholder="ワード検索">
                                 <button class="ml-2 bg-blue-300 text-white px-2 w-20 h-8 rounded "
                                 @click="searchUsers">検索</button>
                                 <button class="ml-2 bg-gray-300 text-white px-2 w-20 h-8 rounded"
@@ -80,7 +80,7 @@
                             <thead>
                                 <tr>
                                     <th class="w-1/15 md:1/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">id</th>
-                                    <th class="w-2/15 md:2/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 hidden sm:table-cell ">Shop</th>
+                                    <th class="w-2/15 md:2/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 hidden sm:table-cell ">dept</th>
                                     <th class="w-2/15 md:2/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Name</th>
                                     <th class="w-2/15 md:2/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 hidden sm:table-cell ">Mail</th>
                                     <th class="w-3/15 md:3/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">info</th>
@@ -95,7 +95,7 @@
                                     <td class="border-b-2 boder-gray-200">
                                         <Link class="text-indigo-500" :href="route('users.show',{user:user.user_id})">{{ user.user_id }} </Link>
                                     </td>
-                                    <td class="border-b-2 boder-gray-200 hidden sm:table-cell ">{{ user.shop_name }} </td>
+                                    <td class="border-b-2 boder-gray-200 hidden sm:table-cell ">{{ user.dept_name }} </td>
                                     <td class="border-b-2 boder-gray-200">{{ user.name }} </td>
                                     <td class="border-b-2 boder-gray-200 hidden sm:table-cell ">{{ user.email }} </td>
                                     <td class="border-b-2 boder-gray-200 text-left">{{ user.user_info ? user.user_info.substring(0, 15) : '' }} </td>

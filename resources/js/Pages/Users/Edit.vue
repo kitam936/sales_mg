@@ -4,12 +4,12 @@ import { Head ,Link} from '@inertiajs/vue3';
 import { reactive } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { useForm ,usePage} from '@inertiajs/vue3'
-import {Core as YubinBangouCore} from 'yubinbango-core2';
+
 
 
 const props = defineProps({
     user: Object,
-    shops: Array,
+    depts: Array,
     roles: Array,
     errors : Object,
 })
@@ -19,12 +19,9 @@ const form = useForm({
     id: props.user.id,
     name: props.user.name,
     email: props.user.email,
-    shop_id: props.user.shop_id,
+    dept_id: props.user.dept_id,
     role_id: props.user.role_id,
     user_info: props.user.user_info,
-    postcode: props.user.postcode,
-    address: props.user.address,
-    tel: props.user.tel,
     mailService: props.user.mailService,
     password: '',
     password_confirmation: '',
@@ -96,17 +93,17 @@ const goBack = () => {
                                         </div>
                                         <div class="flex ml-2 w-full">
                                             <div class="p-0 relative">
-                                                <label for="shop_id" class="leading-7 text-sm text-gray-600">ShopID</label>
-                                                <select id="shop_id" name="shop_id" v-model="form.shop_id" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                                                    <option value="" disabled>Shop選択</option>
-                                                    <option v-for="shop in shops" :key="shop.id" :value="shop.id">{{ shop.shop_name }}</option>
+                                                <label for="dept_id" class="leading-7 text-sm text-gray-600">所属</label>
+                                                <select id="dept_id" name="dept_id" v-model="form.dept_id" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                    <option value="" disabled>所属選択</option>
+                                                    <option v-for="dept in depts" :key="dept.id" :value="dept.id">{{ dept.dept_name }}</option>
                                                 </select>
-                                                <div v-if="errors.shop_id" class="text-red-500">{{ errors.shop_id }}</div>
+                                                <div v-if="errors.dept_id" class="text-red-500">{{ errors.dept_id }}</div>
                                             </div>
                                             <div class="p-0 ml-2 relative">
-                                                <label for="role_id" class="leading-7 text-sm text-gray-600">RoleID</label>
+                                                <label for="role_id" class="leading-7 text-sm text-gray-600">権限</label>
                                                 <select id="role_id" name="role_id" v-model="form.role_id" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                                                    <option value="" disabled>Role選択</option>
+                                                    <option value="" disabled>権限選択</option>
                                                     <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.role_name }}</option>
                                                 </select>
                                                 <div v-if="errors.role_id" class="text-red-500">{{ errors.role_id }}</div>
@@ -119,23 +116,7 @@ const goBack = () => {
                                                 <div v-if="errors.user_info" class="text-red-500">{{ errors.user_info }}</div>
                                             </div>
                                         </div>
-                                        <div class="ml-2 w-full">
-                                            <div class="relative">
-                                                <label for="postcode" class="leading-7 text-sm text-gray-600">郵便番号</label>
-                                                <input type="text" id="postcode" name="postcode" @change="fetchAddress" v-model="form.postcode" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                                                <div v-if="errors.postcode" class="text-red-500">{{ errors.postcode }}</div>
-                                            </div>
-                                            <div class="relative">
-                                                <label for="address" class="leading-7 text-sm text-gray-600">住所</label>
-                                                <input type="text" id="address" name="address" v-model="form.address" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                                                <div v-if="errors.address" class="text-red-500">{{ errors.address }}</div>
-                                            </div>
-                                            <div class="relative">
-                                                <label for="tel" class="leading-7 text-sm text-gray-600">TEL</label>
-                                                <input type="text" id="tel" name="tel" v-model="form.tel" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                                                <div v-if="errors.tel" class="text-red-500">{{ errors.tel }}</div>
-                                            </div>
-                                        </div>
+
                                         <div class="ml-2 w-1/2 ">
                                             <label for="mailService" class="leading-7 text-sm  text-gray-800 dark:text-gray-200 ">メール配信</label>
                                             <div class="relative flex justify-around">

@@ -23,37 +23,34 @@ class UserController extends Controller
     {
         $users = User::searchUsers($request->search)
         ->join('roles', 'users.role_id', '=', 'roles.id')
-        ->join('shops', 'users.shop_id', '=', 'shops.id')
-        ->Where('users.shop_id', 'like', '%' . $request->shop_id . '%')
+        ->join('depts', 'users.dept_id', '=', 'depts.id')
+        ->Where('users.dept_id', 'like', '%' . $request->dept_id . '%')
         ->select(
             'users.id as user_id',
             'users.name',
             'users.email',
-            'users.postcode',
-            'users.address',
-            'users.tel',
             'users.user_info',
             'users.mailService',
             'users.role_id',
             'roles.role_name',
-            'users.shop_id',
-            'shops.shop_name'
+            'users.dept_id',
+            'depts.dept_name'
         )
         ->orderBy('users.id', 'asc')
         ->paginate(50)
         ->withQueryString();
 
-        $shops= DB::table('shops')
-        ->select('id', 'shop_name')
+        $depts= DB::table('depts')
+        ->select('id', 'dept_name')
         ->orderBy('id', 'asc')
         ->get();
 
 
-        // dd($users, $shops);
+        // dd($users, $depts);
 
         return Inertia::render('Users/Index', [
             'users' => $users,
-            'shops' => $shops,
+            'depts' => $depts,
 
         ]);
     }
@@ -65,21 +62,18 @@ class UserController extends Controller
         // dd($user->id);
         $userDetail = DB::table('users')
         ->join('roles', 'users.role_id', '=', 'roles.id')
-        ->join('shops', 'users.shop_id', '=', 'shops.id')
+        ->join('depts', 'users.dept_id', '=', 'depts.id')
         ->where('users.id', $user->id)
         ->select(
             'users.id as id',
             'users.name',
             'users.email',
-            'users.postcode',
-            'users.address',
-            'users.tel',
             'users.user_info',
             'users.mailService',
             'users.role_id',
             'roles.role_name',
-            'users.shop_id',
-            'shops.shop_name'
+            'users.dept_id',
+            'depts.dept_name'
         )
         ->first();
 
@@ -95,14 +89,14 @@ class UserController extends Controller
             ->orderBy('id', 'asc')
             ->get();
 
-        $shops = DB::table('shops')
-            ->select('id', 'shop_name')
+        $depts = DB::table('depts')
+            ->select('id', 'dept_name')
             ->orderBy('id', 'asc')
             ->get();
 
         return Inertia::render('Users/Create', [
             'roles' => $roles,
-            'shops' => $shops,
+            'depts' => $depts,
             'old' => session()->getOldInput(),
             'errors' => session('errors') ? session('errors')->getBag('default')->getMessages() : [],
         ]);
@@ -116,10 +110,8 @@ class UserController extends Controller
                 'user_info' => ['string', 'max:255'],
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 'role_id' => ['required', 'exists:roles,id'],
-                'shop_id' => ['required', 'exists:shops,id'],
-                'postcode'=> ['nullable', 'string', 'max:10'],
-                'address'  => ['nullable', 'string', 'max:255'],
-                'tel' => ['nullable', 'string', 'max:15'],
+                'dept_id' => ['required', 'exists:depts,id'],
+
                 // 'mailService' => ['required', 'boolean'],
             ]);
 
@@ -131,12 +123,9 @@ class UserController extends Controller
                         'name' => $request->name,
                         'email' => $request->email,
                         'user_info' => $request->user_info,
-                        'shop_id' => $request->shop_id,
+                        'dept_id' => $request->dept_id,
                         'password' => Hash::make($request->password),
                         'role_id' => $request->role_id,
-                        'postcode' => $request->postcode,
-                        'address' => $request->address,
-                        'tel' => $request->tel,
                         'mailService' => 1,
                     ]);
 
@@ -156,15 +145,15 @@ class UserController extends Controller
                 ->orderBy('id', 'asc')
                 ->get();
 
-            $shops = DB::table('shops')
-                ->select('id', 'shop_name')
+            $depts = DB::table('depts')
+                ->select('id', 'dept_name')
                 ->orderBy('id', 'asc')
                 ->get();
 
             return Inertia::render('Users/Edit', [
                 'user' => $user,
                 'roles' => $roles,
-                'shops' => $shops,
+                'depts' => $depts,
                 'old' => session()->getOldInput(),
                 'errors' => session('errors') ? session('errors')->getBag('default')->getMessages() : [],
             ]);
@@ -179,10 +168,7 @@ class UserController extends Controller
                 'user_info' => ['string', 'max:255'],
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 'role_id' => ['required', 'exists:roles,id'],
-                'shop_id' => ['required', 'exists:shops,id'],
-                'postcode'=> ['nullable', 'string', 'max:10'],
-                'address'  => ['nullable', 'string', 'max:255'],
-                'tel' => ['nullable', 'string', 'max:15'],
+                'dept_id' => ['required', 'exists:depts,id'],
                 'mailService' => [ 'boolean'],
             ]);
 
@@ -194,12 +180,9 @@ class UserController extends Controller
                         'name' => $request->name,
                         'email' => $request->email,
                         'user_info' => $request->user_info,
-                        'shop_id' => $request->shop_id,
+                        'dept_id' => $request->dept_id,
                         'password' => Hash::make($request->password),
                         'role_id' => $request->role_id,
-                        'postcode' => $request->postcode,
-                        'address' => $request->address,
-                        'tel' => $request->tel,
                         'mailService' => $request->mailService ,
                     ]);
                 },2);
@@ -220,10 +203,7 @@ class UserController extends Controller
                 'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
                 'user_info' => ['nullable', 'string', 'max:255'],
                 'role_id' => ['required', 'exists:roles,id'],
-                'shop_id' => ['required', 'exists:shops,id'],
-                'postcode'=> ['nullable', 'string', 'max:10'],
-                'address'  => ['nullable', 'string', 'max:255'],
-                'tel' => ['nullable', 'string', 'max:15'],
+                'dept_id' => ['required', 'exists:depts,id'],
                 'mailService' => ['required', 'boolean'],
             ];
 

@@ -24,6 +24,9 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\DataController;
+use App\Http\Controllers\CsvImportController;
+use App\Http\Controllers\DataDownloadController;
+use App\Http\Controllers\ImageController;
 use Inertia\Inertia;
 
 
