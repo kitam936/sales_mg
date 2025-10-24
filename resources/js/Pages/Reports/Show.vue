@@ -31,13 +31,14 @@
             <template #header>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Report詳細</h2>
 
-                <div class="mt-4">
-                    <button
-                        type="button"
-                        @click="goBack"
-                        class="w-32 h-8 ml-24 text-gray-700 bg-gray-200 border border-gray-300 focus:outline-none hover:bg-gray-300 rounded text-ml">
-                        戻る
-                    </button>
+                <div class="flex mt-4">
+                    <div class="ml-4 md:ml-24 mt-0">
+                        <Link as="button" :href="route('reports.index')" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Report一覧</Link>
+                    </div>
+
+                    <div class="ml-16 mb-0">
+                        <Link as="button" :href="route('comments.create',{id:report.id})" class="w-32 h-8 bg-green-500 text-sm text-white ml-0 hover:bg-green-600 rounded">コメント登録</Link>
+                    </div>
                 </div>
             </template>
 
@@ -48,29 +49,27 @@
                         <div class="p-3 text-gray-900">
                             <section class="text-gray-600 body-font relative">
 
-                                <div class="ml-24 mb-0">
-                                    <Link as="button" :href="route('comments.create2',{id:report.id})" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">コメント登録</Link>
-                                </div>
 
-                                <div class="container px-5 py-2 mx-auto">
+
+                                <div class="container px-2 py-2 mx-auto">
                                     <div class="lg:w-1/2 md:w-2/3 mx-auto">
                                     <div class="flex flex-wrap -m-2">
                                         <div class="flex p-2 w-full">
 
                                         <div class="relative">
                                             <label for="id" class="leading-7 text-sm text-gray-600">Report_ID</label>
-                                            <div id="id" name="id" class="w-24 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ report.id }}</div>
+                                            <div id="id" name="id" class="text-sm w-16 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ report.id }}</div>
 
                                         </div>
 
                                         <div class="ml-2 relative">
-                                            <label for="detail_id" class="leading-7 text-sm text-gray-600">Detail_ID</label>
-                                            <div id="detail_id" name="detail_id" class="w-24 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ report.detail_id }}</div>
+                                            <label for="co_id" class="leading-7 text-sm text-gray-600">取引先</label>
+                                            <div id="co_id" name="co_id" class="text-sm w-24 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ report.co_name }}</div>
 
                                         </div>
                                         <div class="ml-2 relative">
-                                            <label for="title" class="leading-7 text-sm text-gray-600">Title</label>
-                                            <div id="title" name="title" class="w-60 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ report.title }}</div>
+                                            <label for="shop_id" class="leading-7 text-sm text-gray-600">店名</label>
+                                            <div id="shop_id" name="shop_id" class="text-sm w-40 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ report.shop_name }}</div>
 
                                         </div>
                                         </div>
@@ -118,7 +117,7 @@
 
                                             </div>
                                         </div>
-                                    <div v-if="report.staff_id == login_user" class="mt-4 mb-2 flex">
+                                    <div v-if="report.user_id == login_user" class="ml-8 mt-4 mb-2 flex">
 
                                         <div class="p-2 w-full">
                                             <Link as="button" :href="route('reports.edit',{report:report.id})" class="w-32 h-8 flex mx-auto text-white bg-green-500 border-0 py-2 pl-7 focus:outline-none hover:bg-green-600 rounded text-sm">Report編集</Link>
@@ -146,7 +145,7 @@
                             <th class="w-2/12 md:1/13 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Date</th>
                             <th class="w-2/12 md:1/13 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">投稿者</th>
                             <th class="w-2/12 md:3/13 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">comment</th>
-
+                            <th class="w-2/12 md:2/12 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">状態</th>
 
                         </tr>
                     </thead>
@@ -159,7 +158,12 @@
                             <!-- <td class="border-b-2 boder-gray-200">{{ report.report_id  }} </td> -->
                             <td class="border-b-2 boder-gray-200">{{ comment.name  }} </td>
                             <td class="w-3/12 border-b-2 boder-gray-200">{{ comment.comment.substring(0, 20) }} </td>
-
+                            <div v-if="comment.comment_reads">
+                            <td class="w-2/12 md:2/12 text-sm md:px-4 py-1 text-center">既読</td>
+                            </div>
+                            <div v-else>
+                             <td class="w-2/12 md:2/12 text-red-600 text-sm md:px-4 py-1 text-center">未読</td>
+                            </div>
                         </tr>
                     </tbody>
 

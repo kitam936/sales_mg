@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8e50f73d7924e1cf94496e41d513a075",
+    "content-hash": "63a7e52afe78d1a22f47b613e55cdee9",
     "packages": [
         {
             "name": "brick/math",
@@ -1177,19 +1177,20 @@
         },
         {
             "name": "intervention/image",
-            "version": "3.0.0",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Intervention/image.git",
-                "reference": "4c1938f0d35e59bf90ba9fef04f375c503516bfd"
+                "reference": "3de73efee5b1f96355f4d3ff4103411527a7cfb6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Intervention/image/zipball/4c1938f0d35e59bf90ba9fef04f375c503516bfd",
-                "reference": "4c1938f0d35e59bf90ba9fef04f375c503516bfd",
+                "url": "https://api.github.com/repos/Intervention/image/zipball/3de73efee5b1f96355f4d3ff4103411527a7cfb6",
+                "reference": "3de73efee5b1f96355f4d3ff4103411527a7cfb6",
                 "shasum": ""
             },
             "require": {
+                "ext-mbstring": "*",
                 "intervention/gif": "^3",
                 "php": "^8.1"
             },
@@ -1227,7 +1228,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Intervention/image/issues",
-                "source": "https://github.com/Intervention/image/tree/3.0.0"
+                "source": "https://github.com/Intervention/image/tree/3.1.0"
             },
             "funding": [
                 {
@@ -1239,7 +1240,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-12-08T13:57:00+00:00"
+            "time": "2023-12-16T14:21:10+00:00"
         },
         {
             "name": "laravel/breeze",

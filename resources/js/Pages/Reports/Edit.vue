@@ -15,8 +15,7 @@ const props = defineProps({
 
 const form = useForm({
     id: props.report.id,
-    detail_id: props.report.detail_id,
-    title: props.report.title,
+    shop_id: props.report.shop_id,
     report: props.report.report,
     image1: null,
     image2: null,
@@ -44,8 +43,7 @@ const updateReport = (id) => {
     const formData = new FormData();
     formData.append('_method', 'PUT'); // ← 重要
     formData.append('id', form.id);
-    formData.append('detail_id', form.detail_id);
-    formData.append('title', form.title);
+    formData.append('shop_id', form.shop_id);
     formData.append('report', form.report);
 
     if (form.image1 instanceof File) {
@@ -110,7 +108,7 @@ const del_image4 = id => {
                 <button
                     type="button"
                     @click="goBack"
-                    class="w-32 h-8 ml-24 text-gray-700 bg-gray-200 border border-gray-300 focus:outline-none hover:bg-gray-300 rounded text-ml">
+                    class="w-32 h-8 ml-24 text-white bg-indigo-500 border border-gray-300 focus:outline-none hover:bg-indigo-600 rounded text-ml">
                     戻る
                 </button>
             </div>
@@ -136,14 +134,14 @@ const del_image4 = id => {
                                             <div v-if="errors.id" class="text-red-500">{{ errors.id }}</div>
                                         </div>
                                         <div class="relative">
-                                            <label for="detail_id" class="leading-7 text-sm text-gray-600">Detail_ID</label>
-                                            <input disabled type="text" id="detail_id" name="detail_id" v-model="form.detail_id" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                                            <div v-if="errors.detail_id" class="text-red-500">{{ errors.detail_id }}</div>
+                                            <label for="shop_id" class="leading-7 text-sm text-gray-600">店ID</label>
+                                            <input disabled type="text" id="shop_id" name="shop_id" v-model="form.shop_id" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                            <div v-if="errors.shop_id" class="text-red-500">{{ errors.shop_id }}</div>
                                         </div>
                                         <div class=" relative">
                                             <div class="relative">
-                                                <label for="title" class="leading-7 text-sm text-gray-600">Title</label>
-                                                <input type="text" id="title" name="title" v-model="form.title" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                <label for="title" class="leading-7 text-sm text-gray-600">店名</label>
+                                                <div class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ report.co_name }}---{{ report.shop_name }}</div>
                                                 <div v-if="errors.title" class="text-red-500">{{ errors.title }}</div>
                                             </div>
                                             <div v-if="errors.report_category_id" class="text-red-500">{{ errors.title }}</div>
@@ -237,7 +235,7 @@ const del_image4 = id => {
                                     </div>
 
                                     <div class="p-2 w-full">
-                                        <button class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"> 更新</button>
+                                        <button class="flex mx-auto text-white bg-pink-500 border-0 py-2 px-8 focus:outline-none hover:bg-pink-600 rounded text-lg"> 更新</button>
                                     </div>
 
                                 </div>

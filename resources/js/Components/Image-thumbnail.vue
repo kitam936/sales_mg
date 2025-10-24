@@ -7,7 +7,7 @@
     />
     <img
       v-else
-      :src="`/storage/public/images/${filename}`"
+      :src="`/storage/images/${filename}`"
       alt="image"
     />
   </div>
