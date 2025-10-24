@@ -40,7 +40,10 @@ class HinbanController extends Controller
         ->orderBy('units.season_id','desc')
         ->orderBy('hinban_id','asc')
         ->paginate(20);
-        // ->get();
+               // ->get();
+
+
+
         $years=DB::table('hinbans')
         ->select(['year_code'])
         ->where('year_code','<=',50)

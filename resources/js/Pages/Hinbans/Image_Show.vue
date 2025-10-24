@@ -14,6 +14,11 @@
         router.delete(route('admin.image_destroy', { hinban }))
       }
     }
+
+    // 戻るボタンの処理
+    const goBack = () => {
+        window.history.back();
+    };
     </script>
 
     <template>
@@ -30,7 +35,7 @@
             <div class="ml-6 flex mt-2">
               <button
                 type="button"
-                @click="window.history.back()"
+                @click="goBack"
                 class="w-32 h-8 text-white text-sm bg-indigo-500 border-0 py-1 px-2 hover:bg-indigo-600 rounded"
               >
                 戻る
@@ -39,7 +44,7 @@
                 :href="route('hinbans.index')"
                 class="w-32 h-8 ml-6 text-white text-sm bg-indigo-500 border-0 py-1 px-2 hover:bg-indigo-600 rounded text-center"
               >
-                画像リスト
+                商品リスト
               </Link>
             </div>
           </div>
@@ -72,7 +77,7 @@
                   <img
                     v-if="image.filename"
                     class="w-full mx-auto rounded"
-                    :src="`/storage/public/images/${image.filename}`"
+                    :src="`/storage/images/${image.filename}`"
                     alt="商品画像"
                   />
                   <div
@@ -98,10 +103,12 @@
               Col: {{ sku.col_id }} / Size: {{ sku.size_name }}
             </div>
 
+            <!-- <Link :href="route('sku_image_show', { sku: sku.sku_id })"> -->
+
             <div class="border rounded-md overflow-hidden">
               <img
                 v-if="sku.filename"
-                :src="`/storage/public/images/${sku.filename}`"
+                :src="`/storage/sku_images/${sku.filename}`"
                 class="w-full h-auto"
                 alt="SKU画像"
               />
@@ -112,6 +119,7 @@
                 No Image
               </div>
             </div>
+            <!-- </Link> -->
           </div>
         </div>
       </AuthenticatedLayout>

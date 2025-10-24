@@ -8,7 +8,7 @@
       />
       <img
         v-else
-        :src="`/storage/public/sku_images/${filename}`"
+        :src="`/storage/sku_images/${filename}`"
         alt="SKU image"
       />
     </div>

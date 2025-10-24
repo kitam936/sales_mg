@@ -7,6 +7,13 @@ import { ref } from 'vue';
 
 const page = usePage();
 
+const props = defineProps({
+    reports: Object,
+    comments: Object,
+})
+
+
+
 const logout = () => {
     router.post(route('logout'), {}, {
         onSuccess: () => {
@@ -35,6 +42,14 @@ const logout = () => {
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">　Menu</h2>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="py-6 pl-2 text-gray-900">
+                        <div v-if="reports" class="ml-12 text-ml text-red-600">
+                            ※ 未読のReportがあります !
+                        </div>
+
+                        <div v-if="comments" class="ml-12 text-ml text-red-600">
+                            ※ 未読のReportコメントがあります !
+                        </div>
+
                         <section class="text-gray-600 body-font relative">
                                 <!-- <div class="md:flex ">
                                     <div class="flex">
@@ -56,14 +71,14 @@ const logout = () => {
                                 </div> -->
 
                                 <div class="md:flex ">
-                                    <!-- <div class="flex">
+                                    <div class="flex">
                                     <div class="p-2 ">
-                                        <Link as="button" :href="route('items.index')" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-12 focus:outline-none hover:bg-indigo-600 rounded text-ml">商品管理</Link>
+                                        <Link as="button" :href="route('hinbans.index')" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-12 focus:outline-none hover:bg-indigo-600 rounded text-ml">商品管理</Link>
                                     </div>
                                     <div class="p-2 ">
                                         <Link as="button" :href="route('users.index')" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-11 focus:outline-none hover:bg-indigo-600 rounded text-ml">User管理</Link>
                                     </div>
-                                    </div> -->
+                                    </div>
 
                                 <div class="flex">
                                     <div class="p-2 ">

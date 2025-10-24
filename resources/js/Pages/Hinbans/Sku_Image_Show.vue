@@ -1,8 +1,9 @@
 
 <script setup>
     import { router, usePage } from '@inertiajs/vue3'
-    import AppLayout from '@/Layouts/AppLayout.vue'
-    import SkuImageThumbnail from '@/Components/SkuImageThumbnail.vue'
+
+    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+
 
     const props = defineProps({
       image: Object,
@@ -19,7 +20,7 @@
     </script>
 
     <template>
-      <AppLayout title="SKU画像">
+      <AuthenticatedLayout title="SKU画像">
         <template #header>
           <h2 class="font-semibold text-xl text-gray-800 leading-tight mb-2">
             SKU画像
@@ -65,7 +66,7 @@
                 {{ image.hinban_id }} -- {{ image.col_id }} -- {{ image.size_id }}
                 <img
                   class="w-full mx-auto mt-2"
-                  :src="`/storage/public/sku_images/${image.filename}`"
+                  :src="`/storage/sku_images/${image.filename}`"
                   alt="SKU画像"
                 />
               </div>
@@ -74,17 +75,6 @@
         </div>
 
         <!-- サムネイルリスト -->
-        <div class="flex flex-wrap mt-4">
-          <div
-            v-for="sku in sku_images"
-            :key="sku.id"
-            class="w-1/3 md:w-1/4 p-2 md:p-4"
-          >
-            <div class="text-gray-700 mb-1">
-              Col: {{ sku.col_id }}
-            </div>
-            <SkuImageThumbnail :filename="sku.filename" />
-          </div>
-        </div>
-      </AppLayout>
+
+      </AuthenticatedLayout>
     </template>

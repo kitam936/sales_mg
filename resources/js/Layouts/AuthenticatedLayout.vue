@@ -70,6 +70,12 @@ const showingNavigationDropdown = ref(false);
                                     商品管理
                                 </NavLink>
                                 <NavLink
+                                :href="route('reports.index')"
+                                :active="route().current('reports.index')"
+                                >
+                                    Report
+                                </NavLink>
+                                <NavLink
                                     :href="route('admin.data.data_menu')"
                                     :active="route().current('admin.data.data_menu')"
                                 >
@@ -216,7 +222,12 @@ const showingNavigationDropdown = ref(false);
                             品番管理
                         </ResponsiveNavLink>
 
-
+                        <ResponsiveNavLink
+                        :href="route('reports.index')"
+                        :active="route().current('reports.index')"
+                        >
+                            Report
+                        </ResponsiveNavLink>
                         <ResponsiveNavLink
                             :href="route('admin.data.data_menu')"
                             :active="route().current('admin.data.data_menu')"

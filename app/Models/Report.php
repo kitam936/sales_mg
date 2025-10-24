@@ -17,7 +17,6 @@ class Report extends Model
         'id',
         'shop_id',
         'user_id',
-        'title',
         'report',
         'image1',
         'image2',
