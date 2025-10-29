@@ -335,7 +335,7 @@ class ReportController extends Controller
 
 
         // dd($request,$request->co_id,$request->sh_id,$request->report,$request->image1);
-        Report::create([
+        $report=Report::create([
             'user_id' => $login_user->id,
             'shop_id' => $request->sh_id,
             'image1' => $fileNameToStore1,
@@ -344,6 +344,19 @@ class ReportController extends Controller
             'image4' => $fileNameToStore4,
             'report' => $request->report,
         ]);
+
+        DB::table('report_reads')->upsert(
+            [
+                'report_id' => $report->id,
+                'user_id'   => User::findOrFail(Auth::id())->id,
+                'created_at'   => now(),
+                'updated_at' => now()
+
+            ],
+            ['report_id', 'user_id'], // uniqueキー
+            // ['created_at','updated_at']               // 更新するカラム
+
+        );
 
          // ここでメール送信
         // $users = User::Where('mailService','=',1)
@@ -399,8 +412,8 @@ class ReportController extends Controller
                     ->where('comment_reads.user_id', '=', $login_user);
             })
             ->where('comments.report_id',$report->id)
-            ->select(['comments.id','comments.updated_at','users.name','comments.comment','comment_reads.user_id as comment_reads'])
-            ->orderBy('updated_at','desc')
+            ->select(['comments.id','comments.created_at','users.name','comments.comment','comment_reads.user_id as comment_reads'])
+            ->orderBy('created_at','desc')
             ->get();
 
          // 既読処理
@@ -413,9 +426,11 @@ class ReportController extends Controller
 
             ],
             ['report_id', 'user_id'], // uniqueキー
-            // ['created_at','updated_at']               // 更新するカラム
+            ['updated_at']               // 更新するカラム
 
         );
+
+        // dd($comment_exist);
 
         return Inertia::render('Reports/Show', [
             'comment_exist' => $comment_exist,

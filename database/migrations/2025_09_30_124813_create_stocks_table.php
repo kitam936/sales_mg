@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('shop_id')
             ->constrained();
-            $table->foreignId('sku_id')
+            $table->foreignId('hinban_id')
             ->constrained();
             $table->bigInteger('pcs');
             $table->bigInteger('zaikogaku');

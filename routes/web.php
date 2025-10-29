@@ -121,7 +121,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/reports/store', [ReportController::class, 'store'])->name('reports.store');
     Route::get('/reports/show/{report}', [ReportController::class, 'show'])->name('reports.show');
     Route::get('/reports/edit/{report}', [ReportController::class, 'edit'])->name('reports.edit');
-    Route::get('/comments/create/{id}', [CommentController::class, 'comment_create'])->name('comments.create');
+    Route::get('/comments/create/{report}', [CommentController::class, 'create'])->name('comments.create');
+    Route::post('/comments/store', [CommentController::class, 'store'])->name('comments.store');
+    Route::get('/comments/show/{comment}', [CommentController::class, 'show'])->name('comments.show');
+    Route::get('/comments/edit/{comment}', [CommentController::class, 'edit'])->name('comments.edit');
+    Route::put('/comments/update/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/destroy/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::delete('del_image1', [ReportController::class, 'del_image1'])->name('reports.del_image1');
     Route::delete('del_image2', [ReportController::class, 'del_image2'])->name('reports.del_image2');
     Route::delete('del_image3', [ReportController::class, 'del_image3'])->name('reports.del_image3');
@@ -153,7 +158,7 @@ Route::resource('skus', SkuController::class) ->middleware(['auth', 'verified'])
 
 Route::resource('reports', ReportController::class) ->middleware(['auth', 'verified']);
 
-Route::resource('comments', CommentController::class) ->middleware(['auth', 'verified']);
+// Route::resource('comments', CommentController::class) ->middleware(['auth', 'verified']);
 
 
 

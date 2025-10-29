@@ -4,6 +4,7 @@
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
     import { Inertia } from '@inertiajs/inertia'
     import FlashMessage from '@/Components/FlashMessage.vue'
+    import Pagination from '@/Components/Pagination.vue'
 
     const props = defineProps({
       reports: Object,   // Laravelから渡されるページネート済みreports
@@ -49,8 +50,10 @@
           </div>
 
           <form @submit.prevent="submitFilters" class="mt-4 space-y-2">
+
             <span class="text-sm text-gray-800">※エリア・会社を選択してください</span>
-            <div class="md:flex space-x-2">
+            <div class="md:flex">
+            <div class="flex space-x-2">
               <select v-model="ar_id" @change="submitFilters" class="w-32 h-8 rounded text-sm">
                 <option value="null">全エリア</option>
                 <option v-for="area in areas" :key="area.id" :value="area.id">{{ area.area_name }}</option>
@@ -60,6 +63,8 @@
                 <option value="null">全社</option>
                 <option v-for="co in companies" :key="co.id" :value="co.id">{{ co.co_name }}</option>
               </select>
+            </div>
+            <div class="flex md:mt-0 md:ml-2 mt-2">
 
               <input
                 v-model="sh_name"
@@ -70,10 +75,11 @@
 
               <button type="button"
                       @click="() => { co_id = null; ar_id = null; sh_name = ''; submitFilters() }"
-                      class="w-20 h-8 bg-blue-500 text-white hover:bg-blue-600 rounded"
+                      class="w-20 h-8 bg-blue-500 text-white hover:bg-blue-600 rounded ml-2"
               >
                 全表示
               </button>
+            </div>
             </div>
           </form>
         </template>
@@ -83,7 +89,7 @@
             <table class="w-full table-auto text-center bg-white">
               <thead>
                 <tr class="bg-gray-100 text-sm">
-                  <th class="py-1 px-2">ID</th>
+                  <th class="py-1 px-2 hidden sm:table-cell">ID</th>
                   <th class="py-1 px-2">Date</th>
                   <th class="py-1 px-2">社名</th>
                   <th class="py-1 px-2">店名</th>
@@ -93,16 +99,16 @@
               </thead>
               <tbody>
                 <tr v-for="report in reports.data" :key="report.id" class="text-sm">
-                  <td class="py-1 px-2">{{ report.id }}</td>
-                  <td class="py-1 px-2">
+                  <td class="py-1 px-2  hidden sm:table-cell">{{ report.id }}</td>
+                  <td class="py-1 px-2 ">
                     <a :href="route('reports.show', { report: report.id })" class="text-indigo-500">
                       {{ new Date(report.created_at).toLocaleDateString('ja-JP', { year:'2-digit', month:'2-digit', day:'2-digit' }) }}
                     </a>
                   </td>
-                  <td class="py-1 px-2">{{ report.co_name }}</td>
-                  <td class="py-1 px-2">{{ report.shop_name }}</td>
-                  <td class="py-1 px-2">{{ report.comment_count }}</td>
-                  <td class="py-1 px-2" :class="{'text-red-600': !report.report_reads || (report.comment_count>0 && !report.comment_reads)}">
+                  <td class="py-1 px-2 ">{{ report.co_name }}</td>
+                  <td class="py-1 px-2 ">{{ report.shop_name }}</td>
+                  <td class="py-1 px-2 ">{{ report.comment_count }}</td>
+                  <td class="py-1 px-2 " :class="{'text-red-600': !report.report_reads || (report.comment_count>0 && !report.comment_reads)}">
                     {{ (report.comment_count>0 && report.report_reads && report.comment_reads) || (report.comment_count===0 && report.report_reads) ? '既読' : '未読' }}
                   </td>
                 </tr>

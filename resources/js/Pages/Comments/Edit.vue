@@ -44,12 +44,15 @@ const goBack = () => {
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">comment編集</h2>
             <div class="mt-4">
-                <button
+                <!-- <button
                     type="button"
                     @click="goBack"
                     class="w-32 h-8 ml-24 text-gray-700 bg-gray-200 border border-gray-300 focus:outline-none hover:bg-gray-300 rounded text-ml">
                     戻る
-                </button>
+                </button> -->
+                <div class="ml-4 md:ml-24 mt-0">
+                    <Link as="button" :href="route('comments.show',{comment:comment.id})" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Comment詳細</Link>
+                </div>
             </div>
         </template>
 
