@@ -20,8 +20,9 @@
     });
 
     const storeComment = () => {
-        Inertia.post('/comments', form)
+        Inertia.post(route('comments.store'), form)
     }
+
 
     // 戻るボタンの処理
     const goBack = () => {

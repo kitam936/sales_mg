@@ -3,6 +3,7 @@
     import { Head, Link, router } from '@inertiajs/vue3'
     import { ref, watch } from 'vue'
     import FlashMessage from '@/Components/FlashMessage.vue';
+    import Pagination from '@/Components/Pagination.vue';
 
     const props = defineProps({
       years: Array,
@@ -115,7 +116,7 @@
                 </option>
               </select>
             </div>
-            <div class="flex items-center mt-2">
+            <div class="flex items-center mt-2 md:ml-10">
               <!-- 品番 -->
               <!-- <label for="hinban_code" class="text-sm mt-2 text-gray-800">品番：</label> -->
               <input

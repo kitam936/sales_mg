@@ -7,8 +7,9 @@
 
     defineProps({
         report : Object,
+        comment_exist: [Boolean, Object], // 両方許可
         comments: Array,
-        login_user: Object,
+        login_user: [Object, Number],  // ← 両方許可
     })
 
     const deleteReport = id => {
@@ -32,12 +33,12 @@
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Report詳細</h2>
 
                 <div class="flex mt-4">
-                    <div class="ml-4 md:ml-24 mt-0">
+                    <div class="ml-8 md:ml-24 mt-0">
                         <Link as="button" :href="route('reports.index')" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Report一覧</Link>
                     </div>
 
-                    <div class="ml-16 mb-0">
-                        <Link as="button" :href="route('comments.create',{id:report.id})" class="w-32 h-8 bg-green-500 text-sm text-white ml-0 hover:bg-green-600 rounded">コメント登録</Link>
+                    <div class="ml-8 mb-0">
+                        <Link as="button" :href="route('comments.create',{report:report.id})" class="w-32 h-8 bg-green-500 text-sm text-white ml-0 hover:bg-green-600 rounded">コメント登録</Link>
                     </div>
                 </div>
             </template>
@@ -117,12 +118,12 @@
 
                                             </div>
                                         </div>
-                                    <div v-if="report.user_id == login_user" class="ml-8 mt-4 mb-2 flex">
+                                    <div v-if="report.user_id == login_user" class="ml-4 mt-4 mb-2 flex">
 
                                         <div class="p-2 w-full">
                                             <Link as="button" :href="route('reports.edit',{report:report.id})" class="w-32 h-8 flex mx-auto text-white bg-green-500 border-0 py-2 pl-7 focus:outline-none hover:bg-green-600 rounded text-sm">Report編集</Link>
                                         </div>
-                                        <div class="p-2 w-full">
+                                        <div v-if="!(comment_exist) " class="ml-4 p-2 w-full">
                                             <button class="w-32 h-8 flex mx-auto text-white bg-red-500 border-0 py-2 pl-10 focus:outline-none hover:bg-red-600 rounded text-sm" @click="deleteReport(report.id)" >削除する</button>
                                         </div>
                                     </div>
@@ -142,27 +143,30 @@
                 <table class="bg-white table-auto w-full text-center whitespace-no-wrap">
                     <thead>
                         <tr>
-                            <th class="w-2/12 md:1/13 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Date</th>
-                            <th class="w-2/12 md:1/13 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">投稿者</th>
-                            <th class="w-2/12 md:3/13 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">comment</th>
-                            <th class="w-2/12 md:2/12 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">状態</th>
+                            <th class="py-1 px-2  title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 hidden sm:table-cell">ID</th>
+                            <th class="py-1 px-2 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Date</th>
+                            <th class="py-1 px-2 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">投稿者</th>
+                            <th class="py-1 px-2 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">comment</th>
+                            <th class="py-1 px-2 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">状態</th>
 
                         </tr>
                     </thead>
 
                     <tbody>
                         <tr v-for="comment in comments" :key="report.id">
-                            <td class="border-b-2 boder-gray-200">
-                                <Link class="text-indigo-500" :href="route('comments.show',{comment:comment.id})">{{ comment.created_at  }} </Link>
+                            <td class="py-1 px-2 hidden sm:table-cell">{{ comment.id  }} </td>
+                            <td class="py-1 px-2">
+                                <Link class="text-indigo-500" :href="route('comments.show',{comment:comment.id})">
+                                    {{ new Date(comment.created_at).toLocaleDateString('ja-JP', { year:'2-digit', month:'2-digit', day:'2-digit' }) }}
+                                </Link>
                             </td>
-                            <!-- <td class="border-b-2 boder-gray-200">{{ report.report_id  }} </td> -->
-                            <td class="border-b-2 boder-gray-200">{{ comment.name  }} </td>
-                            <td class="w-3/12 border-b-2 boder-gray-200">{{ comment.comment.substring(0, 20) }} </td>
-                            <div v-if="comment.comment_reads">
-                            <td class="w-2/12 md:2/12 text-sm md:px-4 py-1 text-center">既読</td>
+                            <td class="py-1 px-2">{{ comment.name  }} </td>
+                            <td class="py-1 px-2 ">{{ comment.comment.substring(0, 20) }} </td>
+                            <div v-if="comment.comment_reads"  class="py-1 px-2">
+                            <td class="text-sm text-center  ">既読</td>
                             </div>
-                            <div v-else>
-                             <td class="w-2/12 md:2/12 text-red-600 text-sm md:px-4 py-1 text-center">未読</td>
+                            <div v-else  class="py-1 px-2">
+                             <td class="text-red-600 text-sm text-center  ">未読</td>
                             </div>
                         </tr>
                     </tbody>

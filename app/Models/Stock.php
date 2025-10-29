@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Shop;
 use App\Models\Sku;
+use App\Models\Hinban;
 
 class Stock extends Model
 {
@@ -15,7 +16,7 @@ class Stock extends Model
     protected $fillable = [
         'id',
         'shop_id',
-        'sku_id',
+        'hinban_id',
         'pcs',
         'zaikogaku',
 
@@ -26,8 +27,8 @@ class Stock extends Model
         return $this->belongsTo(Shop::class);
     }
 
-    public function sku()
+    public function hinban()
     {
-        return $this->belongsTo(Sku::class);
+        return $this->belongsTo(Hinban::class);
     }
 }

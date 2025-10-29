@@ -16,7 +16,7 @@ return new class extends Migration
             $table->date('sales_date');
             $table->foreignId('shop_id')
             ->constrained();
-            $table->foreignId('sku_id')
+            $table->foreignId('hinban_id')
             ->constrained();
             $table->bigInteger('pcs');
             $table->integer('tanka');

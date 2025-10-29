@@ -19,7 +19,7 @@ class Sale extends Model
         'id',
         'sales_date',
         'shop_id',
-        'sku_id',
+        'hinban_id',
         'pcs',
         'tanka',
         'kingaku',
@@ -39,9 +39,9 @@ class Sale extends Model
 
 
 
-    public function sku()
+    public function hinban()
     {
-        return $this->belongsTo(Sku::class);
+        return $this->belongsTo(Hinban::class);
     }
 
     public function scopeYms($q)
