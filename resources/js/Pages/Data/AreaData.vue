@@ -35,21 +35,21 @@
         <FlashMessage />
 
         <!-- 本体 -->
-        <div class="py-6 border">
+        <div class="py-6 border w-full">
           <div class="mx-auto sm:px-4 lg:px-4 border">
-            <table class="md:w-2/3 bg-white table-auto text-center whitespace-no-wrap">
+            <table class="bg-white table-auto text-center whitespace-no-wrap">
               <thead>
                 <tr>
-                  <th class="w-2/12 md:px-4 py-1 font-medium text-gray-900 text-sm bg-gray-100">Area_id</th>
+                  <!-- <th class="w-2/12 md:px-4 py-1 font-medium text-gray-900 text-sm bg-gray-100">Area_id</th> -->
                   <th class="w-4/12 md:px-4 py-1 font-medium text-gray-900 text-sm bg-gray-100">エリア名</th>
-                  <th class="w-4/12 md:px-4 py-1 font-medium text-gray-900 text-sm bg-gray-100">詳細</th>
+                  <th class="w-8/12 md:px-4 py-1 font-medium text-gray-900 text-sm bg-gray-100">詳細</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="area in areas" :key="area.id">
-                  <td class="w-2/12 md:px-4 py-1">{{ area.id }}</td>
+                  <!-- <td class="w-2/12 md:px-4 py-1">{{ area.id }}</td> -->
                   <td class="w-4/12 md:px-4 py-1">{{ area.area_name }}</td>
-                  <td class="w-4/12 md:px-4 py-1">{{ area.area_info }}</td>
+                  <td class="w-8/12 md:px-4 py-1">{{ area.area_info }}</td>
                 </tr>
               </tbody>
             </table>

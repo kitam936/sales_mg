@@ -8,12 +8,9 @@
 
       </div>
       <div class="ml-8">
-        <button
-          @click="$inertia.visit(route('admin.data.data_menu'))"
-          class="h-8 w-32 text-white bg-indigo-600 border-0 py-0 px-8 hover:bg-gray-400 rounded text-lg"
-        >
-          戻る
-        </button>
+        <div class="p-2 ">
+            <Link as="button" :href="route('admin.data.data_menu')" class="w-40 h-8 flex text-white bg-indigo-500 border-0 py-1 pl-12 focus:outline-none hover:bg-indigo-600 rounded text-ml">Data管理</Link>
+        </div>
         </div>
 
       <!-- フラッシュメッセージ -->
@@ -83,6 +80,7 @@
   import { ref } from 'vue'
   import { useForm } from '@inertiajs/vue3'
   import FlashMessage from '@/Components/FlashMessage.vue'
+  import { Link } from '@inertiajs/vue3'
 
   const props = defineProps({
     status: String

@@ -7,7 +7,7 @@
     // Propsでコントローラーから渡されるデータを受け取る
     const props = defineProps({
         sizes: Array,
-        flash: String, // session('status') 相当
+
     });
     </script>
 
@@ -23,13 +23,13 @@
             <div class="w-40 text-right">
               <Link
                 :href="route('admin.data.data_index')"
-                class="w-32 text-center text-sm text-white bg-indigo-500 border-0 py-1 px-2 focus:outline-none hover:bg-indigo-700 rounded"
+                class="w-32 h-8 text-center text-sm text-white bg-indigo-500 border-0 py-1 px-2 hover:bg-indigo-700 rounded inline-block"
               >
                 戻る
               </Link>
             </div>
           </div>
-          <FlashMessage v-if="flash" :status="flash" />
+          <FlashMessage />
         </template>
 
         <div class="py-6 border">

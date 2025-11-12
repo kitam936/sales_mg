@@ -37,13 +37,12 @@
         labels: [],
         totals: [],
         movingAverages: [],
-        movingAveragesProfit:[],
-        profits: [] // ← 追加必須
+        movingAveragesProfit:[]
     });
 
     // computedでtypeが時間単位系のときのみ絞り込み表示
     const showFilters = computed(() =>
-    ['py', 'pw', 'pm','sh_total',].includes(form.type)
+    ['py', 'pw', 'pm'].includes(form.type)
     )
 
     // 初期ロード
@@ -52,7 +51,6 @@
         form.startDate = today;
         form.endDate = today;
         getData();
-
     });
 
     const getData = async() => {
@@ -125,7 +123,6 @@
                 data.data = res.data.data;
                 data.labels = res.data.labels;
                 data.totals = res.data.totals;
-                data.profits = res.data.total_profits ?? [];
                 // ✅ ここは API から受け取ったまま使う
                 data.companies = res.data.companies;
                 data.shops = res.data.shops;
@@ -180,13 +177,9 @@
                                     <label><input type="radio" value="py" v-model="form.type" /> 年別</label>
                                     <label><input type="radio" value="pm" v-model="form.type" /> 月別</label>
                                     <label><input type="radio" value="pw" v-model="form.type" /> 週別</label>
-                                    </div>
-                                    <div class="flex flex-wrap gap-2 mt-2">
                                     <label><input type="radio" value="co_total" v-model="form.type" /> 社累計</label>
                                     <label><input type="radio" value="sh_total" v-model="form.type" /> 店累計</label>
                                     <label><input type="radio" value="pic_total" v-model="form.type" /> 担当者累計</label>
-                                    </div>
-                                    <div class="flex flex-wrap gap-2 mt-2">
                                     <label><input type="radio" value="bd_total" v-model="form.type" /> ブランド累計</label>
                                     <label><input type="radio" value="ss_total" v-model="form.type" /> シーズン累計</label>
                                     <label><input type="radio" value="un_total" v-model="form.type" /> ユニット累計</label>
@@ -197,8 +190,7 @@
 
 
                                  <!-- typeに応じて絞り込みを表示 -->
-                               <!-- <div v-if="showFilters" class="flex items-center ml-0"> -->
-                                <div class="flex items-center ml-0">
+                                <div v-if="showFilters" class="md:flex items-center mb-3">
 
                                     <label class="ml-0 md:ml-2 md:mt-0 mr-2 text-sm">絞込検索:</label>
                                     <div class="flex items-center ml-0">
@@ -228,7 +220,7 @@
                                         <select v-model="form.pic_id" class="h-8 w-36 rounded border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
                                             <option value="">PIC選択なし</option>
                                             <option v-for="pic in data.pics" :key="pic.pic_id" :value="pic.pic_id">
-                                                {{ pic.pic_name }}
+                                                {{ pic.name }}
                                             </option>
                                         </select>
                                     </div>
@@ -237,8 +229,7 @@
                                 </div>
 
 
-                                <!-- <div v-if="showFilters" class="flex items-center ml-0"> -->
-                                <div class="flex items-center ml-0">
+                                <div v-if="showFilters" class="flex items-center ml-0">
                                     <!-- Season選択 -->
                                     <div class="flex">
                                     <div class="relative ">
@@ -265,7 +256,7 @@
                                         <select v-model="form.face_id" class="h-8 w-36 rounded border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
                                             <option value="">Face選択なし</option>
                                             <option v-for="face in data.faces" :key="face.face_id" :value="face.face_id">
-                                                {{ face.face_code }}
+                                                {{ face.Face_code }}
                                             </option>
                                         </select>
                                     </div>
@@ -290,8 +281,7 @@
 
                             </form>
 
-                            <Chart v-if="data.labels.length" :data="data" />
-
+                            <Chart v-show="data.data.length" :data="data" />
                             <ResultTable
                             v-if="data.data && data.data.length > 0"
                             :data="data"

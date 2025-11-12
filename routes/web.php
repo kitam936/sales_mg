@@ -27,6 +27,8 @@ use App\Http\Controllers\DataController;
 use App\Http\Controllers\CsvImportController;
 use App\Http\Controllers\DataDownloadController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\Api\AnalysisController as ApiAnalysisController;
+
 use Inertia\Inertia;
 
 
@@ -37,6 +39,16 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
+});
+
+Route::middleware(['web', 'auth'])->group(function () {
+    // Inertia ページ表示
+    Route::get('/analysis', [AnalysisController::class, 'index'])->name('analysis');
+});
+
+Route::middleware(['web', 'auth'])->prefix('api')->group(function () {
+    // API データ取得
+    Route::get('/analysis', [ApiAnalysisController::class, 'index'])->name('api.analysis');
 });
 
 Route::middleware('auth')->group(function () {
@@ -111,8 +123,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('sku_image_destroy/{sku}', [ImageController::class, 'sku_image_destroy'])->name('admin.sku_image_destroy');
     Route::get('hinban_image_check', [ImageController::class, 'hinban_image_check'])->name('admin.hinban_image_check');
     Route::get('sku_image_check', [ImageController::class, 'sku_image_check'])->name('admin.sku_image_check');
-    Route::get('hinban_image_csv', [DataDownloadController::class, 'HinbanImageCheck_CSV_download'])->name('admin.hinban_image_csv');
-    Route::get('sku_image_csv', [DataDownloadController::class, 'SkuImageCheck_CSV_download'])->name('admin.sku_image_csv');
+    Route::get('hinban_image_csv', [ImageController::class, 'hinban_image_csv'])->name('admin.hinban_image_csv');
+    Route::get('sku_image_csv', [ImageController::class, 'sku_image_csv'])->name('admin.sku_image_csv');
     Route::get('image_show/{hinban}', [ImageController::class, 'image_show'])->name('image_show');
     Route::get('sku_image_show/{sku}', [ImageController::class, 'sku_image_show'])->name('sku_image_show');
     // Report管理
@@ -136,7 +148,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/csv-import', [CsvImportController::class, 'store'])->name('csv.import.store');
     Route::get('/csv-progress', [CsvImportController::class, 'progress'])->name('csv.import.progress');
     // Menu, Analysis
-    Route::get('analysis', [AnalysisController::class, 'index'])->name('analysis');
+    // Route::get('analysis', [AnalysisController::class, 'index'])->name('analysis');
     Route::get('analysis/test', [AnalysisController::class, 'test'])->name('analysis.test');
     Route::get('menu', [MenuController::class, 'menu'])->name('menu');
 });
@@ -153,7 +165,7 @@ Route::resource('hinbans', HinbanController::class) ->middleware(['auth', 'verif
 
 Route::resource('skus', SkuController::class) ->middleware(['auth', 'verified']);
 
-
+Route::resource('depts', DeptController::class) ->middleware(['auth', 'verified']);
 
 
 Route::resource('reports', ReportController::class) ->middleware(['auth', 'verified']);
@@ -176,6 +188,8 @@ Route::resource('stocks', StockController::class) ->middleware(['auth', 'verifie
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+//
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

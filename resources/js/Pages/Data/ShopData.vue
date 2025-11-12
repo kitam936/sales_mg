@@ -37,7 +37,7 @@
       </template>
 
       <div class="py-0 border">
-        <FlashMessage :status="flashStatus" />
+        <FlashMessage/>
         <div class="mx-auto sm:px-4 lg:px-4 border overflow-x-auto">
           <table class="md:w-full bg-white table-auto w-full text-center whitespace-no-wrap">
             <thead>
@@ -88,10 +88,12 @@
   const props = defineProps({
     companies: Array,
     shops: Object, // Inertia の pagination
-    flashStatus: String
+    filters: Object,
   })
 
-  const selectedCompany = ref(usePage().props.value.filters?.co_id || '')
+
+
+  const selectedCompany = ref(props.filters?.co_id ?? '')
 
   const goBack = () => {
     window.location.href = route('admin.data.data_index')
@@ -106,4 +108,6 @@
     selectedCompany.value = ''
     window.location.href = route('admin.data.shop_index')
   }
+
+  console.log(usePage().props.value)
   </script>

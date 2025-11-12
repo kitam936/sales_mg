@@ -15,6 +15,8 @@ class MenuController extends Controller
     {
         $userId = User::findOrFail(Auth::id())->id;
 
+        $login_user = Auth::user(); // ← これの方が安全
+
         $reports=DB::table('reports')
         ->leftJoin('report_reads', function ($join) use ($userId) {
             $join->on('reports.id', '=', 'report_reads.report_id')
@@ -33,11 +35,12 @@ class MenuController extends Controller
         ->exists();
         // ->get();
 
-        // dd($reports,$comments);
+        // dd($reports,$comments,$login_user);
 
         return Inertia::render('Menu', [
             'reports' => $reports,
             'comments' => $comments,
+            'login_user' => $login_user,
         ]);
     }
 }

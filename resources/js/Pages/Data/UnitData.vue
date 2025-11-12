@@ -56,7 +56,7 @@
   });
 
   const { props: pageProps } = usePage();
-  const flashStatus = pageProps.value.flash?.status || null;
+
 
   const units = props.units || [];
 

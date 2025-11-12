@@ -33,9 +33,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // return redirect()->intended(route('dashboard', absolute: false));
         // ログイン後にメニュー画面にリダイレクトする場合は、上記の行をコメントアウトし、以下の行のコメントを外してください。
-        // return redirect()->intended(route('menu', absolute: false));
+        return redirect()->intended(route('menu', absolute: false));
     }
 
     /**

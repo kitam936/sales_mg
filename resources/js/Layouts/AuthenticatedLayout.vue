@@ -33,19 +33,19 @@ const showingNavigationDropdown = ref(false);
                             <div
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
-                                <NavLink
+                                <!-- <NavLink
                                     :href="route('dashboard')"
                                     :active="route().current('dashboard')"
                                 >
                                     Dashboard
-                                </NavLink>
+                                </NavLink> -->
                                 <NavLink
                                     :href="route('menu')"
                                     :active="route().current('menu')"
                                 >
                                     Menu
                                 </NavLink>
-                                <NavLink
+                                <!-- <NavLink
                                 :href="route('users.index')"
                                 :active="route().current('users.index')"
                                 >
@@ -80,7 +80,7 @@ const showingNavigationDropdown = ref(false);
                                     :active="route().current('admin.data.data_menu')"
                                 >
                                     Data管理
-                                </NavLink>
+                                </NavLink> -->
                             </div>
                         </div>
 
@@ -182,12 +182,12 @@ const showingNavigationDropdown = ref(false);
                     class="sm:hidden"
                 >
                     <div class="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
+                        <!-- <ResponsiveNavLink
                             :href="route('dashboard')"
                             :active="route().current('dashboard')"
                         >
                             Dashboard
-                        </ResponsiveNavLink>
+                        </ResponsiveNavLink> -->
                         <ResponsiveNavLink
                             :href="route('menu')"
                             :active="route().current('menu')"
@@ -195,7 +195,7 @@ const showingNavigationDropdown = ref(false);
                             Menu
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink
+                        <!-- <ResponsiveNavLink
                             :href="route('users.index')"
                             :active="route().current('users.index')"
                         >
@@ -233,7 +233,7 @@ const showingNavigationDropdown = ref(false);
                             :active="route().current('admin.data.data_menu')"
                         >
                             Data管理
-                        </ResponsiveNavLink>
+                        </ResponsiveNavLink> -->
                     </div>
 
                     <!-- Responsive Settings Options -->

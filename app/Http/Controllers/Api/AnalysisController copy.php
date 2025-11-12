@@ -1,27 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use App\Models\Sale;
 use App\Models\SalesData;
 use App\Models\Scopes\Subtotal;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-
+use App\Services\DecileService;
 
 
 class AnalysisController extends Controller
 {
-    public function index()
-    {
-        return Inertia::render('Analysis'); // Vue側のページ
-    }
-    public function index2(Request $request)
-    {
 
-        $startDate = '2025-01-01';
-        $endDate = '2025-10-31';
+    public function index(Request $request)
+    {
         $movingAverages = []; // ★ 12ヶ月移動平均用配列
         $movingAveragesProfit = []; // ★ 粗利用12ヶ月移動平均
 
@@ -95,23 +89,20 @@ class AnalysisController extends Controller
             ->get();
 
         // 日付範囲指定
-        $subQuery = SalesData::betweenDate($startDate, $endDate);
+        $subQuery = SalesData::betweenDate($request->startDate, $request->endDate);
 
         if ($request->type === 'co_total') {
 
-            $subQuery->groupBy('company_id','co_name')
-                ->selectRaw('company_id,co_name, sum(kingaku) as total, sum(arari) as total_profit');
+            $subQuery ->groupBy('company_id','co_name')
+            ->selectRaw('company_id,co_name, sum(kingaku) as total, sum(arari) as total_profit')
+            ->orderBy('total', 'desc');
 
-            $data = DB::table($subQuery)
-                ->groupBy('company_id','co_name')
-                ->select('company_id','co_name', DB::raw('SUM(total) as total'), DB::raw('SUM(total_profit) as total_profit'))
-                ->groupBy('company_id','co_name')
-                ->orderBy('total', 'desc')
-                ->get();
+            $data = DB::table($subQuery)->get();
 
             $labels = $data->pluck('co_name');
             $totals = $data->pluck('total');
             $profits = $data->pluck('total_profit');
+
         }
 
         if ($request->type === 'sh_total') {
@@ -119,12 +110,15 @@ class AnalysisController extends Controller
             $subQuery->groupBy('shop_id','shop_name')
                 ->selectRaw('shop_id,shop_name, sum(kingaku) as total, sum(arari) as total_profit');
 
+            // $data = DB::table($subQuery)
+            //     ->groupBy('shop_id','shop_name')
+            //     ->select('shop_id','shop_name', DB::raw('SUM(total) as total'), DB::raw('SUM(total_profit) as total_profit'))
+            //     ->groupBy('shop_id','shop_name')
+            //     ->orderBy('total', 'desc')
+            //     ->get();
+
             $data = DB::table($subQuery)
-                ->groupBy('shop_id','shop_name')
-                ->select('shop_id','shop_name', DB::raw('SUM(total) as total'), DB::raw('SUM(total_profit) as total_profit'))
-                ->groupBy('shop_id','shop_name')
-                ->orderBy('total', 'desc')
-                ->get();
+            ->orderBy('total', 'desc')->get();
 
             $labels = $data->pluck('shop_name');
             $totals = $data->pluck('total');
@@ -137,12 +131,15 @@ class AnalysisController extends Controller
                 ->groupBy('pic_id','users.name')
                 ->selectRaw('pic_id,users.name as staff_name, sum(kingaku) as total, sum(arari) as total_profit');
 
+            // $data = DB::table($subQuery)
+            //     ->groupBy('pic_id','staff_name')
+            //     ->select('pic_id','staff_name', DB::raw('SUM(total) as total'), DB::raw('SUM(total_profit) as total_profit'))
+            //     ->groupBy('pic_id','staff_name')
+            //     ->orderBy('total', 'desc')
+            //     ->get();
+
             $data = DB::table($subQuery)
-                ->groupBy('pic_id','staff_name')
-                ->select('pic_id','staff_name', DB::raw('SUM(total) as total'), DB::raw('SUM(total_profit) as total_profit'))
-                ->groupBy('pic_id','staff_name')
-                ->orderBy('total', 'desc')
-                ->get();
+            ->orderBy('total', 'desc')->get();
 
             $labels = $data->pluck('staff_name');
             $totals = $data->pluck('total');
@@ -302,8 +299,10 @@ class AnalysisController extends Controller
                     : floor(array_sum(array_slice($profitsArr, $i - 11, 12)) / 12);
             }
             $labels = $data->pluck('date');
-            $totals = $data->pluck('total');
-            $profits = $data->pluck('total_profit');
+            $totals = $data->pluck('total')->map(fn($v) => (int)$v);
+            $profits = $data->pluck('total_profit')->map(fn($v) => (int)$v); // ← 追加
+
+
         }
 
         if ($request->type === 'py') {
@@ -319,7 +318,8 @@ class AnalysisController extends Controller
             $labels = $data->pluck('date');
             $totals = $data->pluck('total');
             $profits = $data->pluck('total_profit');
-        }
+
+            }
 
         if ($request->type === 'pw') {
 
@@ -354,49 +354,4 @@ class AnalysisController extends Controller
             'designers' => $designers,
         ]);
     }
-
-    public function index3()
-    {
-        $startDate = '2025-01-01';
-        $endDate = '2025-10-31';
-        $movingAverages = []; // ★ 12ヶ月移動平均用配列
-        $movingAveragesProfit = []; // ★ 粗利用12ヶ月移動平均
-
-        // 初期化：必ず定義しておく
-        $data = collect();
-        $labels = collect();
-        $totals = collect();
-        $profits = collect();
-        // 会社一覧
-
-        // 日付範囲指定
-        $subQuery = SalesData::betweenDate($startDate, $endDate);
-
-            $subQuery->groupBy('company_id','co_name')
-                ->selectRaw('company_id,co_name, sum(kingaku) as total, sum(arari) as total_profit');
-
-            $data = DB::table($subQuery)
-                ->groupBy('company_id','co_name')
-                ->select('company_id','co_name', DB::raw('SUM(total) as total'), DB::raw('SUM(total_profit) as total_profit'))
-                ->groupBy('company_id','co_name')
-                ->orderBy('total', 'desc')
-                ->get();
-
-            $labels = $data->pluck('co_name');
-            $totals = $data->pluck('total');
-            $profits = $data->pluck('total_profit');
-
-
-        return response()->json([
-            'data' => $data,
-            'type' => 'co_total',
-            'labels' => $labels,
-            'totals' => $totals,
-            'profits' => $profits,
-            'movingAverages' => $movingAverages,
-            'movingAveragesProfit' => $movingAveragesProfit,
-
-        ]);
-    }
-
 }

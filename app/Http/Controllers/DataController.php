@@ -64,8 +64,13 @@ class DataController extends Controller
 
     public function sku_index(Request $request)
     {
+        $skus = Sku::Where('col_id','!=',99)
+        // ->first();
+        ->paginate(100);
+
+        // dd($skus);
         return Inertia::render('Data/SkuData', [
-            'skus' => Sku::all()
+            'skus' => $skus
         ]);
     }
 
@@ -99,8 +104,9 @@ class DataController extends Controller
 
     public function Ymd_index(Request $request)
     {
+        $ymds = Ymd::orderBy('YMD','desc')->paginate(100);
         return Inertia::render('Data/YmdData', [
-            'ymds' => Ymd::all()
+            'ymds' => $ymds
         ]);
     }
 
@@ -117,9 +123,18 @@ class DataController extends Controller
         ->where('year_code', 'LIKE', '%' . $request->year_code . '%')
         ->where('brand_id', 'LIKE', '%' . $request->brand_code . '%')
         ->where('unit_id', 'LIKE', '%' . $request->unit_code . '%')
+        ->where('year_code', '!=', 99)
+        ->orderBy('year_code', 'desc')
+        ->orderBy('brand_id', 'asc')
+        ->orderBy('unit_id', 'asc')
+        ->orderBy('id', 'asc')
         ->paginate(100);
 
-        $years = Hinban::select('year_code')->groupBy('year_code')->orderByDesc('year_code')->get();
+        $years = Hinban::select('year_code')
+        ->where('year_code', '!=', 99)
+        ->groupBy('year_code')
+        ->orderByDesc('year_code')
+        ->get();
         $units = Unit::select('id')->orderBy('id')->get();
         $brands = Brand::select('id')->orderBy('id')->get();
 
@@ -127,7 +142,13 @@ class DataController extends Controller
             'products' => $products,
             'years'=> $years,
             'units' => $units,
-            'brands' => $brands,]);
+            'brands' => $brands,
+            'filters' => [
+                'year_code' => $request->year_code ?? '',
+                'brand_code' => $request->brand_code ?? '',
+                'unit_code' => $request->unit_code ?? '',
+            ],
+        ]);
     }
 
     public function area_index(Request $request)
@@ -139,6 +160,7 @@ class DataController extends Controller
 
     public function company_index(Request $request)
     {
+
         return Inertia::render('Data/CompanyData', [
             'companies' => Company::all()
         ]);
@@ -156,7 +178,11 @@ class DataController extends Controller
 
         return Inertia::render('Data/ShopData', [
             'shops' => $shops,
-            'companies' => $companies,]);
+            'companies' => $companies,
+            'filters' => [
+                'co_id' => $request->co_id ?? ''
+            ],
+        ]);
     }
 
     public function sales_index()
@@ -186,6 +212,7 @@ class DataController extends Controller
         $max_YW=Sale::max('YW');
 
         $years=DB::table('hinbans')
+        ->where('year_code','!=',99)
         ->select(['year_code'])
         ->groupBy(['year_code'])
         ->orderBy('year_code','asc')
@@ -349,7 +376,7 @@ class DataController extends Controller
                 //配列に格納
 				// $data_arr[$i]['id'] = $line[0];
 				$data_arr[$i]['shop_id'] = $line[1];
-				$data_arr[$i]['sku_id'] = $line[2];
+				$data_arr[$i]['hinban_id'] = $line[2];
 				$data_arr[$i]['pcs'] = $line[3];
                 $data_arr[$i]['zaikogaku'] = $line[4];
 				$data_arr[$i]['created_at'] = $line[5];
@@ -418,7 +445,7 @@ class DataController extends Controller
 				// $data_arr[$i]['id'] = $line[0];
                 $data_arr[$i]['sales_date'] = $line[1];
 				$data_arr[$i]['shop_id'] = $line[2];
-				$data_arr[$i]['sku_id'] = $line[3];
+				$data_arr[$i]['hinban_id'] = $line[3];
 				$data_arr[$i]['pcs'] = $line[4];
                 $data_arr[$i]['tanka'] = $line[5];
                 $data_arr[$i]['kingaku'] = $line[6];
@@ -492,7 +519,7 @@ class DataController extends Controller
 				// $data_arr[$i]['id'] = $line[0];
                 $data_arr[$i]['sales_date'] = $line[1];
 				$data_arr[$i]['shop_id'] = $line[2];
-				$data_arr[$i]['sku_id'] = $line[3];
+				$data_arr[$i]['hinban_id'] = $line[3];
 				$data_arr[$i]['pcs'] = $line[4];
                 $data_arr[$i]['tanka'] = $line[5];
                 $data_arr[$i]['kingaku'] = $line[6];
