@@ -48,7 +48,7 @@
               <div class="w-40 ml-60 text-sm items-right mb-0">
                 <Link
                   :href="route('admin.data.data_index')"
-                  class="w-32 text-center text-sm text-white bg-indigo-500 border-0 py-1 px-2 focus:outline-none hover:bg-indigo-700 rounded"
+                  class="w-32 h-8 text-center text-sm text-white bg-indigo-500 border-0 py-1 px-2 hover:bg-indigo-700 rounded inline-block"
                 >
                   戻る
                 </Link>
@@ -62,10 +62,10 @@
 
         <!-- 検索フォーム -->
         <div class="mt-4">
-          <div class="lg:flex">
+          <div class="md:flex">
             <div class="md:flex">
               <label for="year_code" class="items-center text-sm mt-2">年度CD：</label>
-              <select v-model="form.year_code" id="year_code" class="w-24 h-8 text-sm pt-1 mr-2 mb-2 border">
+              <select v-model="form.year_code" id="year_code" class="w-24 h-8 text-sm pt-1 mr-2 mb-2 border rounded">
                 <option value="">指定なし</option>
                 <option v-for="year in years" :key="year.year_code" :value="year.year_code">
                   {{ year.year_code }}
@@ -73,7 +73,7 @@
               </select>
 
               <label for="brand_code" class="items-center text-sm mt-2">Brand：</label>
-              <select v-model="form.brand_code" id="brand_code" class="w-24 h-8 text-sm pt-1 border mb-2 mr-4">
+              <select v-model="form.brand_code" id="brand_code" class="w-24 h-8 text-sm pt-1 border mb-2 mr-4 rounded">
                 <option value="">指定なし</option>
                 <option v-for="brand in brands" :key="brand.id" :value="brand.id">
                   {{ brand.id }}
@@ -83,7 +83,7 @@
 
             <div class="flex">
               <label for="unit_code" class="items-center text-sm mt-2">Unit：</label>
-              <select v-model="form.unit_code" id="unit_code" class="w-24 h-8 text-sm pt-1 mr-4 mb-2 border">
+              <select v-model="form.unit_code" id="unit_code" class="w-24 h-8 text-sm pt-1 mr-4 mb-2 border rounded">
                 <option value="">指定なし</option>
                 <option v-for="unit in units" :key="unit.id" :value="unit.id">
                   {{ unit.id }}

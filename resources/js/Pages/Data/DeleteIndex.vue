@@ -28,11 +28,15 @@
 
       <AuthenticatedLayout>
         <template #header>
-          <div class="flex justify-between items-center">
+
             <h2 class="font-semibold text-xl text-gray-800">データ削除</h2>
+            <div class="flex ">
+            <div class="p-2 ">
+                <Link as="button" :href="route('admin.data.data_menu')" class="w-40 h-8 flex text-white bg-indigo-500 border-0 py-1 pl-12 focus:outline-none hover:bg-indigo-600 rounded text-ml">Data管理</Link>
+            </div>
             <Link
               :href="route('admin.data.delete_index')"
-              class="text-black bg-gray-200 border-0 py-2 px-8 hover:bg-gray-300 rounded text-sm"
+              class="mt-2 ml-20 w-24 h-8 flex bg-gray-300 border-0 py-1 pl-8 focus:outline-none hover:bg-gray-400 rounded text-ml"
             >
               クリア
             </Link>
@@ -73,33 +77,6 @@
               </form>
             </div>
 
-            <!-- 予算データ削除 -->
-            <div class="mb-6">
-              <form
-                @submit.prevent="yosanForm.delete(route('admin.data.yosan_destroy'))"
-                class="flex items-center gap-2"
-              >
-                <select v-model="yosanForm.YM1" class="w-32 h-8 rounded text-sm">
-                  <option :value="props.bg_max_YM">年月選択(from)</option>
-                  <option v-for="ym in props.bg_YMs" :key="ym.YM" :value="ym.YM">
-                    {{ Math.floor(ym.YM / 100) % 100 }}年{{ ym.YM % 100 }}月
-                  </option>
-                </select>
-                <span>～</span>
-                <select v-model="yosanForm.YM2" class="w-32 h-8 rounded text-sm">
-                  <option :value="props.bg_max_YM">年月選択(to)</option>
-                  <option v-for="ym in props.bg_YMs" :key="ym.YM" :value="ym.YM">
-                    {{ Math.floor(ym.YM / 100) % 100 }}年{{ ym.YM % 100 }}月
-                  </option>
-                </select>
-                <button
-                  type="submit"
-                  class="text-sm w-32 text-white bg-red-500 py-1 px-4 rounded hover:bg-red-600"
-                >
-                  予算データ削除
-                </button>
-              </form>
-            </div>
 
             <!-- 品番削除 -->
             <div class="mb-6">
@@ -135,31 +112,31 @@
 
               <div class="flex flex-wrap gap-2">
                 <form @submit.prevent="simpleForm.delete(route('admin.data.stock_destroy'))">
-                  <button class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">在庫データ削除</button>
+                  <button class="w-36 text-sm text-white bg-red-500 py-1 px-4 hover:bg-red-600 rounded">在庫データ削除</button>
                 </form>
                 <form @submit.prevent="simpleForm.delete(route('admin.data.sku_destroy'))">
-                  <button class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">SKUデータ削除</button>
+                  <button class="w-36 text-sm text-white bg-red-500 py-1 px-4 hover:bg-red-600 rounded">SKUデータ削除</button>
                 </form>
                 <form @submit.prevent="simpleForm.delete(route('admin.data.col_destroy'))">
-                  <button class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">Colデータ削除</button>
+                  <button class="w-36 text-sm text-white bg-red-500 py-1 px-4 hover:bg-red-600 rounded">Colデータ削除</button>
                 </form>
                 <form @submit.prevent="simpleForm.delete(route('admin.data.size_destroy'))">
-                  <button class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">Sizeデータ削除</button>
+                  <button class="w-36 text-sm text-white bg-red-500 py-1 px-4 hover:bg-red-600 rounded">Sizeデータ削除</button>
                 </form>
                 <form @submit.prevent="simpleForm.delete(route('admin.data.unit_destroy'))">
-                  <button class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">Unitデータ削除</button>
+                  <button class="w-36 text-sm text-white bg-red-500 py-1 px-4 hover:bg-red-600 rounded">Unitデータ削除</button>
                 </form>
                 <form @submit.prevent="simpleForm.delete(route('admin.data.brand_destroy'))">
-                  <button class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">Brandデータ削除</button>
+                  <button class="w-36 text-sm text-white bg-red-500 py-1 px-4 hover:bg-red-600 rounded">Brandデータ削除</button>
                 </form>
                 <form @submit.prevent="simpleForm.delete(route('admin.data.shop_destroy_all'))">
-                  <button class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">店舗データ削除</button>
+                  <button class="w-36 text-sm text-white bg-red-500 py-1 px-4 hover:bg-red-600 rounded">店舗データ削除</button>
                 </form>
                 <form @submit.prevent="simpleForm.delete(route('admin.data.company_destroy'))">
-                  <button class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">会社データ削除</button>
+                  <button class="w-36 text-sm text-white bg-red-500 py-1 px-4 hover:bg-red-600 rounded">会社データ削除</button>
                 </form>
                 <form @submit.prevent="simpleForm.delete(route('admin.data.area_destroy'))">
-                  <button class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">エリアデータ削除</button>
+                  <button class="w-36 text-sm text-white bg-red-500 py-1 px-4 hover:bg-red-600 rounded">エリアデータ削除</button>
                 </form>
               </div>
             </div>

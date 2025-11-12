@@ -29,12 +29,15 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="ymd in ymds" :key="ymd.id">
+              <tr v-for="ymd in ymds.data" :key="ymd.id">
                 <td class="w-2/12 md:px-4 py-1">{{ ymd.YMD }}</td>
                 <td class="w-4/12 md:px-4 py-1">{{ ymd.prev_YMD }}</td>
               </tr>
             </tbody>
           </table>
+          <div class="mt-2">
+            <Pagination :links="ymds.links" />
+          </div>
         </div>
       </div>
     </AuthenticatedLayout>
@@ -44,9 +47,13 @@
   import { usePage } from '@inertiajs/vue3';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import FlashMessage from '@/Components/FlashMessage.vue';
+  import Pagination from '@/Components/Pagination.vue';
 
   // Laravelから渡された props
-  const { ymds, flashStatus } = usePage().props.value
+  const props = defineProps({
+    ymds: Object // ページネーション付き,
+
+  });
 
   const goBack = () => {
     window.location.href = route('admin.data.data_index')

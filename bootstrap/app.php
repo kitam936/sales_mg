@@ -11,8 +11,13 @@ use Illuminate\Support\Facades\Log;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',   // ← これがAPI用
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        then: function () {
+            // 🚫 自動名前空間解決を無効化（Laravel 11の新仕様対策）
+            Route::namespace(null)->group(function () {});
+        }
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [

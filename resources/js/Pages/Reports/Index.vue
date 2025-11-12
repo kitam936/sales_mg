@@ -36,13 +36,13 @@
           <div class="flex space-x-4 mb-4">
 
             <button
-              class="w-32 h-8 text-white bg-indigo-500 hover:bg-indigo-700 rounded"
+              class="w-32 h-8 text-sm text-white bg-indigo-500 hover:bg-indigo-700 rounded"
               @click="$inertia.visit(route('menu'))"
             >
               Menu
             </button>
             <button
-              class="w-32 h-8 text-white bg-indigo-500 hover:bg-indigo-700 rounded"
+              class="w-32 h-8 text-sm text-white bg-indigo-500 hover:bg-indigo-700 rounded"
               @click="$inertia.visit(route('reports.create'))"
             >
               新規Report

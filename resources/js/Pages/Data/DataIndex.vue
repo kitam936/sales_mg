@@ -12,6 +12,12 @@
           <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             データINDEX
           </h2>
+
+        <div class="p-2 ">
+            <Link as="button" :href="route('admin.data.data_menu')" class="w-40 h-8 flex text-white bg-indigo-500 border-0 py-1 pl-12 focus:outline-none hover:bg-indigo-600 rounded text-ml">Data管理</Link>
+        </div>
+
+
         </template>
 
         <!-- フラッシュメッセージ -->
@@ -57,23 +63,30 @@
 
           <!-- 4段目 -->
           <div class="flex px-4 py-2 md:w-2/3">
+            <Link :href="route('roles.index')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">Roleデータ</Link>
+            <Link :href="route('depts.index')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">Deptデータ</Link>
+            <Link class="w-32 h-8 ml-4 flex-auto text-sm text-gray-500 bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">***</Link>
+          </div>
+
+          <!-- 5段目 -->
+          <div class="flex px-4 py-2 md:w-2/3">
             <Link :href="route('admin.data.sales_index')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">売上データ</Link>
             <Link :href="route('admin.data.stock_index')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">在庫データ</Link>
             <Link :href="route('admin.data.yosan_index')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">予算データ</Link>
           </div>
 
-          <!-- 5段目 -->
-          <div class="flex px-4 py-2 md:w-2/3">
-            <Link :href="route('admin.data.ym_index')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">YMデータ</Link>
-            <Link :href="route('admin.data.yw_index')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">YWデータ</Link>
-            <Link :href="route('admin.data.ymd_index')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">YMDデータ</Link>
-          </div>
-
           <!-- 6段目 -->
           <div class="flex px-4 py-2 md:w-2/3">
-            <Link :href="route('admin.data.y_index')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">Yデータ</Link>
+            <Link :href="route('admin.data.ymd_index')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">YMDデータ</Link>
             <Link :href="route('admin.hinban_image_check')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">品番写真未登録</Link>
             <Link :href="route('admin.sku_image_check')" class="w-32 h-8 ml-4 flex-auto text-sm text-white bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">SKU写真未登録</Link>
+          </div>
+
+           <!-- 7段目 -->
+           <div class="flex px-4 py-2 md:w-2/3">
+            <Link  class="w-32 h-8 ml-4 flex-auto text-sm text-gray-500 bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">YMデータ</Link>
+            <Link  class="w-32 h-8 ml-4 flex-auto text-sm text-gray-500 bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">YWデータ</Link>
+            <Link :href="route('admin.data.y_index')" class="w-32 h-8 ml-4 flex-auto text-sm  text-gray-500 bg-indigo-400 hover:bg-indigo-600 rounded flex items-center justify-center">Yデータ</Link>
           </div>
         </div>
       </AuthenticatedLayout>

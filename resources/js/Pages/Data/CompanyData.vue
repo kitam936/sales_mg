@@ -47,9 +47,7 @@
     companies: Array
   });
 
-  // セッションフラッシュ用
-  const { props: pageProps } = usePage();
-  const flashStatus = pageProps.value.flash?.status || null;
+
 
   function goBack() {
     window.location.href = route('admin.data.data_index');

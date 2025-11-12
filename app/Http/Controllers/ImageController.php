@@ -197,7 +197,7 @@ class ImageController extends Controller
         ->select('sku_images.sku_id','skus.col_id','sku_images.filename','sizes.size_name')
         ->get();
 
-        // dd($sku_images);
+        // dd($sku_images,$image,$login_user);
 
         return Inertia::render('Hinbans/Image_Show',compact('image','sku_images','login_user'));
 
@@ -277,102 +277,284 @@ class ImageController extends Controller
 
     public function hinban_image_check(Request $request)
     {
-        $years=DB::table('hinbans')
-        ->select(['year_code'])
+        // 年度リスト
+        $years = DB::table('hinbans')
+        ->select('year_code')
         ->where('year_code','<=',50)
-        ->groupBy(['year_code'])
-        ->orderBy('year_code','desc')
+        ->groupBy('year_code')
+        ->orderByDesc('year_code')
         ->get();
-        $faces=DB::table('hinbans')
-        ->whereNotNull('face')
-        ->select(['face'])
-        ->groupBy(['face'])
-        ->orderBy('face','asc')
-        ->get();
-        $seasons=DB::table('units')
-        ->select(['season_id','season_name'])
-        ->groupBy(['season_id','season_name'])
-        ->orderBy('season_id','asc')
-        ->get();
-        $units=DB::table('units')
-        ->where('units.id','<=',12)
-        ->where('units.season_id','LIKE','%'.$request->season_code.'%')
-        ->select(['id','unit_code'])
-        ->groupBy(['id','unit_code'])
-        ->orderBy('id','asc')
-        ->get();
-        $brands=DB::table('brands')
-        ->select(['id'])
-        ->groupBy(['id'])
-        ->orderBy('id','asc')
-        ->get();
-        $images = DB::table('hinbans')
-        ->join('units','units.id','=','hinbans.unit_id')
-        ->leftjoin('images','hinbans.id','images.hinban_id')
-        ->where('hinbans.vendor_id','<>',8200)
-        ->where('hinbans.year_code','LIKE','%'.($request->year_code).'%')
-        ->where('units.season_id','LIKE','%'.($request->season_code).'%')
-        ->where('units.unit_code','LIKE','%'.($request->unit_code).'%')
-        ->where('hinbans.face','LIKE','%'.($request->face).'%')
-        ->where('hinbans.brand_id','LIKE','%'.($request->brand_code).'%')
-        ->where('hinbans.year_code','>=',25)
-        ->whereNull('images.hinban_id')
-        ->select('hinbans.id as hinban','hinbans.hinban_name','hinbans.m_price')
-        ->paginate(100);
 
-        // dd($login_user,$image,$sku_images);
-        return view('product.hinban_image_check',compact('images','seasons','units','years','brands','faces'));
+        // Face リスト
+        $faces = DB::table('hinbans')
+            ->whereNotNull('face')
+            ->select('face')
+            ->groupBy('face')
+            ->orderBy('face','asc')
+            ->get();
+
+        // Seasons リスト
+        $seasons = DB::table('units')
+            ->select(['season_id','season_name'])
+            ->groupBy(['season_id','season_name'])
+            ->orderBy('season_id','asc')
+            ->get();
+
+        // Units リスト（season_code があれば絞る）
+        $units = DB::table('units')
+            ->where('id','<=',12)
+            // ->when($request->season_code, fn($q) => $q->where('season_id', (int)$request->season_code))
+            ->select(['id','unit_code'])
+            ->groupBy(['id','unit_code'])
+            ->orderBy('id','asc')
+            ->get();
+
+        // Brands リスト
+        $brands = DB::table('brands')
+            ->select('id')
+            ->groupBy('id')
+            ->orderBy('id','asc')
+            ->get();
+
+        // 画像未登録の品番を取得（フィルター条件付き）
+        $images = DB::table('hinbans')
+            ->join('units','units.id','=','hinbans.unit_id')
+            ->leftJoin('images', function($join){
+                $join->on('hinbans.id','=','images.hinban_id');
+            })
+            ->where('hinbans.vendor_id','<>',8200)
+            ->when($request->year_code, fn($q) => $q->where('hinbans.year_code', (int)$request->year_code))
+            // ->when($request->season_code, fn($q) => $q->where('units.season_id', (int)$request->season_code))
+            ->when($request->unit_code, fn($q) => $q->where('units.unit_code', (int)$request->unit_code))
+            ->when($request->face, fn($q) => $q->where('hinbans.face','LIKE','%'.$request->face.'%'))
+            ->when($request->brand_code, fn($q) => $q->where('hinbans.brand_id', (int)$request->brand_code))
+            ->where('hinbans.year_code','>=',25)
+            ->whereNull('images.hinban_id')
+            ->select(
+                'hinbans.id as hinban',
+                'hinbans.unit_id',
+                'hinbans.face',
+                'hinbans.hinban_name',
+                'hinbans.m_price',
+                'hinbans.brand_id',
+                'units.season_name',
+                'hinbans.price'
+            )
+
+            ->orderBy('hinbans.year_code','asc')
+            ->orderBy('hinbans.brand_id','asc')
+            ->orderBy('hinbans.unit_id','asc')
+            ->orderBy('hinbans.id','asc')
+            ->paginate(100)
+            ->appends($request->only(['year_code','unit_code','face','brand_code']));
+
+        // Inertia レンダリング
+        return Inertia::render('Hinbans/HinbanImageCheck', [
+            'images' => $images,
+            'seasons' => $seasons,
+            'units' => $units,
+            'years' => $years,
+            'brands' => $brands,
+            'faces' => $faces,
+            'filters' => [
+                'year_code' => $request->year_code,
+                // 'season_code' => $request->season_code,
+                'unit_code' => $request->unit_code,
+                'face' => $request->face,
+                'brand_code' => $request->brand_code,
+            ],
+        ]);
+                // return view('product.hinban_image_check',compact('images','seasons','units','years','brands','faces'));
+    }
+
+    public function hinban_image_csv(Request $request)
+    {
+        $query = DB::table('hinbans')
+            ->join('units','units.id','=','hinbans.unit_id')
+            ->leftJoin('images', function($join){
+                $join->on('hinbans.id','=','images.hinban_id');
+            })
+            ->where('hinbans.vendor_id','<>',8200)
+            ->when($request->year_code, fn($q) => $q->where('hinbans.year_code', (int)$request->year_code))
+            // ->when($request->season_code, fn($q) => $q->where('units.season_id', (int)$request->season_code))
+            ->when($request->unit_code, fn($q) => $q->where('units.unit_code', (int)$request->unit_code))
+            ->when($request->face, fn($q) => $q->where('hinbans.face','LIKE','%'.$request->face.'%'))
+            ->when($request->brand_code, fn($q) => $q->where('hinbans.brand_id', (int)$request->brand_code))
+            ->where('hinbans.year_code','>=',25)
+            ->whereNull('images.hinban_id')
+            ->select(
+                'hinbans.id as hinban',
+                'hinbans.unit_id',
+                'hinbans.face',
+                'hinbans.brand_id',
+
+            );
+
+        $data = $query->get();
+
+        $filename = 'hinban_images_'.date('Ymd_His').'.csv';
+
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename={$filename}",
+        ];
+
+        $columns = ['Brand','UNIT','Face','Hinban'];
+
+        $callback = function() use ($data, $columns) {
+            $file = fopen('php://output','w');
+            fputcsv($file, $columns);
+            foreach($data as $row){
+                fputcsv($file, [
+                    $row->brand_id,
+                    $row->unit_id,
+                    $row->face,
+                    $row->hinban,
+
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function sku_image_check(Request $request)
     {
-        $years=DB::table('hinbans')
-        ->select(['year_code'])
+        // 年度リスト
+        $years = DB::table('hinbans')
+        ->select('year_code')
         ->where('year_code','<=',50)
-        ->groupBy(['year_code'])
-        ->orderBy('year_code','desc')
+        ->groupBy('year_code')
+        ->orderByDesc('year_code')
         ->get();
-        $faces=DB::table('hinbans')
-        ->whereNotNull('face')
-        ->select(['face'])
-        ->groupBy(['face'])
-        ->orderBy('face','asc')
-        ->get();
-        $seasons=DB::table('units')
-        ->select(['season_id','season_name'])
-        ->groupBy(['season_id','season_name'])
-        ->orderBy('season_id','asc')
-        ->get();
-        $units=DB::table('units')
-        ->where('units.id','<=',12)
-        ->where('units.season_id','LIKE','%'.$request->season_code.'%')
-        ->select(['id','unit_code'])
-        ->groupBy(['id','unit_code'])
-        ->orderBy('id','asc')
-        ->get();
-        $brands=DB::table('brands')
-        ->select(['id'])
-        ->groupBy(['id'])
-        ->orderBy('id','asc')
-        ->get();
-        $sku_images = DB::table('skus')
-        ->leftjoin('sku_images','skus.id','sku_images.sku_id')
-        ->join('sizes','skus.size_id','sizes.id')
-        ->join('hinbans','hinbans.id','skus.hinban_id')
-        ->join('units','units.id','=','hinbans.unit_id')
-        ->where('hinbans.vendor_id','<>',8200)
-        ->where('hinbans.year_code','LIKE','%'.($request->year_code).'%')
-        ->where('units.season_id','LIKE','%'.($request->season_code).'%')
-        ->where('units.unit_code','LIKE','%'.($request->unit_code).'%')
-        ->where('hinbans.face','LIKE','%'.($request->face).'%')
-        ->where('hinbans.brand_id','LIKE','%'.($request->brand_code).'%')
-        ->whereNull('sku_images.sku_id')
-        ->where('skus.col_id','<>',99)
-        ->where('hinbans.year_code','>=',25)
-        ->select('hinbans.unit_id as unit','skus.id as sku','hinbans.id as hinban','hinbans.hinban_name','skus.col_id','skus.size_id')
-        ->paginate(100);
 
-        // dd($login_user,$image,$sku_images);
-        return view('product.sku_image_check',compact('sku_images','seasons','units','years','brands','faces'));
+        // Face リスト
+        $faces = DB::table('hinbans')
+            ->whereNotNull('face')
+            ->select('face')
+            ->groupBy('face')
+            ->orderBy('face','asc')
+            ->get();
+
+        // Seasons リスト
+        $seasons = DB::table('units')
+            ->select(['season_id','season_name'])
+            ->groupBy(['season_id','season_name'])
+            ->orderBy('season_id','asc')
+            ->get();
+
+        // Units リスト（season_code があれば絞る）
+        $units = DB::table('units')
+            ->where('id','<=',12)
+            // ->when($request->season_code, fn($q) => $q->where('season_id', (int)$request->season_code))
+            ->select(['id','unit_code'])
+            ->groupBy(['id','unit_code'])
+            ->orderBy('id','asc')
+            ->get();
+
+        // Brands リスト
+        $brands = DB::table('brands')
+            ->select('id')
+            ->groupBy('id')
+            ->orderBy('id','asc')
+            ->get();
+
+        // 画像未登録の品番を取得（フィルター条件付き）
+        $sku_images = DB::table('skus')
+            ->leftjoin('sku_images','skus.id','sku_images.sku_id')
+            ->join('sizes','skus.size_id','sizes.id')
+            ->join('hinbans','hinbans.id','skus.hinban_id')
+            ->join('units','units.id','=','hinbans.unit_id')
+            ->where('hinbans.vendor_id','<>',8200)
+            ->when($request->year_code, fn($q) => $q->where('hinbans.year_code', (int)$request->year_code))
+            // ->when($request->season_code, fn($q) => $q->where('units.season_id', (int)$request->season_code))
+            ->when($request->unit_code, fn($q) => $q->where('units.unit_code', (int)$request->unit_code))
+            ->when($request->face, fn($q) => $q->where('hinbans.face','LIKE','%'.$request->face.'%'))
+            ->when($request->brand_code, fn($q) => $q->where('hinbans.brand_id', (int)$request->brand_code))
+            ->where('hinbans.year_code','>=',25)
+            ->whereNull('sku_images.sku_id')
+            ->where('skus.col_id','<>',99)
+            ->where('hinbans.year_code','>=',25)
+            ->select('hinbans.brand_id','units.season_name','hinbans.unit_id as unit','hinbans.face','skus.id as sku','hinbans.id as hinban','hinbans.hinban_name','skus.col_id','skus.size_id')
+            ->paginate(100)
+            ->appends($request->only(['year_code','unit_code','face','brand_code']));
+
+        // dd($sku_images);
+        // Inertia レンダリング
+        return Inertia::render('Hinbans/SkuImageCheck', [
+            'sku_images' => $sku_images,
+            'seasons' => $seasons,
+            'units' => $units,
+            'years' => $years,
+            'brands' => $brands,
+            'faces' => $faces,
+            'filters' => [
+                'year_code' => $request->year_code,
+                // 'season_code' => $request->season_code,
+                'unit_code' => $request->unit_code,
+                'face' => $request->face,
+                'brand_code' => $request->brand_code,
+            ],
+        ]);
+        // return view('product.sku_image_check',compact('sku_images','seasons','units','years','brands','faces'));
+    }
+
+    public function sku_image_csv(Request $request)
+    {
+        $query = DB::table('skus')
+            ->join('hinbans','hinbans.id','skus.hinban_id')
+            ->join('units','units.id','=','hinbans.unit_id')
+            ->leftJoin('sku_images', function($join){
+                $join->on('skus.id','=','sku_images.sku_id');
+            })
+            ->where('hinbans.vendor_id','<>',8200)
+            ->when($request->year_code, fn($q) => $q->where('hinbans.year_code', (int)$request->year_code))
+            // ->when($request->season_code, fn($q) => $q->where('units.season_id', (int)$request->season_code))
+            ->when($request->unit_code, fn($q) => $q->where('units.unit_code', (int)$request->unit_code))
+            ->when($request->face, fn($q) => $q->where('hinbans.face','LIKE','%'.$request->face.'%'))
+            ->when($request->brand_code, fn($q) => $q->where('hinbans.brand_id', (int)$request->brand_code))
+            ->where('hinbans.year_code','>=',25)
+            ->where('skus.col_id','<>',99)
+            ->whereNull('sku_images.sku_id')
+            ->select(
+                'hinbans.year_code',
+                'hinbans.brand_id',
+                'hinbans.unit_id',
+                'hinbans.face',
+                'hinbans.id as hinban',
+                'skus.col_id',
+                'skus.size_id'
+            );
+
+        $data = $query->get();
+
+        $filename = 'sku_images_'.date('Ymd_His').'.csv';
+
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename={$filename}",
+        ];
+
+        $columns = ['Year','Brand','UNIT','Face','Hinban','Color ID','Size ID'];
+
+        $callback = function() use ($data, $columns) {
+            $file = fopen('php://output','w');
+            fputcsv($file, $columns);
+            foreach($data as $row){
+                fputcsv($file, [
+                    $row->year_code,
+                    $row->brand_id,
+                    $row->unit_id,
+                    $row->face,
+                    $row->hinban,
+                    $row->col_id,
+                    $row->size_id,
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }
