@@ -12,4 +12,12 @@ const getToday = () => {
     return yyyy+"-"+mm+"-"+dd;
 }
 
-export {nl2br,getToday}
+const get2YearsAgo = () => {
+    const today = new Date();
+    const yyyy = today.getFullYear() - 2;
+    const mm = ("0" + (today.getMonth() + 1)).slice(-2);
+    const dd = "01";
+    return `${yyyy}-${mm}-${dd}`; // ← 文字列として返すことが重要
+}
+
+export {nl2br,getToday,get2YearsAgo};

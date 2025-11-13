@@ -44,6 +44,7 @@ class Subtotal implements Scope
          'sales.kingaku',
          'sales.arari',
          'hinbans.unit_id',
+         'units.unit_code',
          'units.season_id',
          'units.season_name',
          'hinbans.face',
