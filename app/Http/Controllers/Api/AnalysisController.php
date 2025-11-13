@@ -87,155 +87,220 @@ class AnalysisController extends Controller
             ->get();
 
         // 日付範囲で絞り込み
-        $subQuery = SalesData::betweenDate($request->startDate, $request->endDate);
+        // $subQuery = SalesData::betweenDate($request->startDate, $request->endDate);
 
-        // 絞り込み条件
-        $filters = ['company_id','shop_id','pic_id','brand_id','season_id','unit_id','face_id','designer_id'];
-        foreach ($filters as $f) {
-            if (!empty($request->$f)) {
-                $subQuery->where($f, $request->$f);
-            }
+        if ($request->type === 'py') {
+            // 年別のときは全データ取得（期間指定なし）
+            $subQuery = SalesData::query();
+        } else {
+            // 通常は期間指定
+            $subQuery = SalesData::betweenDate($request->startDate, $request->endDate);
         }
 
-    // 集計処理：タイプ別
-    switch($request->type) {
-        case 'co_total':
-            $subQuery->groupBy('company_id','co_name')
-                     ->selectRaw('company_id, co_name, SUM(kingaku) as total, SUM(arari) as total_profit')
-                     ->orderBy('total', 'desc');
-            $data = DB::table($subQuery)->get();
-            $labels = $data->pluck('co_name');
-            $totals = $data->pluck('total')->map(fn($v) => (int)$v);
-            $profits = $data->pluck('total_profit')->map(fn($v) => (int)$v);
-            break;
-
-        case 'sh_total':
-            $subQuery->groupBy('shop_id','shop_name')
-                     ->selectRaw('shop_id, shop_name, SUM(kingaku) as total, SUM(arari) as total_profit')
-                     ->orderBy('total', 'desc');
-            $data = DB::table($subQuery)->get();
-            $labels = $data->pluck('shop_name');
-            $totals = $data->pluck('total')->map(fn($v) => (int)$v);
-            $profits = $data->pluck('total_profit')->map(fn($v) => (int)$v);
-            break;
-
-        case 'pic_total':
-            $subQuery->join('users', 'salesdata_subtotal.pic_id', '=', 'users.id')
-                     ->groupBy('pic_id','users.name')
-                     ->selectRaw('pic_id, users.name as staff_name, SUM(kingaku) as total, SUM(arari) as total_profit')
-                     ->orderBy('total', 'desc');
-            $data = DB::table($subQuery)->get();
-            $labels = $data->pluck('staff_name');
-            $totals = $data->pluck('total')->map(fn($v) => (int)$v);
-            $profits = $data->pluck('total_profit')->map(fn($v) => (int)$v);
-            break;
-
-        case 'bd_total':
-            $subQuery->join('brands','salesdata_subtotal.brand_id','=','brands.id')
-                     ->groupBy('brand_id','brands.brand_name')
-                     ->selectRaw('brand_id, brands.brand_name as brand_name, SUM(kingaku) as total, SUM(arari) as total_profit')
-                     ->orderBy('total','desc');
-            $data = DB::table($subQuery)->get();
-            $labels = $data->pluck('brand_name');
-            $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
-            $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
-            break;
-
-        case 'ss_total':
-            $subQuery->groupBy('season_id','season_name')
-                     ->selectRaw('season_id, season_name, SUM(kingaku) as total, SUM(arari) as total_profit')
-                     ->orderBy('total','desc');
-            $data = DB::table($subQuery)->get();
-            $labels = $data->pluck('season_name');
-            $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
-            $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
-            break;
-
-        case 'un_total':
-            $subQuery->groupBy('unit_id')
-                     ->selectRaw('unit_id, SUM(kingaku) as total, SUM(arari) as total_profit')
-                     ->orderBy('total','desc');
-            $data = DB::table($subQuery)->get();
-            $labels = $data->pluck('unit_id');
-            $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
-            $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
-            break;
-
-        case 'fa_total':
-            $subQuery->groupBy('face')
-                     ->selectRaw('face, SUM(kingaku) as total, SUM(arari) as total_profit')
-                     ->orderBy('total','desc');
-            $data = DB::table($subQuery)->get();
-            $labels = $data->pluck('face');
-            $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
-            $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
-            break;
-
-        case 'de_total':
-            $subQuery->join('designers','salesdata_subtotal.designer_id','=','designers.id')
-                     ->groupBy('designer_id','designers.designer_name')
-                     ->selectRaw('designer_id, designers.designer_name as designer_name, SUM(kingaku) as total, SUM(arari) as total_profit')
-                     ->orderBy('total','desc');
-            $data = DB::table($subQuery)->get();
-            $labels = $data->pluck('designer_name');
-            $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
-            $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
-            break;
-
-        case 'pm': // 月別
-        case 'py': // 年別
-        case 'pw': // 週別
-            $dateFormat = match($request->type) {
-                'pm' => '%Y%m',
-                'py' => '%Y',
-                'pw' => '%x%v', // YEARWEEK
-            };
-            $subQuery->groupBy('sales_date')
-                     ->selectRaw("DATE_FORMAT(sales_date, '$dateFormat') as date, SUM(kingaku) as total, SUM(arari) as total_profit");
-            $data = DB::table($subQuery)
-                    ->select('date', DB::raw('SUM(total) as total'), DB::raw('SUM(total_profit) as total_profit'))
-                    ->groupBy('date')
-                    ->get();
-            $labels = $data->pluck('date');
-            $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
-            $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
-
-            // 移動平均は月別のみ
-            if ($request->type === 'pm') {
-                $totalsArr = $totals->toArray();
-                $profitsArr = $profits->toArray();
-                for ($i = 0; $i < count($totalsArr); $i++) {
-                    $movingAverages[] = ($i < 11) ? null : floor(array_sum(array_slice($totalsArr, $i-11,12))/12);
-                    $movingAveragesProfit[] = ($i < 11) ? null : floor(array_sum(array_slice($profitsArr, $i-11,12))/12);
+        // 集計処理：タイプ別
+        switch($request->type) {
+            case 'co_total':
+                // 絞り込み条件
+                $filters = ['company_id','shop_id','pic_id','brand_id','season_id','unit_id','face','designer_id'];
+                foreach ($filters as $f) {
+                    if (!empty($request->$f)) {
+                        $subQuery->where($f, $request->$f);
+                    }
                 }
-            }
-            break;
+                $subQuery->groupBy('company_id','co_name')
+                        ->selectRaw('company_id, co_name, SUM(kingaku) as total, SUM(arari) as total_profit')
+                        ->orderBy('total', 'desc');
+                $data = DB::table($subQuery)->get();
+                $labels = $data->pluck('co_name');
+                $totals = $data->pluck('total')->map(fn($v) => (int)$v);
+                $profits = $data->pluck('total_profit')->map(fn($v) => (int)$v);
+                break;
 
-        default:
-            // デフォルトは空配列
-            $labels = collect();
-            $totals = collect();
-            $profits = collect();
-            break;
+            case 'sh_total':
+                // 絞り込み条件
+                $filters = ['company_id','shop_id','pic_id','brand_id','season_id','unit_id','face','designer_id'];
+                foreach ($filters as $f) {
+                    if (!empty($request->$f)) {
+                        $subQuery->where($f, $request->$f);
+                    }
+                }
+                $subQuery->groupBy('shop_id','shop_name')
+                        ->selectRaw('shop_id, shop_name, SUM(kingaku) as total, SUM(arari) as total_profit')
+                        ->orderBy('total', 'desc');
+                $data = DB::table($subQuery)->get();
+                $labels = $data->pluck('shop_name');
+                $totals = $data->pluck('total')->map(fn($v) => (int)$v);
+                $profits = $data->pluck('total_profit')->map(fn($v) => (int)$v);
+                break;
+
+            case 'pic_total':
+                // 絞り込み条件
+                $filters = ['company_id','shop_id','pic_id','brand_id','season_id','unit_id','face','designer_id'];
+                foreach ($filters as $f) {
+                    if (!empty($request->$f)) {
+                        $subQuery->where($f, $request->$f);
+                    }
+                }
+                $subQuery->join('users', 'salesdata_subtotal.pic_id', '=', 'users.id')
+                        ->groupBy('pic_id','users.name')
+                        ->selectRaw('pic_id, users.name as staff_name, SUM(kingaku) as total, SUM(arari) as total_profit')
+                        ->orderBy('total', 'desc');
+                $data = DB::table($subQuery)->get();
+                $labels = $data->pluck('staff_name');
+                $totals = $data->pluck('total')->map(fn($v) => (int)$v);
+                $profits = $data->pluck('total_profit')->map(fn($v) => (int)$v);
+                break;
+
+            case 'bd_total':
+                // 絞り込み条件
+                $filters = ['company_id','shop_id','pic_id','brand_id','season_id','unit_id','face','designer_id'];
+                foreach ($filters as $f) {
+                    if (!empty($request->$f)) {
+                        $subQuery->where($f, $request->$f);
+                    }
+                }
+                $subQuery->join('brands','salesdata_subtotal.brand_id','=','brands.id')
+                        ->groupBy('brand_id','brands.brand_name')
+                        ->selectRaw('brand_id, brands.brand_name as brand_name, SUM(kingaku) as total, SUM(arari) as total_profit')
+                        ->orderBy('total','desc');
+                $data = DB::table($subQuery)->get();
+                $labels = $data->pluck('brand_name');
+                $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
+                $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
+                break;
+
+            case 'ss_total':
+                // 絞り込み条件
+                $filters = ['company_id','shop_id','pic_id','brand_id','season_id','unit_id','face','designer_id'];
+                foreach ($filters as $f) {
+                    if (!empty($request->$f)) {
+                        $subQuery->where($f, $request->$f);
+                    }
+                }
+                $subQuery->groupBy('season_id','season_name')
+                        ->selectRaw('season_id, season_name, SUM(kingaku) as total, SUM(arari) as total_profit')
+                        ->orderBy('season_id','asc');
+                $data = DB::table($subQuery)->get();
+                $labels = $data->pluck('season_name');
+                $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
+                $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
+                break;
+
+            case 'un_total':
+                // 絞り込み条件
+                $filters = ['company_id','shop_id','pic_id','brand_id','season_id','unit_id','face','designer_id'];
+                foreach ($filters as $f) {
+                    if (!empty($request->$f)) {
+                        $subQuery->where($f, $request->$f);
+                    }
+                }
+                $subQuery->groupBy('unit_id', 'unit_code')
+                        ->selectRaw('unit_id, unit_code,SUM(kingaku) as total, SUM(arari) as total_profit')
+                        ->orderBy('unit_code','asc');
+                $data = DB::table($subQuery)->get();
+                $labels = $data->pluck('unit_code')->map(fn($code) => substr($code, -2));
+                $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
+                $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
+                break;
+
+            case 'fa_total':
+                // 絞り込み条件
+                $filters = ['company_id','shop_id','pic_id','brand_id','season_id','unit_id','face','designer_id'];
+                foreach ($filters as $f) {
+                    if (!empty($request->$f)) {
+                        $subQuery->where($f, $request->$f);
+                    }
+                }
+                $subQuery->groupBy('face')
+                        ->selectRaw('face, SUM(kingaku) as total, SUM(arari) as total_profit')
+                        ->orderBy('total','desc');
+                $data = DB::table($subQuery)->get();
+                $labels = $data->pluck('face');
+                $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
+                $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
+                break;
+
+            case 'de_total':
+                // 絞り込み条件
+                $filters = ['brand_id','season_id','unit_id','face','designer_id'];
+                foreach ($filters as $f) {
+                    if (!empty($request->$f)) {
+                        $subQuery->where($f, $request->$f);
+                    }
+                }
+                $subQuery->join('designers','salesdata_subtotal.designer_id','=','designers.id')
+                ->where('designer_id','<>',99)
+                        ->groupBy('designer_id','designers.designer_name')
+                        ->selectRaw('designer_id, designers.designer_name as designer_name, SUM(kingaku) as total, SUM(arari) as total_profit')
+                        ->orderBy('total','desc');
+                $data = DB::table($subQuery)->get();
+                $labels = $data->pluck('designer_name');
+                $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
+                $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
+                break;
+
+            case 'pm': // 月別
+            case 'py': // 年別
+            case 'pw': // 週別
+                $dateFormat = match($request->type) {
+                    'pm' => '%Y/%m',
+                    'py' => '%Y',
+                    'pw' => '%x/%v', // YEARWEEK
+                };
+                // 絞り込み条件
+                $filters = ['company_id','shop_id','pic_id','brand_id','season_id','unit_id','face','designer_id'];
+                foreach ($filters as $f) {
+                    if (!empty($request->$f)) {
+                        $subQuery->where($f, $request->$f);
+                    }
+                }
+                $subQuery->groupBy('sales_date')
+                        ->selectRaw("DATE_FORMAT(sales_date, '$dateFormat') as date, SUM(kingaku) as total, SUM(arari) as total_profit");
+                $data = DB::table($subQuery)
+                        ->select('date', DB::raw('SUM(total) as total'), DB::raw('SUM(total_profit) as total_profit'))
+                        ->groupBy('date')
+                        ->get();
+                $labels = $data->pluck('date');
+                $totals = $data->pluck('total')->map(fn($v)=>(int)$v);
+                $profits = $data->pluck('total_profit')->map(fn($v)=>(int)$v);
+
+                // 移動平均は月別のみ
+                if ($request->type === 'pm') {
+                    $totalsArr = $totals->toArray();
+                    $profitsArr = $profits->toArray();
+                    for ($i = 0; $i < count($totalsArr); $i++) {
+                        $movingAverages[] = ($i < 11) ? null : floor(array_sum(array_slice($totalsArr, $i-11,12))/12);
+                        $movingAveragesProfit[] = ($i < 11) ? null : floor(array_sum(array_slice($profitsArr, $i-11,12))/12);
+                    }
+                }
+                break;
+
+            default:
+                // デフォルトは空配列
+                $labels = collect();
+                $totals = collect();
+                $profits = collect();
+                break;
+        }
+
+        return response()->json([
+            'data' => $data,
+            'type' => $request->type,
+            'labels' => $labels,
+            'totals' => $totals,
+            'profits' => $profits,               // ← ここが必ずセットされる
+            'movingAverages' => $movingAverages,
+            'movingAveragesProfit' => $movingAveragesProfit,
+            'companies' => $companies,
+            'shops' => $shops,
+            'pics' => $pics,
+            'brands' => $brands,
+            'seasons' => $seasons,
+            'units' => $units,
+            'faces' => $faces,
+            'designers' => $designers,
+        ]);
     }
 
-    return response()->json([
-        'data' => $data,
-        'type' => $request->type,
-        'labels' => $labels,
-        'totals' => $totals,
-        'profits' => $profits,               // ← ここが必ずセットされる
-        'movingAverages' => $movingAverages,
-        'movingAveragesProfit' => $movingAveragesProfit,
-        'companies' => $companies,
-        'shops' => $shops,
-        'pics' => $pics,
-        'brands' => $brands,
-        'seasons' => $seasons,
-        'units' => $units,
-        'faces' => $faces,
-        'designers' => $designers,
-    ]);
 }
 
-}

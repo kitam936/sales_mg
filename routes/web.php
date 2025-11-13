@@ -28,6 +28,7 @@ use App\Http\Controllers\CsvImportController;
 use App\Http\Controllers\DataDownloadController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\Api\AnalysisController as ApiAnalysisController;
+use App\Http\Controllers\SalesComparisonController;
 
 use Inertia\Inertia;
 
@@ -151,6 +152,8 @@ Route::middleware('auth')->group(function () {
     // Route::get('analysis', [AnalysisController::class, 'index'])->name('analysis');
     Route::get('analysis/test', [AnalysisController::class, 'test'])->name('analysis.test');
     Route::get('menu', [MenuController::class, 'menu'])->name('menu');
+    Route::get('/sales/comparison', [SalesComparisonController::class, 'index'])
+    ->name('sales.comparison');
 });
 
 Route::resource('roles', RoleController::class) ->middleware(['auth', 'verified']);

@@ -28,12 +28,12 @@
             <thead>
             <tr>
                 <!-- 通常集計 -->
-                <th v-if="isPY || isPM || isPW" class="px-2 py-1 bg-gray-100">年月週</th>
+                <th v-if="isPY || isPM || isPW" class="px-2 py-1 bg-gray-100">年月・年週</th>
                 <th v-if="isPY || isPM || isPW" class="px-2 py-1 bg-gray-100">合計売上</th>
                 <th v-if="isPY || isPM || isPW" class="px-2 py-1 bg-gray-100">合計粗利</th>
                 <th v-if="isPY || isPM || isPW" class="px-2 py-1 bg-gray-100">粗利率</th>
-                <th v-if="isPM" class="px-2 py-1 bg-gray-100">12ヶ月移動平均</th>
-                <th v-if="isPM" class="px-2 py-1 bg-gray-100">12ヶ月移動平均粗利</th>
+                <th v-if="isPM" class="px-2 py-1 bg-gray-100 hidden sm:table-cell">12ヶ月移動平均</th>
+                <th v-if="isPM" class="px-2 py-1 bg-gray-100 hidden sm:table-cell">12ヶ月移動平均粗利</th>
 
                 <!-- ComapnyTotal -->
                 <th v-if="props.type === 'co_total'" class="px-2 py-1 bg-gray-100">社名</th>
@@ -100,14 +100,14 @@
                 </td>
 
                 <!-- perMonth の場合だけ移動平均 -->
-                <td v-if="props.type === 'pm'" class="border px-2 py-1 text-right" style="font-variant-numeric:tabular-nums">
+                <td v-if="props.type === 'pm'" class="border px-2 py-1 text-right hidden sm:table-cell" style="font-variant-numeric:tabular-nums">
                     {{
                     (props.data.movingAverages && props.data.movingAverages[index] != null)
                         ? Math.floor(Number(props.data.movingAverages[index]) / 1000).toLocaleString()
                         : '-'
                     }}
                 </td>
-                <td v-if="props.type === 'pm'" class="border px-2 py-1 text-right" style="font-variant-numeric:tabular-nums">
+                <td v-if="props.type === 'pm'" class="border px-2 py-1 text-right hidden sm:table-cell" style="font-variant-numeric:tabular-nums">
                     {{
                     (props.data.movingAveragesProfit && props.data.movingAveragesProfit[index] != null)
                         ? Math.floor(Number(props.data.movingAveragesProfit[index]) / 1000).toLocaleString()
