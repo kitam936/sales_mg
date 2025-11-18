@@ -303,3 +303,4 @@ class AnalysisController extends Controller
     }
 
 }
+

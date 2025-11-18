@@ -34,7 +34,7 @@ const logout = () => {
     <AuthenticatedLayout>
 
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">GMS販売管理</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">GMS販売管理 v2</h2>
         </template>
 
         <div class="py-4">

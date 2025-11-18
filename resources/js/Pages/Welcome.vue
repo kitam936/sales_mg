@@ -28,7 +28,7 @@
 
     <template>
         <Head title="Welcome" />
-        <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
+        <div class="bg-sky-50 text-black/50 dark:bg-black dark:text-white/50">
             <!-- <img
                 id="background"
                 class="absolute -left-20 top-0 max-w-[877px]"
@@ -89,18 +89,18 @@
                                     <h2
                                         class="text-xl font-semibold text-black dark:text-white"
                                     >
-                                    Dijon_Sales 2
+                                    Dijon　GMS販売管理 v2
                                     </h2>
 
                                     <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
                                         スタッフ間の情報共有を目的としたサイトです。<br><br>
                                         このサイトでは下記のことができます。<br>
-                                        ①社・店別の売上（年度・月別・週別）<br>
-                                        　　　および在庫の各種データ確認（品番単位）<br>
-                                        ②商品別の売上・在庫データ確認<br>
+                                        ①社・店別の売上・粗利状況（年度・月別・週別）<br>
+                                        　　　および12ヶ月移動平均値の確認<br>
+                                        ②商品の売上・在庫データ確認<br>
                                         ③商品詳細確認<br>
                                         ④店舗レポートの投稿およびそれに対するコメント投稿<br>
-                                        　（更新時には新着メールが届きます）
+                                        　
                                     </p>
                                 </div>
 
