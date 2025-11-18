@@ -19,6 +19,7 @@ class SalesData extends Model
     protected $casts = [
         'kingaku' => 'integer',
         'arari' => 'integer',
+        'pcs' => 'integer',
     ];
 
     public function scopeBetweenDate($query, $startDate=null, $endDate=null)

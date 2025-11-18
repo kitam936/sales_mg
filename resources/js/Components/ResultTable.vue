@@ -28,7 +28,7 @@
             <thead>
             <tr>
                 <!-- 通常集計 -->
-                <th v-if="isPY || isPM || isPW" class="px-2 py-1 bg-gray-100">年月・年週</th>
+                <th v-if="isPY || isPM || isPW" class="px-2 py-1 bg-gray-100">年・月・週</th>
                 <th v-if="isPY || isPM || isPW" class="px-2 py-1 bg-gray-100">合計売上</th>
                 <th v-if="isPY || isPM || isPW" class="px-2 py-1 bg-gray-100">合計粗利</th>
                 <th v-if="isPY || isPM || isPW" class="px-2 py-1 bg-gray-100">粗利率</th>
