@@ -20,6 +20,9 @@ return new class extends Migration
             $table->bigInteger('pcs');
             $table->bigInteger('zaikogaku');
             $table->timestamps();
+            // インデックス設定
+            $table->index('shop_id', 'idx_shop_id');
+            $table->index('hinban_id', 'idx_hinban_id');
         });
     }
 

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AnalysisController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\SalesProductController;
+use App\Http\Controllers\Api\SalesDigestController;
 
 // Route::middleware('web', 'auth')->get('/users', [UserApiController::class, 'index']);
 
@@ -21,6 +22,8 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/companies/{companyId}/shops', [SalesProductController::class, 'shops']);
     // シーズン → Unit リレーション
     Route::get('/seasons/{seasonId}/units', [SalesProductController::class, 'units']);
+    // 消化率
+    Route::get('/sales-digest', [SalesDigestController::class, 'index']);
 
 });
 

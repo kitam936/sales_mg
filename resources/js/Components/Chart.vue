@@ -9,6 +9,8 @@
       data: Object
     });
 
+
+
     // ラベル
     const labels = computed(() => props.data.labels || []);
 
@@ -151,6 +153,8 @@
         }
       }
     };
+
+
     </script>
 
     <template>
