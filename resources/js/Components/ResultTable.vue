@@ -128,7 +128,7 @@
                 <td v-if="props.type === 'sh_total'" class="border px-2 py-1 text-right" style="font-variant-numeric:tabular-nums">{{ Math.round(((item.total_profit ?? 0) / (item.total ?? 0) * 100) * 10) / 10 }}</td>
 
                 <!-- picTotal -->
-                <td v-if="props.type === 'pic_total'" class="border px-2 py-1">{{ item.staff_name }}</td>
+                <td v-if="props.type === 'pic_total'" class="border px-2 py-1">{{ item.pic_name }}</td>
                 <td v-if="props.type === 'pic_total'" class="border px-2 py-1 text-right" style="font-variant-numeric:tabular-nums">{{ Math.floor(Number(item.total ?? 0) / 1000).toLocaleString() }}</td>
                 <td v-if="props.type === 'pic_total'" class="border px-2 py-1 text-right" style="font-variant-numeric:tabular-nums">{{ Math.floor(Number(item.total_profit ?? 0) / 1000).toLocaleString() }}</td>
                 <td v-if="props.type === 'pic_total'" class="border px-2 py-1 text-right" style="font-variant-numeric:tabular-nums">{{ Math.round(((item.total_profit ?? 0) / (item.total ?? 0) * 100) * 10) / 10 }}</td>
@@ -146,7 +146,7 @@
                 <td v-if="props.type === 'ss_total'" class="border px-2 py-1 text-right" style="font-variant-numeric:tabular-nums">{{ Math.round(((item.total_profit ?? 0) / (item.total ?? 0) * 100) * 10) / 10 }}</td>
 
                 <!-- UnitTotal -->
-                <td v-if="props.type === 'un_total'" class="border px-2 py-1">{{ item.unit_id }}</td>
+                <td v-if="props.type === 'un_total'" class="border px-2 py-1">{{ item.unit_code.slice(-2) }}</td>
                 <td v-if="props.type === 'un_total'" class="border px-2 py-1 text-right" style="font-variant-numeric:tabular-nums">{{ Math.floor(Number(item.total ?? 0) / 1000).toLocaleString() }}</td>
                 <td v-if="props.type === 'un_total'" class="border px-2 py-1 text-right" style="font-variant-numeric:tabular-nums">{{ Math.floor(Number(item.total_profit ?? 0) / 1000).toLocaleString() }}</td>
                 <td v-if="props.type === 'un_total'" class="border px-2 py-1 text-right" style="font-variant-numeric:tabular-nums">{{ Math.round(((item.total_profit ?? 0) / (item.total ?? 0) * 100) * 10) / 10 }}</td>

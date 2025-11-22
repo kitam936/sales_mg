@@ -27,6 +27,12 @@ return new class extends Migration
             $table->integer('YMD');
             $table->integer('Y');
             $table->timestamps();
+            // インデックス設定
+            $table->index('shop_id', 'idx_shop_id');
+            $table->index('hinban_id', 'idx_hinban_id');
+            $table->index('sales_date', 'idx_sales_date');                   // 期間検索
+            $table->index(['sales_date', 'hinban_id'], 'idx_date_hinban');   // ランキング用
+            $table->index(['shop_id', 'sales_date'], 'idx_shop_date');       // 店舗集計用
         });
     }
 

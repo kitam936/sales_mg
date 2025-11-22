@@ -8,6 +8,7 @@
     import ResultTable from '@/Components/ResultTable.vue';
     import CompareTable from '@/Components/CompareTable.vue';
     import SalesProductTable from '@/Components/SalesProductTable.vue';
+    import SalesDigestTable from '@/Components/SalesDigestTable.vue';
     import axios from 'axios';
     import { watch } from 'vue';
 
@@ -17,6 +18,7 @@
         endDate: null,
         type: '', // 分析タイプ
         compareType: 'monthly', // 比較タイプ
+        shoukaType: 'hinban', // 消化率タイプ
         company_id: '',
         shop_id: '',
         pic_id: '',
@@ -25,6 +27,7 @@
         unit_id: '',
         face: '',
         designer_id: '',
+        year_code: '',
     });
 
     // 分析データ
@@ -49,6 +52,11 @@
 
     // CompareTable用
     const compareData = reactive({
+        rows: [],
+    });
+
+    //shouka率用
+    const shoukaData = reactive({
         rows: [],
     });
 
@@ -88,6 +96,7 @@
                     endDate: form.endDate,
                     type: form.type,
                     compareType: form.compareType,
+                    shoukaType: form.shoukaType,
                     company_id: form.company_id,
                     shop_id: form.shop_id,
                     pic_id: form.pic_id,
@@ -96,6 +105,7 @@
                     unit_id: form.unit_id,
                     face: form.face,
                     designer_id: form.designer_id,
+                    year_code: form.year_code,
                 }
             });
 
@@ -112,6 +122,7 @@
             data.units = res.data.units;
             data.faces = res.data.faces;
             data.designers = res.data.designers;
+            data.year_code = res.data.year_code;
 
         } catch(e) {
             console.log(e.message);
@@ -136,6 +147,31 @@
         }
     };
 
+    //shouka率用データ取得
+    const getShoukaData = async () => {
+        try {
+            const res = await axios.get('/sales/shouka', {
+                params: {
+                    shoukaType: form.shoukaType,
+                    company_id: form.company_id,
+                    shop_id: form.shop_id,
+                    brand_id: form.brand_id,
+                    season_id: form.season_id,
+                    unit_id: form.unit_id,
+                    face: form.face,
+                    designer_id: form.designer_id,
+                    year_code: form.year_code,
+                }
+            });
+            shoukaData.rows = res.data.rows ?? [];
+        } catch(e) {
+            console.log(e.message);
+        }
+    };
+
+    // 消化率用の分析開始トリガー
+    const shoukaTrigger = ref(0);
+
     // 分析ボタン押下
     const onAnalyze = async () => {
         await getData();
@@ -144,6 +180,9 @@
         }
         if (activeTab.value === 'ranking') {
             rankingRefreshKey.value++;
+        }
+        if(activeTab.value === 'shouka') {
+            shoukaTrigger.value++; // 分析開始トリガーを更新
         }
     };
 
@@ -157,6 +196,7 @@
         form.unit_id = '';
         form.face = '';
         form.designer_id = '';
+        form.year_code = '';
         await onAnalyze();
     };
 
@@ -235,17 +275,43 @@
                                 <label><input type="radio" value="de_total" v-model="form.type" /> デザイナー計</label>
                             </div>
 
+                             <!-- 消化率タイプ切替 -->
+                             <div v-if="activeTab === 'shouka' " class="gap-4 mb-2 items-center">
+
+                            <span class="text-sm font-medium">表示タイプ選択:</span>
+                            <div class="flex flex-wrap gap-2 ">
+                                <div class="flex items-center gap-2 ">
+                                <label><input type="radio" value="hinban" v-model="form.shoukaType" /> 品番別</label>
+                                <label><input type="radio" value="brand" v-model="form.shoukaType" /> Brand別</label>
+                                <label><input type="radio" value="season" v-model="form.shoukaType" /> 季節別</label>
+                                 </div>
+                                <div class="flex items-center mt-0 md:mt-0 gap-2 ">
+                                <label><input type="radio" value="unit" v-model="form.shoukaType" /> Unit別</label>
+                                <label><input type="radio" value="face" v-model="form.shoukaType" /> Face別</label>
+                                <label><input type="radio" value="designer" v-model="form.shoukaType" /> デザイナー別</label>
+                                </div>
+                            </div>
+                             </div>
+
                               <!-- typeに応じて絞り込みを表示 -->
                               <div class="items-center ml-0 mt-2">
                                 <!-- <div class="flex items-center ml-0"> -->
                                     <div>
                                     <label class="ml-0 md:ml-2 md:mt-0 mr-2  font-medium text-sm">絞込検索:　※必要に応じて絞込条件を指定</label>
                                     </div>
+                                    <div v-if="activeTab === 'shouka'" class="relative mb-2 mt-1">
+                                        <select v-model="form.year_code" class="h-8 w-36 rounded border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
+                                            <option value="">年度選択なし</option>
+                                            <option v-for="y in data.year_code" :key="y.year_code" :value="y.year_code">
+                                                {{ y.year_code }}
+                                            </option>
+                                        </select>
+                                    </div>
                                     <div class="flex items-center ml-0">
                                     <!-- Company選択 -->
                                     <div class="md:flex">
                                 <div class="flex">
-                                    <div v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking'" class="relative ">
+                                    <div v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking' || activeTab === 'shouka'" class="relative ">
                                         <select v-model="form.company_id" class="h-8 w-36 rounded border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
                                             <option value="">社選択なし</option>
                                             <option v-for="company in data.companies" :key="company.co_id" :value="company.co_id">
@@ -255,7 +321,7 @@
                                     </div>
 
                                     <!-- Shop選択 -->
-                                    <div  v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking'" class="relative ml-2">
+                                    <div  v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking' || activeTab === 'shouka'" class="relative ml-2">
                                         <select v-model="form.shop_id" class="h-8 w-36 rounded border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
                                             <option value="">店選択なし</option>
                                             <option v-for="shop in data.shops" :key="shop.shop_id" :value="shop.shop_id">
@@ -266,7 +332,7 @@
                                 </div>
                                 <div class="flex">
                                     <!-- Brand選択 -->
-                                    <div  v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking'" class="relative md:ml-2 mt-2 md:mt-0">
+                                    <div  v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking' || activeTab === 'shouka'" class="relative md:ml-2 mt-2 md:mt-0">
                                         <select v-model="form.brand_id" class="h-8 w-36 rounded border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
                                             <option value="">Brand選択なし</option>
                                             <option v-for="brand in data.brands" :key="brand.brand_id" :value="brand.brand_id">
@@ -295,7 +361,7 @@
                                     <!-- Season選択 -->
                                     <div class="md:flex">
                                         <div class="flex">
-                                    <div v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking'" class="relative ">
+                                    <div v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking' || activeTab === 'shouka'" class="relative ">
                                         <select v-model="form.season_id" class="h-8 w-36 rounded border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
                                             <option value="">季節選択なし</option>
                                             <option v-for="season in data.seasons" :key="season.season_id" :value="season.season_id">
@@ -305,7 +371,7 @@
                                     </div>
 
                                     <!-- Unit選択 -->
-                                    <div v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking'" class="relative ml-2">
+                                    <div v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking' || activeTab === 'shouka'" class="relative ml-2">
                                         <select v-model="form.unit_id" class="h-8 w-36 rounded border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
                                             <option value="">Unit選択なし</option>
                                             <option v-for="unit in data.units" :key="unit.unit_id" :value="unit.unit_id">
@@ -316,7 +382,7 @@
                                         </div>
                                     <div class="flex mt-2 md:mt-0">
                                     <!-- Face選択 -->
-                                    <div v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking'" class="relative md:ml-2 mt-0">
+                                    <div v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking' || activeTab === 'shouka'" class="relative md:ml-2 mt-0">
                                         <select v-model="form.face" class="h-8 w-36 rounded border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
                                             <option value="">Face選択なし</option>
                                             <option v-for="face in data.faces" :key="face.face" :value="face.face_code">
@@ -325,7 +391,7 @@
                                         </select>
                                     </div>
                                     <!-- Desiger選択 -->
-                                    <div v-if="showFilters || activeTab === 'ranking'" class="relative ml-2">
+                                    <div v-if="showFilters || activeTab === 'ranking' || activeTab === 'shouka'" class="relative ml-2">
                                         <select v-model="form.designer_id" class="h-8 w-36 rounded border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
                                             <option value="">Desiger選択なし</option>
                                             <option v-for="designer in data.designers" :key="designer.designer_id" :value="designer.designer_id">
@@ -340,15 +406,20 @@
 
 
 
+                            <!-- 分析開始ボタン押下 -->
                             <div class="flex mt-2 mb-2">
-                                <button type="submit" class="w-32 ml-0 h-8 px-4 bg-blue-500 text-white rounded">分析開始</button>
-                                <button type="button" @click="clearFilters" class="ml-4 w-32 h-8 bg-gray-500 text-white rounded">絞込条件クリア</button>
+                                <button type="button" @click="onAnalyze" class="w-32 ml-0 h-8 px-4 bg-blue-500 text-white rounded">
+                                分析開始
+                                </button>
+                                <button type="button" @click="clearFilters" class="ml-4 w-32 h-8 bg-gray-500 text-white rounded">
+                                絞込条件クリア
+                                </button>
                             </div>
                             <div class="border-t mt-2 pt-2 text-sm text-gray-600">
                                 <!-- ※分析タイプを選択してください。<br/> -->
                                 <!-- ※必要に応じて絞込条件を指定してください。<br/> -->
-                                ※分析には数秒かかる場合があります。<br/>
-                                ※データは千円単位で表示。
+                                ※分析には十数秒かかる場合があります。<br/>
+                                <!-- ※データは千円単位で表示。 -->
 
                             </div>
                         </form>
@@ -379,6 +450,11 @@
                         <!-- ranking タブ -->
                         <div v-if="activeTab === 'ranking'">
                             <SalesProductTable :filters="form" />
+                        </div>
+
+                        <!-- 消化率タブ -->
+                        <div v-if="activeTab === 'shouka'">
+                            <SalesDigestTable :filters="form" :fetchTrigger="shoukaTrigger" />
                         </div>
                     </div>
                 </div>

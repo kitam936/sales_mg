@@ -69,7 +69,7 @@ class SalesProductController extends Controller
                 );
 
             // 4. マスタ側フィルター
-            foreach (['brand_id','season_id','unit_id','designer_id'] as $field) {
+            foreach (['brand_id','season_id','unit_id','face','designer_id'] as $field) {
                 if ($request->filled($field)) {
                     switch ($field) {
                         case 'brand_id':
@@ -80,6 +80,9 @@ class SalesProductController extends Controller
                             break;
                         case 'unit_id':
                             $query->where('units.id', $request->$field);
+                            break;
+                        case 'face':
+                            $query->where('hinbans.face', $request->$field);
                             break;
                         case 'designer_id':
                             $query->where('hinbans.designer_id', $request->$field);

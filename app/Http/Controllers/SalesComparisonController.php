@@ -20,17 +20,13 @@ class SalesComparisonController extends Controller
         $today = Carbon::today();
 
         if ($compareType === 'monthly') {
-            // 現年期間：直近12か月
             $startDate = $today->copy()->subMonths(11)->startOfMonth();
             $endDate = $today->copy()->endOfMonth();
-            // 前年期間
             $prevStart = $startDate->copy()->subYear();
             $prevEnd = $endDate->copy()->subYear();
         } else { // weekly
-            // 現年期間：直近52週
             $startDate = $today->copy()->subWeeks(51)->startOfWeek();
             $endDate = $today->copy()->endOfWeek();
-            // 前年期間
             $prevStart = $startDate->copy()->subYear();
             $prevEnd = $endDate->copy()->subYear();
         }
@@ -38,50 +34,44 @@ class SalesComparisonController extends Controller
         $companies = Company::all();
         $shops = $company_id ? Shop::where('company_id', $company_id)->get() : collect();
 
-        // 集計列
-        $selectRaw = match($compareType) {
-            'monthly' => "YEAR(sales_date) as year, MONTH(sales_date) as period, SUM(kingaku) as total_sales, SUM(arari) as total_profit",
-            'weekly'  => "YEAR(sales_date) as year, WEEK(sales_date,1) as period, SUM(kingaku) as total_sales, SUM(arari) as total_profit, MAX(sales_date) as max_date",
-        };
-
-        $groupBy = match($compareType) {
-            'monthly' => ['year','period'],
-            'weekly' => ['year','period'],
-        };
-
-        // データ取得（現年＋前年の両方）
+        // DB側で現年/前年をまとめて取得
         $query = SalesData::query()
-            ->selectRaw($selectRaw)
+            ->selectRaw(
+                match($compareType) {
+                    'monthly' => "
+                        YEAR(sales_date) as year,
+                        MONTH(sales_date) as period,
+                        CASE WHEN sales_date BETWEEN ? AND ? THEN 1
+                             WHEN sales_date BETWEEN ? AND ? THEN 0
+                             ELSE NULL END as is_current,
+                        SUM(kingaku) as total_sales,
+                        SUM(arari) as total_profit
+                    ",
+                    'weekly' => "
+                        YEAR(sales_date) as year,
+                        WEEK(sales_date,1) as period,
+                        CASE WHEN sales_date BETWEEN ? AND ? THEN 1
+                             WHEN sales_date BETWEEN ? AND ? THEN 0
+                             ELSE NULL END as is_current,
+                        SUM(kingaku) as total_sales,
+                        SUM(arari) as total_profit,
+                        MAX(sales_date) as max_date
+                    "
+                }
+            , [$startDate, $endDate, $prevStart, $prevEnd])
             ->when($company_id, fn($q) => $q->where('company_id', $company_id))
             ->when($shop_id, fn($q) => $q->where('shop_id', $shop_id))
-            ->whereBetween('sales_date', [$prevStart, $endDate])
-            ->groupBy($groupBy)
+            ->groupBy('year','period','is_current')
             ->orderBy('year')
             ->orderBy('period')
             ->get();
 
-        // 現年・前年データを振り分け
-        if ($compareType === 'monthly') {
-            $currentData = $query->filter(fn($item) =>
-                Carbon::create($item->year, $item->period, 1)->between($startDate, $endDate)
-            )->keyBy(fn($item) => intval($item->period));
-
-            $prevData = $query->filter(fn($item) =>
-                Carbon::create($item->year, $item->period, 1)->between($prevStart, $prevEnd)
-            )->keyBy(fn($item) => intval($item->period));
-        } else { // weekly
-            $currentData = $query->filter(fn($item) =>
-                Carbon::parse($item->max_date)->between($startDate, $endDate)
-            )->keyBy(fn($item) => intval($item->period));
-
-            $prevData = $query->filter(fn($item) =>
-                Carbon::parse($item->max_date)->between($prevStart, $prevEnd)
-            )->keyBy(fn($item) => intval($item->period));
-        }
+        // 現年・前年データをDB側で振り分け
+        $currentData = $query->where('is_current',1)->keyBy(fn($item) => $item->period);
+        $prevData = $query->where('is_current',0)->keyBy(fn($item) => $item->period);
 
         // 表示行作成
         $rows = [];
-
         if ($compareType === 'monthly') {
             for ($i = 0; $i < 12; $i++) {
                 $date = $startDate->copy()->addMonths($i);
@@ -94,13 +84,11 @@ class SalesComparisonController extends Controller
                 $profit = $cur->total_profit ?? 0;
                 $sales_prev = $pre->total_sales ?? 0;
                 $profit_prev = $pre->total_profit ?? 0;
-                $sales_rate = $sales_prev ? round(($sales / $sales_prev) * 100,1) : null;
-                $profit_rate = $profit_prev ? round(($profit / $profit_prev) * 100,1) : null;
-
-                $periodLabel = $date->format('y/n');
+                $sales_rate = $sales_prev ? round(($sales/$sales_prev)*100,1) : null;
+                $profit_rate = $profit_prev ? round(($profit/$profit_prev)*100,1) : null;
 
                 $rows[] = [
-                    'period' => $periodLabel,
+                    'period' => $date->format('y/n'),
                     'sales' => $sales,
                     'profit' => $profit,
                     'sales_prev' => $sales_prev,
@@ -109,13 +97,12 @@ class SalesComparisonController extends Controller
                     'profit_rate' => $profit_rate,
                 ];
             }
-        } else { // weekly 直近52週
+        } else { // weekly
             for ($i = 0; $i < 52; $i++) {
                 $weekStart = $startDate->copy()->addWeeks($i);
                 $weekEnd = $weekStart->copy()->endOfWeek();
                 $w = intval($weekStart->format('W'));
 
-                // 現年・前年のキーに週番号を使う
                 $cur = $currentData->get($w);
                 $pre = $prevData->get($w);
 
@@ -123,14 +110,11 @@ class SalesComparisonController extends Controller
                 $profit = $cur->total_profit ?? 0;
                 $sales_prev = $pre->total_sales ?? 0;
                 $profit_prev = $pre->total_profit ?? 0;
-                $sales_rate = $sales_prev ? round(($sales / $sales_prev) * 100,1) : null;
-                $profit_rate = $profit_prev ? round(($profit / $profit_prev) * 100,1) : null;
-
-                // 週ラベルはその週の最大日付をYYMMDD
-                $periodLabel = $weekEnd->format('y/m/d');
+                $sales_rate = $sales_prev ? round(($sales/$sales_prev)*100,1) : null;
+                $profit_rate = $profit_prev ? round(($profit/$profit_prev)*100,1) : null;
 
                 $rows[] = [
-                    'period' => $periodLabel,
+                    'period' => $weekEnd->format('y/m/d'),
                     'sales' => $sales,
                     'profit' => $profit,
                     'sales_prev' => $sales_prev,
@@ -148,4 +132,5 @@ class SalesComparisonController extends Controller
         ]);
     }
 }
+
 
