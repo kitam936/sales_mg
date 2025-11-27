@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AnalysisController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\SalesProductController;
 use App\Http\Controllers\Api\SalesDigestController;
+use App\Http\Controllers\Api\HinbanAnalysisController;
 
 // Route::middleware('web', 'auth')->get('/users', [UserApiController::class, 'index']);
 
@@ -24,7 +25,12 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/seasons/{seasonId}/units', [SalesProductController::class, 'units']);
     // 消化率
     Route::get('/sales-digest', [SalesDigestController::class, 'index']);
-
+    // 品番分析
+    Route::get('/hinbans/{id}/weekly', [HinbanAnalysisController::class, 'weekly']);
+    Route::get('/hinbans/{id}/monthly', [HinbanAnalysisController::class, 'monthly']);
+    Route::get('/hinbans/{id}/detail', [HinbanAnalysisController::class, 'detail'])->name('api.hinban.detail');
+    Route::get('/hinbans/{id}', [HinbanAnalysisController::class, 'show']);
+    Route::get('/hinbans/{id}/sales_trend', [HinbanAnalysisController::class, 'getSalesTrend']);
 });
 
 

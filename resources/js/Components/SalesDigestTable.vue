@@ -45,6 +45,7 @@
 
     <template>
       <div class="overflow-x-auto">
+        ※各社・各店において返品済の商品は100％と表示されます。<br />
         <table class="w-full text-sm border border-gray-200">
           <thead>
             <tr class="bg-gray-100">
@@ -57,8 +58,8 @@
           </thead>
           <tbody>
             <tr v-for="row in datas.data" :key="row.id" class="border-b">
-              <td class="px-2 py-1"  style="font-variant-numeric:tabular-nums">{{ row.id }}</td>
-              <td class="px-2 py-1"  style="font-variant-numeric:tabular-nums">{{ row.name }}</td>
+              <td class="px-2 py-1"  style="font-variant-numeric:tabular-nums">{{ row.id ?? 99}}</td>
+              <td class="px-2 py-1"  style="font-variant-numeric:tabular-nums">{{ row.name ?? 'その他'}}</td>
               <td class="px-2 py-1 text-right"  style="font-variant-numeric:tabular-nums">{{ Number(row.sales_total).toLocaleString() }}</td>
               <td class="px-2 py-1 text-right"  style="font-variant-numeric:tabular-nums"> {{ Number(row.stock_total).toLocaleString() }}</td>
               <td class="px-2 py-1 text-right font-bold"  style="font-variant-numeric:tabular-nums">{{ row.rate }}%</td>

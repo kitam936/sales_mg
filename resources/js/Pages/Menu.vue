@@ -34,17 +34,17 @@ const logout = () => {
     <AuthenticatedLayout>
 
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">GMS販売管理 v2</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight ">GMS販売管理 v2</h2>
         </template>
 
-        <div class="py-4">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-4">
+        <div class="py-1">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-4 ">
                 <!-- <h2 class="font-semibold text-xl text-gray-800 leading-tight">　Menu</h2> -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="py-6 pl-2 text-gray-900">
+                <div class="bg-sky-50  overflow-hidden shadow-sm sm:rounded-lg ">
+                    <div class="py-6 pl-2 text-gray-900 bg-sky-50 ">
 
 
-                        <section class="text-gray-600 body-font relative">
+                        <section class="text-gray-600 body-font relative ">
 
                             <h3 class="ml-4 font-semibold text-xl text-indigo-800 leading-tight">
                                 分析

@@ -41,12 +41,15 @@
 
     // filters 変更監視（初期ロード含む）
     watch(
-        () => props.filters.triggerRanking,
+        () => props.filters,
         (newVal, oldVal) => {
-          // ボタン押下後のみ fetchData
-          fetchData(1);
+        // ボタン押下後のみ fetchData する
+        if (props.filters.triggerRanking) {
+            fetchData(1);
         }
-      );
+        },
+        { deep: true }
+    );
 
     // ページ切替
     const changePage = (url) => {

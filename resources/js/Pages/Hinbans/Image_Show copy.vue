@@ -1,21 +1,12 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
     import { Head, Link, router } from '@inertiajs/vue3'
-    import { ref, reactive, onMounted } from 'vue'
-    import axios from 'axios'
-    import ChartSales from '@/Components/ChartSales.vue'
-    import ResultHinbanTable from '@/Components/ResultHinbanTable.vue'
 
     const props = defineProps({
       image: Object,
       sku_images: Array,
       login_user: Object,
     })
-
-    // 戻るボタン
-    const goBack = () => {
-        window.history.back();
-    };
 
     // 削除処理
     const deleteImage = (hinban) => {
@@ -24,48 +15,10 @@
       }
     }
 
-    // 売上データ
-    const salesData = reactive({
-        weekly: [],
-        monthly: [],
-        rows: [],  // テーブル用
-    })
-
-    // タブ切替
-    const activeTab = ref('weekly') // 'weekly' または 'monthly'
-
-    // データ取得
-    const fetchSalesData = async () => {
-        try {
-            const res = await axios.get(`/api/hinbans/${props.image.hinban_id}/sales_trend`)
-            salesData.weekly = res.data.weekly
-            salesData.monthly = res.data.monthly
-
-            updateTabData()
-        } catch(e) {
-            console.error(e)
-        }
-    }
-
-    // タブ切替時に表示データを更新
-    const updateTabData = () => {
-        if(activeTab.value === 'weekly') {
-            // { yw, total } の形に整形
-            salesData.rows = salesData.weekly.map(w => ({
-                yw: w.week_end,
-                total: w.total
-            }))
-        } else {
-            salesData.rows = salesData.monthly.map(m => ({
-                ym: m.ym,
-                total: m.total
-            }))
-        }
-    }
-
-    onMounted(() => {
-        fetchSalesData()
-    })
+    // 戻るボタンの処理
+    const goBack = () => {
+        window.history.back();
+    };
     </script>
 
     <template>
@@ -77,6 +30,7 @@
             商品画像
           </h2>
 
+          <!-- 戻るボタン・画像リストボタン -->
           <div class="flex">
             <div class="ml-6 flex mt-2">
               <button
@@ -95,6 +49,7 @@
             </div>
           </div>
 
+          <!-- 削除ボタン -->
           <div v-if="login_user.role_id <= 2" class="p-2 w-full ml-4 flex mt-2">
             <div
               @click="deleteImage(image.hinban_id)"
@@ -105,7 +60,7 @@
           </div>
         </template>
 
-        <!-- 商品画像 -->
+        <!-- 商品画像メイン -->
         <div class="py-2">
           <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -148,6 +103,8 @@
               Col: {{ sku.col_id }} / Size: {{ sku.size_name }}
             </div>
 
+            <!-- <Link :href="route('sku_image_show', { sku: sku.sku_id })"> -->
+
             <div class="border rounded-md overflow-hidden">
               <img
                 v-if="sku.filename"
@@ -162,41 +119,8 @@
                 No Image
               </div>
             </div>
+            <!-- </Link> -->
           </div>
-        </div>
-
-        <!-- 売上推移グラフ -->
-        <div class="py-4 max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <h3 class="text-lg font-medium text-gray-800 mb-2">売上推移</h3>
-
-          <!-- タブ切替 -->
-          <div class="flex gap-2 mb-2">
-            <button @click="activeTab='weekly'; updateTabData()"
-              :class="activeTab==='weekly' ? 'bg-indigo-500 text-white' : 'bg-gray-200'"
-              class="px-4 py-1 rounded text-sm">
-              週次
-            </button>
-            <button @click="activeTab='monthly'; updateTabData()"
-              :class="activeTab==='monthly' ? 'bg-indigo-500 text-white' : 'bg-gray-200'"
-              class="px-4 py-1 rounded text-sm">
-              月次
-            </button>
-          </div>
-
-          <!-- グラフ -->
-          <ChartSales
-            v-if="salesData.rows.length"
-            :labels="salesData.rows.map(r => r.yw || r.ym)"
-            :values="salesData.rows.map(r => r.total)"
-            />
-
-          <!-- テーブル -->
-          <ResultHinbanTable
-            v-if="salesData.rows.length"
-            :rows="salesData.rows"
-            :type="activeTab"
-          />
         </div>
       </AuthenticatedLayout>
     </template>
-
