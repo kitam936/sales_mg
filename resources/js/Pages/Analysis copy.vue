@@ -30,6 +30,7 @@
         face: '',
         designer_id: '',
         year_code: '',
+
     });
 
     // 分析データ
@@ -179,14 +180,16 @@
     // 消化率用の分析開始トリガー
     const shoukaTrigger = ref(0);
 
+    form.triggerRanking = 0;
+
     // 分析ボタン押下
     const onAnalyze = async () => {
         await getData();
         if(activeTab.value === 'compare') {
             await getCompareData();
         }
-        if (activeTab.value === 'ranking') {
-            rankingRefreshKey.value++;
+        if(activeTab.value === 'ranking') {
+            form.triggerRanking++; // ボタン押下をトリガー
         }
         if(activeTab.value === 'shouka') {
             shoukaTrigger.value++; // 分析開始トリガーを更新

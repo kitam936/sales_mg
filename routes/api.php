@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\SalesProductController;
 use App\Http\Controllers\Api\SalesDigestController;
 use App\Http\Controllers\Api\HinbanAnalysisController;
+use App\Http\Controllers\Api\StockController;
 
 // Route::middleware('web', 'auth')->get('/users', [UserApiController::class, 'index']);
 
@@ -31,6 +32,8 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/hinbans/{id}/detail', [HinbanAnalysisController::class, 'detail'])->name('api.hinban.detail');
     Route::get('/hinbans/{id}', [HinbanAnalysisController::class, 'show']);
     Route::get('/hinbans/{id}/sales_trend', [HinbanAnalysisController::class, 'getSalesTrend']);
+    //Zaiko分析
+    Route::get('/stock', [StockController::class, 'index']);
 });
 
 
