@@ -14,10 +14,10 @@ const showingNavigationDropdown = ref(false);
     <div>
         <div class="min-h-screen bg-gray-100">
             <nav
-                class="border-b border-gray-100 bg-white"
+                class="border-b border-gray-100 bg-white "
             >
                 <!-- Primary Navigation Menu -->
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8  ">
                     <div class="flex h-16 justify-between">
                         <div class="flex">
                             <!-- Logo -->
@@ -84,15 +84,15 @@ const showingNavigationDropdown = ref(false);
                             </div>
                         </div>
 
-                        <div class="hidden sm:ms-6 sm:flex sm:items-center">
+                        <div class="hidden sm:ms-6 sm:flex sm:items-center ">
                             <!-- Settings Dropdown -->
-                            <div class="relative ms-3">
+                            <div class="relative ms-3 ">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
-                                        <span class="inline-flex rounded-md">
+                                        <span class="inline-flex rounded-md ">
                                             <button
                                                 type="button"
-                                                class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                                class="inline-flex items-center rounded-md border border-transparent bg-white  px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none "
                                             >
                                                 {{ $page.props.auth.user.name }}
 
@@ -113,11 +113,11 @@ const showingNavigationDropdown = ref(false);
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink
+                                        <!-- <DropdownLink
                                             :href="route('profile.edit')"
                                         >
                                             Profile
-                                        </DropdownLink>
+                                        </DropdownLink> -->
                                         <DropdownLink
                                             :href="route('logout')"
                                             method="post"
@@ -252,9 +252,9 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')">
+                            <!-- <ResponsiveNavLink :href="route('profile.edit')">
                                 Profile
-                            </ResponsiveNavLink>
+                            </ResponsiveNavLink> -->
                             <ResponsiveNavLink
                                 :href="route('logout')"
                                 method="post"
@@ -269,7 +269,7 @@ const showingNavigationDropdown = ref(false);
 
             <!-- Page Heading -->
             <header
-                class="bg-white shadow"
+                class="bg-white  shadow"
                 v-if="$slots.header"
             >
                 <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">

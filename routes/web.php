@@ -30,6 +30,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\Api\AnalysisController as ApiAnalysisController;
 use App\Http\Controllers\SalesComparisonController;
 
+
 use Inertia\Inertia;
 
 
@@ -45,6 +46,9 @@ Route::get('/', function () {
 Route::middleware(['web', 'auth'])->group(function () {
     // Inertia ページ表示
     Route::get('/analysis', [AnalysisController::class, 'index'])->name('analysis');
+    Route::get('/hinbans/show/{id}', function ($id) {
+        return inertia('Hinbans/Show', ['id' => $id]);
+    })->name('hinbans.show2');
 });
 
 Route::middleware(['web', 'auth'])->prefix('api')->group(function () {
@@ -154,6 +158,8 @@ Route::middleware('auth')->group(function () {
     Route::get('menu', [MenuController::class, 'menu'])->name('menu');
     Route::get('/sales/comparison', [SalesComparisonController::class, 'index'])
     ->name('sales.comparison');
+
+
 });
 
 Route::resource('roles', RoleController::class) ->middleware(['auth', 'verified']);

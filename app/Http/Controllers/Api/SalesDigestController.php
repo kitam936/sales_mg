@@ -63,6 +63,7 @@ class SalesDigestController extends Controller
 
         // メインクエリ
         $query = DB::table('hinbans')
+            // ->where('hinbans.vendor_id', '<>', 8200)
             ->when(in_array($type, ['brand', 'season', 'unit']), fn($q) => $q->leftJoin('units', 'hinbans.unit_id', '=', 'units.id'))
             ->when($type === 'face', fn($q) => $q->leftJoin('faces', 'hinbans.face', '=', 'faces.face_code'))
             ->when($type === 'designer', fn($q) => $q->leftJoin('designers', 'hinbans.designer_id', '=', 'designers.id'))
@@ -84,7 +85,7 @@ class SalesDigestController extends Controller
                 END as rate')
             )
             ->groupBy($groupField, $nameField)
-            ->havingRaw('COALESCE(MAX(stock_total_sub.stock_total),0) > 0')
+            ->havingRaw('COALESCE(MAX(stock_total_sub.stock_total),0) >= 0')
             // フィルタ
             ->when($request->filled('year_code'), fn($q) => $q->where('hinbans.year_code', $request->year_code))
             ->when($request->filled('brand_id'), fn($q) => $q->where('hinbans.brand_id', $request->brand_id))
@@ -95,7 +96,8 @@ class SalesDigestController extends Controller
 
         // 並び順
         if ($type === 'hinban') {
-            $query->orderByDesc('rate');
+            // $query->orderByDesc('rate');
+            $query->where('hinbans.vendor_id', '<>', 8200)->orderByDesc('rate');
         } else {
             $query->orderBy('id');
         }
