@@ -74,7 +74,7 @@
       <AuthenticatedLayout>
         <template #header>
           <h2 class="font-semibold text-xl text-gray-800 leading-tight mb-2">
-            商品画像
+            商品詳細
           </h2>
 
           <div class="flex">
@@ -115,8 +115,9 @@
                 </div>
                 <div class="text-gray-700 mb-2">{{ image.hinban_info }}</div>
                 <div class="text-gray-700 mb-4">
-                  マスタ売価：{{ image.m_price }}円
+                  元売価：{{ image.m_price }}円 　/ 　コスト：{{ image.cost }}円
                 </div>
+
 
                 <div class="md:w-3/4">
                   <img

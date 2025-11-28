@@ -186,7 +186,7 @@ class ImageController extends Controller
         ->leftjoin('images','hinbans.id','images.hinban_id')
         ->where('images.hinban_id',($id))
         ->select('images.hinban_id','hinbans.hinban_name','images.filename','hinbans.m_price',
-        'hinbans.hinban_info','hinbans.price')
+        'hinbans.hinban_info','hinbans.cost')
         ->first();
         $sku_images = DB::table('skus')
         ->leftjoin('sku_images','skus.id','sku_images.sku_id')
