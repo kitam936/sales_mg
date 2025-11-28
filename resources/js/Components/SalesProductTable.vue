@@ -77,7 +77,9 @@
               v-for="d in datas.data"
               :key="d.hinban_id"
             >
-              <td class="text-center" style="font-variant-numeric:tabular-nums">{{ d.hinban_id }}</td>
+              <td class="text-center text-indigo-600" style="font-variant-numeric:tabular-nums">
+                <Link :href="route('hinbans.show2', { id: d.hinban_id })">{{ d.hinban_id }}
+                </Link></td>
               <td class="text-center hidden sm:table-cell">
                 {{ d.hinban_name }}
               </td>

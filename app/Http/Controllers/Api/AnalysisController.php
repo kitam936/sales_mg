@@ -16,7 +16,7 @@ class AnalysisController extends Controller
         // 会社一覧
         $companies = DB::table('shops')
             ->join('companies', 'shops.company_id', '=', 'companies.id')
-            ->whereBetween('shops.company_id', [1001, 7999])
+            ->whereBetween('shops.company_id', [1, 7999])
             ->select('companies.id as co_id', 'companies.co_name as co_name')
             ->groupBy('co_id', 'co_name')
             ->orderBy('co_id')

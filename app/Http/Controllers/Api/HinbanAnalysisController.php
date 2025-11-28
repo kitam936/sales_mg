@@ -57,7 +57,7 @@ class HinbanAnalysisController extends Controller
             ->where('hinban_id', $id)
             ->groupBy(DB::raw("YEARWEEK(sales_date, 1)"))
             ->orderBy('yw')
-            ->limit(26)
+            ->limit(52)
             ->get();
 
         // --- 月次 ---
@@ -87,7 +87,7 @@ class HinbanAnalysisController extends Controller
         ->where('hinban_id', $hinban_id)
         ->groupBy(DB::raw("YEARWEEK(sales_date, 1)"))
         ->orderBy('yw')
-        ->limit(26)
+        ->limit(52)
         ->get();
 
         $monthly = DB::table('sales')
