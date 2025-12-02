@@ -3,29 +3,21 @@
     import { Head, Link, useForm } from '@inertiajs/vue3';
     import FlashMessage from '@/Components/FlashMessage.vue';
     import Pagination from '@/Components/Pagination.vue';
-    import { getToday } from '@/common';
 
     // props はコントローラから渡されるデータ
     const props = defineProps({
-        years: Array,
-        min_year: Number,
-        flash: Object,
-      });
-
-     // 今日の日付
-    const today = getToday();
+      YMs: Array,
+      max_YM: Number,
+      bg_YMs: Array,
+      bg_max_YM: Number,
+      years: Array,
+      flash: Object
+    })
 
     // フォーム定義（複数削除フォームをそれぞれ管理）
-    // 売上削除フォーム（startDate / endDate）
-    const salesForm = useForm({
-        startDate: today,
-        endDate: today,
-    });
-
-    const hinbanForm = useForm({
-        year1: props.min_year,
-        year2: props.min_year,
-      });
+    const salesForm = useForm({ YM1: props.max_YM, YM2: props.max_YM })
+    const yosanForm = useForm({ YM1: props.bg_max_YM, YM2: props.bg_max_YM })
+    const hinbanForm = useForm({ year1: '', year2: '' })
 
     // 単独削除系は CSRF 対策だけで OK
     const simpleForm = useForm({})
@@ -56,34 +48,34 @@
           <FlashMessage />
 
           <div class="bg-white shadow-sm sm:rounded-lg p-6 text-gray-900">
-                <!-- 売上データ削除（日付指定） -->
-        <div class="mb-6">
-            <span class="block mb-2">売上データ削除（日付範囲）</span>
-
-            <form
-              @submit.prevent="salesForm.delete(route('admin.data.sales_destroy'))"
-              class="flex items-center gap-2"
-            >
-              <input
-                type="date"
-                v-model="salesForm.startDate"
-                class="w-32 h-8 rounded text-sm border"
-              />
-              <span>～</span>
-              <input
-                type="date"
-                v-model="salesForm.endDate"
-                class="w-32 h-8 rounded text-sm border"
-              />
-
-              <button
-                type="submit"
-                class="text-sm w-32 text-white bg-red-500 py-1 px-4 rounded hover:bg-red-600"
+            <!-- 売上データ削除 -->
+            <div class="mb-6">
+              <span class="block mb-2">データ選択削除</span>
+              <form
+                @submit.prevent="salesForm.delete(route('admin.data.sales_destroy'))"
+                class="flex items-center gap-2"
               >
-                売上データ削除
-              </button>
-            </form>
-          </div>
+                <select v-model="salesForm.YM1" class="w-32 h-8 rounded text-sm">
+                  <option :value="props.max_YM">年月選択(from)</option>
+                  <option v-for="ym in props.YMs" :key="ym.YM" :value="ym.YM">
+                    {{ Math.floor(ym.YM / 100) % 100 }}年{{ ym.YM % 100 }}月
+                  </option>
+                </select>
+                <span>～</span>
+                <select v-model="salesForm.YM2" class="w-32 h-8 rounded text-sm">
+                  <option :value="props.max_YM">年月選択(to)</option>
+                  <option v-for="ym in props.YMs" :key="ym.YM" :value="ym.YM">
+                    {{ Math.floor(ym.YM / 100) % 100 }}年{{ ym.YM % 100 }}月
+                  </option>
+                </select>
+                <button
+                  type="submit"
+                  class="text-sm w-32 text-white bg-red-500 py-1 px-4 rounded hover:bg-red-600"
+                >
+                  売上データ削除
+                </button>
+              </form>
+            </div>
 
 
             <!-- 品番削除 -->
@@ -152,4 +144,5 @@
         </div>
       </AuthenticatedLayout>
     </template>
+
 

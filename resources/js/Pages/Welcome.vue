@@ -89,7 +89,7 @@
                                     <h2
                                         class="text-xl font-semibold text-black dark:text-white"
                                     >
-                                    Dijon　GMS販売管理 v2
+                                    Dijon　販売管理 v2
                                     </h2>
 
                                     <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
