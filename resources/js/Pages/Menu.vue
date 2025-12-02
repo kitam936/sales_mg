@@ -34,7 +34,7 @@ const logout = () => {
     <AuthenticatedLayout>
 
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight ">GMS販売管理 v2</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight ">販売管理 v2</h2>
         </template>
 
         <div class="py-1">
@@ -98,7 +98,7 @@ const logout = () => {
                                         <Link as="button" :href="route('company.index')" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-9 focus:outline-none hover:bg-indigo-600 rounded text-ml">取引先リスト</Link>
                                     </div>
                                     <div class="p-2 ">
-                                        <Link as="button" :href="route('users.index')" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-11 focus:outline-none hover:bg-indigo-600 rounded text-ml">User管理</Link>
+                                        <Link as="button" :href="route('users.index')" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-11 focus:outline-none hover:bg-indigo-600 rounded text-ml">Staff管理</Link>
                                     </div>
                                 </div>
                             </div>

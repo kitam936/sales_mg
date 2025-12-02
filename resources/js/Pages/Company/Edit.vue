@@ -50,7 +50,7 @@ const goBack = () => {
                     </button>
                 </div>
                 <div class="ml-24 mb-0">
-                    <Link as="button" :href="route('company.index')" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">company一覧</Link>
+                    <Link as="button" :href="route('company.index')" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">取引先一覧</Link>
                 </div>
             </div>
         </template>

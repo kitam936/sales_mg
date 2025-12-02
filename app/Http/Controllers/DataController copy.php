@@ -203,13 +203,13 @@ class DataController extends Controller
 
     public function delete_index()
     {
-        // $YMs=DB::table('sales')
-        // ->select(['YM'])
-        // ->groupBy(['YM'])
-        // ->orderBy('YM','desc')
-        // ->get();
-        // $max_YM=Sale::max('YM');
-        // $max_YW=Sale::max('YW');
+        $YMs=DB::table('sales')
+        ->select(['YM'])
+        ->groupBy(['YM'])
+        ->orderBy('YM','desc')
+        ->get();
+        $max_YM=Sale::max('YM');
+        $max_YW=Sale::max('YW');
 
         $years=DB::table('hinbans')
         ->where('year_code','!=',99)
@@ -221,9 +221,9 @@ class DataController extends Controller
         $min_year=Hinban::min('year_code');
 
         return Inertia::render('Data/DeleteIndex', [
-            // 'YMs' => $YMs,
-            // 'max_YM' => $max_YM,
-            // 'max_YW' => $max_YW,
+            'YMs' => $YMs,
+            'max_YM' => $max_YM,
+            'max_YW' => $max_YW,
             'years' => $years,
             'min_year' => $min_year,
         ]);
@@ -258,15 +258,11 @@ class DataController extends Controller
 
     public function sales_destroy(Request $request)
     {
-        $request->validate([
-            'startDate' => 'required|date',
-            'endDate'   => 'required|date',
-        ]);
-
+        // dd($request->YM1,$request->YM2);
         DB::table('sales')
-            ->whereDate('sales_date', '>=', $request->startDate)
-            ->whereDate('sales_date', '<=', $request->endDate)
-            ->delete();
+        ->where('sales.YM','>=',($request->YM1))
+        ->where('sales.YM','<=',($request->YM2))
+        ->delete();
 
         return to_route('admin.data.delete_index')->with(['message'=>'削除されました','status'=>'alert']);
     }

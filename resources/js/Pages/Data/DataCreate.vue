@@ -64,87 +64,114 @@
                 <!-- 共通アップロードコンポーネント化しても良いが、ここでは全部明示 -->
 
                 <!-- 売上データ -->
-                <form @submit.prevent="submitForm(salesForm, 'admin.data.sales_upload')" class="p-1">
-                  <label class="text-sm text-gray-600">売上データ　</label>
-                  <input type="file" accept=".csv" @change="e => salesForm.sales_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-green-500 py-1 px-4 hover:bg-green-600 rounded">売上データ追加</button>
+                <!-- 売上データ -->
+                <form @submit.prevent="submitForm(salesForm, 'admin.data.sales_upload')" class="flex items-center gap-4 py-1">
+                    <label class="w-32 text-sm text-gray-600">売上データ</label>
+                    <input type="file" accept=".csv" @change="e => salesForm.sales_data = e.target.files[0]"
+                        class="w-1/3 border" />
+                    <button type="submit" class="w-36 text-sm text-white bg-green-500 py-1 px-4 hover:bg-green-600 rounded">
+                    売上データ追加
+                    </button>
                 </form>
 
                 <!-- 在庫データ -->
-                <form @submit.prevent="submitForm(stockForm, 'admin.data.stock_upload')" class="p-1">
-                  <label class="text-sm text-gray-600">在庫データ　</label>
-                  <input type="file" accept=".csv" @change="e => stockForm.stock_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-green-500 py-1 px-4 hover:bg-green-600 rounded">在庫データ更新</button>
+                <form @submit.prevent="submitForm(stockForm, 'admin.data.stock_upload')" class="flex items-center gap-4 py-1">
+                    <label class="w-32 text-sm text-gray-600">在庫データ</label>
+                    <input type="file" accept=".csv" @change="e => stockForm.stock_data = e.target.files[0]"
+                        class="w-1/3 border" />
+                    <button type="submit" class="w-36 text-sm text-white bg-green-500 py-1 px-4 hover:bg-green-600 rounded">
+                    在庫データ更新
+                    </button>
                 </form>
 
                 <!-- SKUデータ -->
-                <form @submit.prevent="submitForm(skuForm, 'admin.data.sku_upsert')" class="p-1">
-                  <label class="text-sm text-gray-600">SKUデータ　</label>
-                  <input type="file" accept=".csv" @change="e => skuForm.sku_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-green-500 py-1 px-4 hover:bg-green-600 rounded">SKUデータ更新</button>
+                <form @submit.prevent="submitForm(skuForm, 'admin.data.sku_upsert')" class="flex items-center gap-4 py-1">
+                    <label class="w-32 text-sm text-gray-600">SKUデータ</label>
+                    <input type="file" accept=".csv" @change="e => skuForm.sku_data = e.target.files[0]"
+                        class="w-1/3 border" />
+                    <button type="submit" class="w-36 text-sm text-white bg-green-500 py-1 px-4 hover:bg-green-600 rounded">
+                    SKUデータ更新
+                    </button>
                 </form>
 
                 <!-- 品番データ -->
-                <form @submit.prevent="submitForm(hinbanForm, 'admin.data.hinban_upsert')" class="p-1">
-                  <label class="text-sm text-gray-600">品番データ　</label>
-                  <input type="file" accept=".csv" @change="e => hinbanForm.hinban_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-green-500 py-1 px-4 hover:bg-green-600 rounded">品番データ更新</button>
+                <form @submit.prevent="submitForm(hinbanForm, 'admin.data.hinban_upsert')" class="flex items-center gap-4 py-1">
+                    <label class="w-32 text-sm text-gray-600">品番データ</label>
+                    <input type="file" accept=".csv" @change="e => hinbanForm.hinban_data = e.target.files[0]"
+                        class="w-1/3 border" />
+                    <button type="submit" class="w-36 text-sm text-white bg-green-500 py-1 px-4 hover:bg-green-600 rounded">
+                    品番データ更新
+                    </button>
                 </form>
 
                 <!-- 店舗データ -->
-                <form @submit.prevent="submitForm(shopForm, 'admin.data.shop_upsert')" class="p-1">
-                  <label class="text-sm text-gray-600">店舗データ　</label>
-                  <input type="file" accept=".csv" @change="e => shopForm.shop_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-blue-500 py-1 px-4 hover:bg-blue-600 rounded">店舗データ更新</button>
+                <form @submit.prevent="submitForm(shopForm, 'admin.data.shop_upsert')" class="flex items-center gap-4 py-1">
+                    <label class="w-32 text-sm text-gray-600">店舗データ</label>
+                    <input type="file" accept=".csv" @change="e => shopForm.shop_data = e.target.files[0]"
+                        class="w-1/3 border" />
+                    <button type="submit" class="w-36 text-sm text-white bg-blue-500 py-1 px-4 hover:bg-blue-600 rounded">
+                    店舗データ更新
+                    </button>
                 </form>
 
                 <!-- 会社データ -->
-                <form @submit.prevent="submitForm(companyForm, 'admin.data.company_upsert')" class="p-1">
-                  <label class="text-sm text-gray-600">会社データ　</label>
-                  <input type="file" accept=".csv" @change="e => companyForm.co_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-blue-500 py-1 px-4 hover:bg-blue-600 rounded">会社データ更新</button>
-                </form>
-
-                <!-- 予算データ -->
-                <form @submit.prevent="submitForm(yosanForm, 'admin.data.yosan_upload')" class="p-1">
-                  <label class="text-sm text-gray-600">予算データ　</label>
-                  <input type="file" accept=".csv" @change="e => yosanForm.yosan_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-blue-500 py-1 px-4 hover:bg-blue-600 rounded">予算データ更新</button>
+                <form @submit.prevent="submitForm(companyForm, 'admin.data.company_upsert')" class="flex items-center gap-4 py-1">
+                    <label class="w-32 text-sm text-gray-600">会社データ</label>
+                    <input type="file" accept=".csv" @change="e => companyForm.co_data = e.target.files[0]"
+                        class="w-1/3 border" />
+                    <button type="submit" class="w-36 text-sm text-white bg-blue-500 py-1 px-4 hover:bg-blue-600 rounded">
+                    会社データ更新
+                    </button>
                 </form>
 
                 <!-- エリアデータ -->
-                <form @submit.prevent="submitForm(areaForm, 'admin.data.area_upsert')" class="p-1">
-                  <label class="text-sm text-gray-600">エリアデータ　</label>
-                  <input type="file" accept=".csv" @change="e => areaForm.ar_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">エリアデータ更新</button>
+                <form @submit.prevent="submitForm(areaForm, 'admin.data.area_upsert')" class="flex items-center gap-4 py-1">
+                    <label class="w-32 text-sm text-gray-600">エリアデータ</label>
+                    <input type="file" accept=".csv" @change="e => areaForm.ar_data = e.target.files[0]"
+                        class="w-1/3 border" />
+                    <button type="submit" class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">
+                    エリアデータ更新
+                    </button>
                 </form>
 
                 <!-- UNITデータ -->
-                <form @submit.prevent="submitForm(unitForm, 'admin.data.unit_upsert')" class="p-1">
-                  <label class="text-sm text-gray-600">UNITデータ　</label>
-                  <input type="file" accept=".csv" @change="e => unitForm.unit_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">UNITデータ更新</button>
+                <form @submit.prevent="submitForm(unitForm, 'admin.data.unit_upsert')" class="flex items-center gap-4 py-1">
+                    <label class="w-32 text-sm text-gray-600">UNITデータ</label>
+                    <input type="file" accept=".csv" @change="e => unitForm.unit_data = e.target.files[0]"
+                        class="w-1/3 border" />
+                    <button type="submit" class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">
+                    UNITデータ更新
+                    </button>
                 </form>
 
                 <!-- Brandデータ -->
-                <form @submit.prevent="submitForm(brandForm, 'admin.data.brand_upsert')" class="p-1">
-                  <label class="text-sm text-gray-600">ブランドデータ</label>
-                  <input type="file" accept=".csv" @change="e => brandForm.brand_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">Brandデータ更新</button>
+                <form @submit.prevent="submitForm(brandForm, 'admin.data.brand_upsert')" class="flex items-center gap-4 py-1">
+                    <label class="w-32 text-sm text-gray-600">ブランドデータ</label>
+                    <input type="file" accept=".csv" @change="e => brandForm.brand_data = e.target.files[0]"
+                        class="w-1/3 border" />
+                    <button type="submit" class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">
+                    ブランド更新
+                    </button>
                 </form>
 
                 <!-- Colデータ -->
-                <form @submit.prevent="submitForm(colForm, 'admin.data.col_upsert')" class="p-1">
-                  <label class="text-sm text-gray-600">カラーデータ　</label>
-                  <input type="file" accept=".csv" @change="e => colForm.col_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">Colデータ更新</button>
+                <form @submit.prevent="submitForm(colForm, 'admin.data.col_upsert')" class="flex items-center gap-4 py-1">
+                    <label class="w-32 text-sm text-gray-600">カラー</label>
+                    <input type="file" accept=".csv" @change="e => colForm.col_data = e.target.files[0]"
+                        class="w-1/3 border" />
+                    <button type="submit" class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">
+                    カラー更新
+                    </button>
                 </form>
 
                 <!-- Sizeデータ -->
-                <form @submit.prevent="submitForm(sizeForm, 'admin.data.size_upsert')" class="p-1">
-                  <label class="text-sm text-gray-600">サイズデータ　</label>
-                  <input type="file" accept=".csv" @change="e => sizeForm.size_data = e.target.files[0]" class="ml-3 w-1/3" />
-                  <button type="submit" class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">Sizeデータ更新</button>
+                <form @submit.prevent="submitForm(sizeForm, 'admin.data.size_upsert')" class="flex items-center gap-4 py-1">
+                    <label class="w-32 text-sm text-gray-600">サイズ</label>
+                    <input type="file" accept=".csv" @change="e => sizeForm.size_data = e.target.files[0]"
+                        class="w-1/3 border" />
+                    <button type="submit" class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">
+                    サイズ更新
+                    </button>
                 </form>
 
                 <!-- YMデータ -->
@@ -162,11 +189,11 @@
                 </form> -->
 
                 <!-- YMDデータ -->
-                <form @submit.prevent="submitForm(ymdForm, 'admin.data.ymd_upsert')" class="p-1">
+                <!-- <form @submit.prevent="submitForm(ymdForm, 'admin.data.ymd_upsert')" class="p-1">
                   <label class="text-sm text-gray-600">YMDデータ　</label>
-                  <input type="file" accept=".csv" @change="e => ymdForm.ymd_data = e.target.files[0]" class="ml-3 w-1/3" />
+                  <input type="file" accept=".csv" @change="e => ymdForm.ymd_data = e.target.files[0]" class="ml-3 w-1/3 border ml-1 mr-1" />
                   <button type="submit" class="w-36 text-sm text-white bg-indigo-500 py-1 px-4 hover:bg-indigo-600 rounded">YMDデータ更新</button>
-                </form>
+                </form> -->
 
                 <!-- Yデータ -->
                 <!-- <form @submit.prevent="submitForm(yForm, 'admin.data.y_upsert')" class="p-1">
