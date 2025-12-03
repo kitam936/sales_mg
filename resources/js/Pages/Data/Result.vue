@@ -32,7 +32,8 @@
 
   <script setup>
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-  import { Inertia } from '@inertiajs/vue3';
+  //import { Inertia } from '@inertiajs/vue3';
+  import { Inertia } from '@inertiajs/inertia';
   import { defineProps } from 'vue';
 
   const props = defineProps({

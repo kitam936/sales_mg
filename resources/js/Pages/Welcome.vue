@@ -59,9 +59,9 @@
                             <template v-else>
                                 <Link
                                     :href="route('login')"
-                                    class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#2563eb] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                    class="rounded-md px-3 py-2 text-indigo-700 ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#2563eb] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                 >
-                                    Log in
+                                    [Log in]
                                 </Link>
 
                                 <!-- <Link
@@ -89,18 +89,19 @@
                                     <h2
                                         class="text-xl font-semibold text-black dark:text-white"
                                     >
-                                    Dijon　販売管理 v2
+                                    Dijon販売管理 v2
                                     </h2>
 
                                     <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                        スタッフ間の情報共有を目的としたサイトです。<br><br>
-                                        このサイトでは下記のことができます。<br>
-                                        ①社・店別の売上・粗利状況（年度・月別・週別）<br>
-                                        　　　および12ヶ月移動平均値の確認<br>
-                                        ②商品の売上・在庫データ確認<br>
-                                        ③商品詳細確認<br>
-                                        ④店舗レポートの投稿およびそれに対するコメント投稿<br>
-                                        　
+                                        ※dijon_salesは移転リニューアルしました<br>
+                                        　URLは　sales-mg.dijon1988.net　です。<br><br>
+
+                                        　ID・パスワードは変更ありません。<br>
+                                        　[log in]　からアクセスしてください。<br><br>
+
+                                        　パスワードを忘れた場合　および<br>
+                                        　このサイトに関する問い合わせは<br>
+                                        　sales@dijon1988.net までお願いします。<br>
                                     </p>
                                 </div>
 
@@ -121,17 +122,19 @@
                                     </h2> -->
 
                                     <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                        ※dijon_salesは移転リニューアルして<br>
-                                        　dijon_sales2となりました。<br>
-                                        　URLは　sales2.dijon1988.net　です。<br><br>
 
-                                        　ID・パスワードは変更ありません。<br>
-                                        　[log in]　からアクセスしてください。<br><br>
+                                        下記機能が追加されました。<br><br>
 
-                                        　パスワードを忘れた場合　および<br>
-                                        　このサイトに関する問い合わせは<br>
-                                        　sales@dijon1988.net までお願いします。<br>
+                                        ①各項目別の売上・粗利・在庫状況<br>
+                                        （年推移・月推移・週推移・期間累計）<br>
+                                        　　　および12ヶ月移動平均値の確認<br>
+                                        ②商品別の売上推移および消化率の確認<br>
+                                        ③品番別の売上数推移（月・週）の確認<br>
+                                        ④画像付き商品リスト<br>
+                                        ⑤画像付き品番別売上ランキングの確認<br>
+                                        　
                                     </p>
+
                                 </div>
 
 
