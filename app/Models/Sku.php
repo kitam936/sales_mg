@@ -21,10 +21,10 @@ class Sku extends Model
         'sku_image'
     ];
 
-    // public function hinban()
-    // {
-    //     return $this->belongsTo(Hinban::class);
-    // }
+    public function hinban()
+    {
+        return $this->belongsTo(Hinban::class);
+    }
 
     public function col()
     {

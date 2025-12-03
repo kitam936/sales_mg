@@ -41,9 +41,9 @@ class Hinban extends Model
         return $this->belongsTo(Unit::class);
     }
 
-    // public function skus()
-    // {
-    //     return $this->hasMany(Sku::class);
-    // }
+    public function skus()
+    {
+        return $this->hasMany(Sku::class);
+    }
 
 }

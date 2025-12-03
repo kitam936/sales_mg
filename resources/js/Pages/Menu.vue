@@ -17,8 +17,10 @@ const props = defineProps({
 const logout = () => {
     router.post(route('logout'), {}, {
         onSuccess: () => {
-            // ログアウト後にログイン画面へ
-            window.location.href = route('login');
+            // ログアウト後にウェルカムページへ
+            window.location.href = route('welcome');
+            // ログアウト後にLoginページへ
+            //window.location.href = route('login');
         },
         onError: (error) => {
             console.error('Logout failed:', error);
@@ -46,14 +48,14 @@ const logout = () => {
 
                         <section class="text-gray-600 body-font relative ">
 
-                            <h3 class="ml-4 font-semibold text-xl text-indigo-800 leading-tight">
+                            <h3 class="ml-4 font-semibold text-lg text-indigo-800 leading-tight">
                                 分析
                             </h3>
                                 <div class="md:flex ">
 
                                     <div class="flex">
                                     <div class="p-2 ">
-                                        <Link as="button" :href="route('analysis')" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-12 focus:outline-none hover:bg-indigo-600 rounded text-ml">データ分析</Link>
+                                        <Link as="button" :href="route('analysis')" class="w-40 flex mx-auto text-white bg-teal-500 border-0 h-10 py-2 pl-12 focus:outline-none hover:bg-teal-600 rounded text-ml">データ分析</Link>
                                     </div>
                                     <!-- <div class="p-2 ">
                                         <Link as="button" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-12 focus:outline-none hover:bg-indigo-600 rounded text-ml">商品分析</Link>
@@ -62,7 +64,7 @@ const logout = () => {
                                 </div>
                                 <br>
 
-                            <h3 class="ml-4 font-semibold text-xl text-indigo-800 leading-tight">
+                            <h3 class="ml-4 font-semibold text-lg text-indigo-800 leading-tight">
                                 店舗Report
                             </h3>
                             <div v-if="reports" class="ml-12 text-ml text-red-600">
@@ -73,13 +75,13 @@ const logout = () => {
                                 ※ 未読のReportコメントがあります !
                             </div>
                                 <div class="p-2 ">
-                                    <Link as="button" :href="route('reports.index')" class="w-40 flex text-white bg-indigo-500 border-0 h-10 py-2 pl-9 focus:outline-none hover:bg-indigo-600 rounded text-ml">店舗Report</Link>
+                                    <Link as="button" :href="route('reports.index')" class="w-40 flex text-white bg-teal-500 border-0 h-10 py-2 pl-9 focus:outline-none hover:bg-teal-600 rounded text-ml">店舗Report</Link>
                                 </div>
 
                             <br>
 
 
-                            <h3 class="ml-4 font-semibold text-xl text-indigo-800 leading-tight">
+                            <h3 class="ml-4 font-semibold text-lg text-indigo-800 leading-tight">
                                 各種Data
                             </h3>
 
