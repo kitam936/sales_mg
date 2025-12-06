@@ -36,7 +36,7 @@ const logout = () => {
     <AuthenticatedLayout>
 
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight ">販売管理 v2</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight ">Dijon販売管理 v2</h2>
         </template>
 
         <div class="py-1">
@@ -55,7 +55,7 @@ const logout = () => {
 
                                     <div class="flex">
                                     <div class="p-2 ">
-                                        <Link as="button" :href="route('analysis')" class="w-40 flex mx-auto text-white bg-teal-500 border-0 h-10 py-2 pl-12 focus:outline-none hover:bg-teal-600 rounded text-ml">データ分析</Link>
+                                        <Link as="button" :href="route('analysis')" class="w-40 flex mx-auto text-white bg-teal-500 border-0 h-10 py-2 pl-10 focus:outline-none hover:bg-teal-600 rounded text-ml">データ分析</Link>
                                     </div>
                                     <!-- <div class="p-2 ">
                                         <Link as="button" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-12 focus:outline-none hover:bg-indigo-600 rounded text-ml">商品分析</Link>

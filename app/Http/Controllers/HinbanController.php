@@ -39,7 +39,8 @@ class HinbanController extends Controller
         ->orderBy('hinbans.brand_id','asc')
         ->orderBy('units.season_id','desc')
         ->orderBy('hinban_id','asc')
-        ->paginate(20);
+        ->paginate(20)
+        ->appends($request->query()); // ★追加
                // ->get();
 
 

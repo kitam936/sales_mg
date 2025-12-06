@@ -9,9 +9,9 @@
 
 　アプリで確認をしてください。<br><br>
 
-　https://sales2.dijon1988.net</p>
+　https://sales-mg.dijon1988.net</p>
 
 
 <br><br>
 
-　***** dijon_sales2 *****
+　***** dijon_sales-mg *****

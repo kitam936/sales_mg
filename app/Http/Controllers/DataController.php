@@ -185,10 +185,18 @@ class DataController extends Controller
         ]);
     }
 
-    public function sales_index()
+    public function sales_index0()
     {
         return Inertia::render('Data/SalesData', [
-            'sales' => Sale::with('shop.company')->orderByDesc('sales_date')->paginate(15)
+            'sales' => Sale::with('shop.company')->orderByDesc('sales_date')->paginate(30)
+        ]);
+    }
+
+    public function sales_index()
+    {
+        $sales = Sale::All();
+        return Inertia::render('Data/SalesData', [
+            'sales' => $sales->orderBy('sales_date','desc')->paginate(30)
         ]);
     }
 
@@ -291,6 +299,9 @@ class DataController extends Controller
     {
         // $Stocks=Hinban::query()->delete();
         DB::table('hinbans')
+        ->where('hinbans.brand_id','!=',4)
+        ->where('hinbans.brand_id','!=',8)
+        ->where('hinbans.brand_id','!=',9)
         ->where('hinbans.year_code','>=',($request->year1))
         ->where('hinbans.year_code','<=',($request->year2))
         ->delete();

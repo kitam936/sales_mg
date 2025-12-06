@@ -45,11 +45,11 @@ const goBack = () => {
                     <button
                         type="button"
                         @click="goBack"
-                        class="w-32 h-8 ml-24 text-gray-700 bg-gray-200 border border-gray-300 focus:outline-none hover:bg-gray-300 rounded text-ml">
+                        class="w-32 h-8 ml-4 md:ml-24 text-gray-700 bg-gray-200 border border-gray-300 focus:outline-none hover:bg-gray-300 rounded text-ml">
                         戻る
                     </button>
                 </div>
-                <div class="ml-24 mb-0">
+                <div class="ml-4 md:ml-24 mb-0">
                     <Link as="button" :href="route('company.index')" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">取引先一覧</Link>
                 </div>
             </div>

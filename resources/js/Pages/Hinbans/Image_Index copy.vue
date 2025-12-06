@@ -160,23 +160,17 @@
                       <div class="text-gray-700">{{ image.hinban_id }}</div>
                       <div class="text-gray-700">{{ image.hinban_name.slice(0, 12) }}</div>
 
-                      <Link :href="route('image_show', { hinban: image.hinban_id })">
+                    <Link :href="route('image_show', { hinban: image.hinban_id })">
                         <img
                           v-if="image.filename"
                           :src="`/storage/images/${image.filename}`"
                           class="rounded-md mt-2"
                           alt="thumbnail"
                         />
-
-                        <!-- 画像が無いときもクリック可能に -->
-                        <div
-                          v-else
-                          class="w-full h-32 bg-gray-100 flex items-center justify-center text-gray-400 rounded-md mt-2 cursor-pointer"
-                        >
+                    </Link>
+                        <div v-if="!(image.filename)" class="w-full h-32 bg-gray-100 flex items-center justify-center text-gray-400">
                           No Image
                         </div>
-                      </Link>
-
 
 
                       <div class="text-gray-700 mt-2 ml-4">売価 {{ image.m_price }}円</div>

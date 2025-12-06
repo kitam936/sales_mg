@@ -44,7 +44,7 @@
                         <div class="flex w-44 lg:col-start-2 lg:justify-center">
                             <div>
 
-                                <img src="/images/logo.PNG">
+                                <img src="/images/logo.png" alt="Logo">
                             </div>
                         </div>
                         <nav v-if="canLogin" class="-mx-3 flex flex-1 justify-end">
@@ -59,7 +59,7 @@
                             <template v-else>
                                 <Link
                                     :href="route('login')"
-                                    class="rounded-md px-3 py-2 text-indigo-700 ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#2563eb] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                    class="text-ml rounded-md px-3 py-2 text-indigo-700 ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#2563eb] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                 >
                                     [Log in]
                                 </Link>
