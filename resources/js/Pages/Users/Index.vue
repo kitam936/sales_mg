@@ -33,7 +33,7 @@
     <AuthenticatedLayout>
         <template #header>
 
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">User一覧</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Staff一覧</h2>
 
             <div class="flex">
 
@@ -41,7 +41,7 @@
                     <Link as="button" :href="route('menu')" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Menu</Link>
                 </div>
                 <div class="ml-4 md:ml-24 mt-4">
-                    <Link as="button" :href="route('users.create')" class="w-32 h-8 bg-green-500 text-sm text-white ml-0 hover:bg-green-600 rounded">User登録</Link>
+                    <Link as="button" :href="route('users.create')" class="w-32 h-8 bg-green-500 text-sm text-white ml-0 hover:bg-green-600 rounded">Staff登録</Link>
                 </div>
             </div>
         </template>
@@ -67,7 +67,7 @@
                                 <input class="h-8 w-60 rounded" type="text" name="search" v-model="search" placeholder="ワード検索">
                                 <button class="ml-2 bg-blue-300 text-white px-2 w-20 h-8 rounded "
                                 @click="searchUsers">検索</button>
-                                <button class="ml-2 bg-gray-300 text-white px-2 w-20 h-8 rounded"
+                                <button class="ml-2 bg-gray-300 text-white px-2 w-24 h-8 rounded"
                                 @click="resetFilters">クリア</button>
 
                             </div>

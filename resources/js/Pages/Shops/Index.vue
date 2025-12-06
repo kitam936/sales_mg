@@ -91,7 +91,7 @@
                                 <input class="h-8 w-60 rounded" type="text" name="search" v-model="search" placeholder="ワード検索">
                                 <button class="ml-2 bg-blue-300 text-white px-2 w-20 h-8 rounded "
                                 @click="searchShops">検索</button>
-                                <button class="ml-2 bg-gray-300 text-white px-2 w-20 h-8 rounded"
+                                <button class="ml-2 bg-gray-300 text-white px-2 w-24 h-8 rounded"
                                 @click="resetFilters">クリア</button>
 
                             </div>

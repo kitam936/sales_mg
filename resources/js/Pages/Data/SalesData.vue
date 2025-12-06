@@ -56,9 +56,13 @@
   import FlashMessage from '@/Components/FlashMessage.vue';
   import Pagination from '@/Components/Pagination.vue';
 
-  const { props } = usePage()
-  const sales = props.value.sales
-  const flashStatus = props.value.flash?.status || null
+  const props = defineProps({
+    sales: Object,
+    flash: Object
+  })
+
+  const sales = props.sales
+  const flashStatus = props.flash?.status || null
 
   const formatNumber = (val) => {
     return Number(val).toLocaleString()

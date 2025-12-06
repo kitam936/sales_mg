@@ -178,30 +178,40 @@ class ImageController extends Controller
 
     public function image_show($id)
     {
-        $login_user =  DB::table('users')
-        ->where('users.id',Auth::id())
-        ->first();
+        $login_user = DB::table('users')
+            ->where('users.id', Auth::id())
+            ->first();
 
+        // 画像が無くても商品情報は必ず取得
         $image = DB::table('hinbans')
-        ->leftjoin('images','hinbans.id','images.hinban_id')
-        ->where('images.hinban_id',($id))
-        ->select('images.hinban_id','hinbans.hinban_name','images.filename','hinbans.m_price',
-        'hinbans.hinban_info','hinbans.cost')
-        ->first();
+            ->leftJoin('images', 'hinbans.id', '=', 'images.hinban_id')
+            ->where('hinbans.id', $id)
+            ->select(
+                'hinbans.id as hinban_id',
+                'hinbans.hinban_name',
+                'images.filename',
+                'hinbans.m_price',
+                'hinbans.hinban_info',
+                'hinbans.cost'
+            )
+            ->first();
+
+        // SKU画像も商品起点で取得
         $sku_images = DB::table('skus')
-        ->leftjoin('sku_images','skus.id','sku_images.sku_id')
-        ->join('sizes','skus.size_id','sizes.id')
-        ->join('hinbans','hinbans.id','skus.hinban_id')
-        ->where('skus.hinban_id',($id))
-        ->where('skus.col_id','<>',99)
-        ->select('sku_images.sku_id','skus.col_id','sku_images.filename','sizes.size_name')
-        ->get();
+            ->leftJoin('sku_images', 'skus.id', 'sku_images.sku_id')
+            ->join('sizes', 'skus.size_id', 'sizes.id')
+            ->join('hinbans', 'hinbans.id', 'skus.hinban_id')
+            ->where('skus.hinban_id', $id)
+            ->where('skus.col_id', '<>', 99)
+            ->select(
+                'sku_images.sku_id',
+                'skus.col_id',
+                'sku_images.filename',
+                'sizes.size_name'
+            )
+            ->get();
 
-        // dd($sku_images,$image,$login_user);
-
-        return Inertia::render('Hinbans/Image_Show',compact('image','sku_images','login_user'));
-
-
+        return Inertia::render('Hinbans/Image_Show', compact('image', 'sku_images', 'login_user'));
     }
 
 

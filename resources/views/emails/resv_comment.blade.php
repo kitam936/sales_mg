@@ -19,7 +19,7 @@
 
 アプリで確認をしてください。<br><br>
 
-https://shop.dijon1988.net
+https://sales-mg.dijon1988.net
 
 <br><br>
 

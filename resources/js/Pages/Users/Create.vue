@@ -48,7 +48,7 @@ const goBack = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">User登録</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Staff登録</h2>
             <div class="flex mt-4">
                 <div class="">
                     <button
@@ -59,7 +59,7 @@ const goBack = () => {
                     </button>
                 </div>
                 <div class="ml-4 md:ml-24 mb-0">
-                    <Link as="button" :href="route('users.index')" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">User一覧</Link>
+                    <Link as="button" :href="route('users.index')" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Staff一覧</Link>
                 </div>
             </div>
         </template>
