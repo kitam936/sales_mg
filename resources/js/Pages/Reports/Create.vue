@@ -97,13 +97,13 @@
             </select>
 
             <textarea v-model="form.report" rows="8" required
-              class="w-full bg-gray-100 rounded border border-gray-300 focus:ring-2 focus:ring-indigo-200 p-2 text-sm"></textarea>
+              class="w-full bg-gray-100 rounded border border-gray-300 focus:ring-2 focus:ring-indigo-200 p-2 text-base"></textarea>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
               <div v-for="i in 4" :key="i">
                 <input type="file" :id="'image' + i" :name="'image' + i" @input="form['image'+i]=$event.target.files[0]"
                   accept="image/png,image/jpeg,image/jpg"
-                  class="w-3/4 bg-gray-100 rounded border border-gray-300 text-sm p-1"/>
+                  class="w-full bg-gray-100 rounded border border-gray-300 text-sm p-1"/>
               </div>
             </div>
 

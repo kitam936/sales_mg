@@ -17,7 +17,9 @@ use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\ImageManager;
 use Inertia\Inertia;
 use Throwable; // 追加
-use Intervention\Image\Imagick\ImagickDriver;
+// use Intervention\Image\Imagick\ImagickDriver;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
+use Intervention\Image\Interfaces\ImageInterface;
 // use Intervention\Image\Gd\GdDriver;
 
 
@@ -176,123 +178,150 @@ class ReportController extends Controller
 
     }
 
+   /**
+     * HEIC/HEIF → JPEG 変換
+     */
+    private function convertHeicToJpg(UploadedFile $file): string
+    {
+        $path = $file->getRealPath();
+        $imagick = new \Imagick();
+        $imagick->readImage($path);
+        $imagick->setImageFormat('jpeg');
+        $imagick->setImageCompressionQuality(90);
+
+        $tmpPath = tempnam(sys_get_temp_dir(), 'jpg_') . '.jpg';
+        $imagick->writeImage($tmpPath);
+        $imagick->clear();
+        $imagick->destroy();
+
+        return $tmpPath;
+    }
 
     /**
-     * Store a newly created resource in storage.
+     * EXIF Orientation を見てピクセル自体を回転
+     */
+    private function fixOrientation(ImageInterface $img): ImageInterface
+    {
+        try {
+            $orientation = $img->exif('Orientation');
+
+            if ($orientation) {
+                switch ($orientation) {
+                    case 3:
+                        $img->rotate(180);
+                        break;
+                    case 6:
+                        $img->rotate(90);
+                        break;
+                    case 8:
+                        $img->rotate(-90);
+                        break;
+                }
+                // Orientation フラグをリセット
+                if (method_exists($img->getCore(), 'setImageOrientation')) {
+                    $img->getCore()->setImageOrientation(\Imagick::ORIENTATION_TOPLEFT);
+                }
+            }
+        } catch (\Throwable $e) {
+            // EXIFがなくても無視
+        }
+        return $img;
+    }
+
+    /**
+     * 共通画像処理（スマホ完全対応）
+     */
+    private function processImage(UploadedFile $file, string $fileName): string
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        // HEIC → JPEG
+        if ($extension === 'heic' || $extension === 'heif') {
+            $filePath = $this->convertHeicToJpg($file);
+        } else {
+            $filePath = $file->getRealPath();
+        }
+
+        // Imagick ドライバで ImageManager 作成
+        $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Imagick\Driver());
+
+        // v3では make() ではなく read()
+        $img = $manager->read($filePath);
+
+        // EXIF補正
+        $img = $this->fixOrientation($img);
+
+        $origW = $img->width();
+        $origH = $img->height();
+
+        // 長辺 400px
+        if ($origW >= $origH) {
+            $newW = 400;
+            $newH = intval($origH * ($newW / $origW));
+        } else {
+            $newH = 400;
+            $newW = intval($origW * ($newH / $origH));
+        }
+
+        $img->resize($newW, $newH);
+
+        $path = "reports/" . $fileName;
+
+        if (\Illuminate\Support\Facades\Storage::exists($path)) {
+            \Illuminate\Support\Facades\Storage::delete($path);
+        }
+
+        // v3では JpegEncoder を使用
+        $encoder = new JpegEncoder(quality: 90);
+        $encoded = $img->encode($encoder);
+
+        \Illuminate\Support\Facades\Storage::put($path, (string)$encoded);
+
+        return $fileName;
+    }
+    /**
+     * store
      */
     public function store(StoreReportRequest $request)
     {
-        $login_user = User::findOrFail(Auth::id());
-        $manager = new ImageManager(new GdDriver());
+        $login_user = Auth::user();
 
-        /**
-         * 画像共通処理
-         * - EXIF補正
-         * - 縦横比維持リサイズ
-         * - 縦長なら width=500
-         * - 横長/正方形なら max=400 に収める
-         */
-        $processImage = function ($file, $fileName) use ($manager) {
+        $imageFields = ['image1', 'image2', 'image3', 'image4'];
+        $saved = [];
 
-            $path = 'reports/' . $fileName;
-
-            // 読み込み
-            $img = $manager->read($file);
-
-            // 向きを補正（EXIF）
-            try {
-                $img->orientate();
-            } catch (Throwable $e) {}
-
-            // 元サイズ
-            $origW = $img->width();
-            $origH = $img->height();
-
-            // ===== 縦長画像（高さ > 幅）のときのみ 幅500px =====
-            if ($origH > $origW) {
-                $newW = 500;
-                $newH = intval($origH * (500 / $origW));
-
+        foreach ($imageFields as $field) {
+            if ($request->file($field)) {
+                $saved[$field] = $this->processImage(
+                    $request->file($field),
+                    uniqid() . '_' . $request->file($field)->getClientOriginalName()
+                );
             } else {
-                // ===== 横長・正方形は 400px以内 =====
-                $max = 400;
-
-                if ($origW > $origH) {
-                    // 横長
-                    $newW = $max;
-                    $newH = intval($origH * ($max / $origW));
-                } else {
-                    // 正方形
-                    $newH = $max;
-                    $newW = intval($origW * ($max / $origH));
-                }
+                $saved[$field] = '';
             }
+        }
 
-            // リサイズ（縦横比維持）
-            $img->resize($newW, $newH);
-
-            // エンコード（JPEG）
-            $encoded = $img->encode(new JpegEncoder(quality: 90));
-
-            // 既存ファイルがあれば削除
-            if (Storage::exists($path)) {
-                Storage::delete($path);
-            }
-
-            // 保存
-            Storage::put($path, (string)$encoded);
-
-            return $fileName;
-        };
-
-
-        // ===============================
-        // image1〜4 を共通処理で保存
-        // ===============================
-
-        $fileNameToStore1 = $request->file('image1')
-            ? $processImage($request->file('image1'), $request->file('image1')->getClientOriginalName())
-            : '';
-
-        $fileNameToStore2 = $request->file('image2')
-            ? $processImage($request->file('image2'), $request->file('image2')->getClientOriginalName())
-            : '';
-
-        $fileNameToStore3 = $request->file('image3')
-            ? $processImage($request->file('image3'), $request->file('image3')->getClientOriginalName())
-            : '';
-
-        $fileNameToStore4 = $request->file('image4')
-            ? $processImage($request->file('image4'), $request->file('image4')->getClientOriginalName())
-            : '';
-
-
-        // ===============================
-        // DB 登録
-        // ===============================
         $report = Report::create([
             'user_id' => $login_user->id,
             'shop_id' => $request->sh_id,
-            'image1'  => $fileNameToStore1,
-            'image2'  => $fileNameToStore2,
-            'image3'  => $fileNameToStore3,
-            'image4'  => $fileNameToStore4,
             'report'  => $request->report,
+            'image1'  => $saved['image1'],
+            'image2'  => $saved['image2'],
+            'image3'  => $saved['image3'],
+            'image4'  => $saved['image4'],
         ]);
 
-        DB::table('report_reads')->upsert(
-            [
-                'report_id' => $report->id,
-                'user_id'   => Auth::id(),
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            ['report_id', 'user_id']
-        );
+        DB::table('report_reads')->upsert([
+            'report_id' => $report->id,
+            'user_id'   => $login_user->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ], ['report_id', 'user_id']);
 
         return to_route('reports.index')
             ->with(['message' => 'Reportが登録されました', 'status' => 'info']);
     }
+
+
     /**
      * Display the specified resource.
      */
@@ -377,106 +406,41 @@ class ReportController extends Controller
         ]);
     }
 
+/**
+     * update
+     */
     public function update(UpdateReportRequest $request, Report $report)
     {
-        $manager = new ImageManager(new GdDriver());
-        $folderName = 'reports';
+        $imageFields = ['image1', 'image2', 'image3', 'image4'];
 
-        /**
-         * 共通画像処理関数
-         */
-        $processImage = function ($file, $oldFileName = null) use ($manager, $folderName) {
+        foreach ($imageFields as $field) {
+            if ($request->file($field)) {
+                $newName = $this->processImage(
+                    $request->file($field),
+                    uniqid() . '_' . $request->file($field)->getClientOriginalName()
+                );
 
-            // 新しいファイル名
-            $originalName = $file->getClientOriginalName();
-            $fileNameToStore = $originalName;
-            $filePath = "{$folderName}/{$fileNameToStore}";
-
-            // 既存ファイル削除
-            if ($oldFileName && Storage::exists("{$folderName}/{$oldFileName}")) {
-                Storage::delete("{$folderName}/{$oldFileName}");
-            }
-
-            // 画像読み込み
-            $img = $manager->read($file);
-
-            // 向き補正
-            try { $img->orientate(); } catch (Throwable $e) {}
-
-            // 元サイズ取得
-            $origW = $img->width();
-            $origH = $img->height();
-
-            // === 縦長なら幅500にリサイズ ===
-            if ($origH > $origW) {
-                $newW = 500;
-                $newH = intval($origH * (500 / $origW));
-            } else {
-                // === 横長・正方形は 400px 基準 ===
-                $max = 400;
-
-                if ($origW >= $origH) {
-                    // 横長：幅400
-                    $newW = $max;
-                    $newH = intval($origH * ($max / $origW));
-                } else {
-                    // 正方形に近い縦：高さ400
-                    $newH = $max;
-                    $newW = intval($origW * ($max / $origH));
+                if ($report->$field) {
+                    $oldPath = "reports/" . $report->$field;
+                    if (Storage::exists($oldPath)) {
+                        Storage::delete($oldPath);
+                    }
                 }
+
+                $report->$field = $newName;
             }
-
-            // リサイズ
-            $img->resize($newW, $newH);
-
-            // JPEGエンコード
-            $encoded = $img->encode(new JpegEncoder(quality: 90));
-
-            // 保存
-            Storage::put($filePath, (string)$encoded);
-
-            return $fileNameToStore;
-        };
-
-
-        // ====== image1 ======
-        $fileNameToStore1 = $report->image1;
-        if ($request->hasFile('image1')) {
-            $fileNameToStore1 = $processImage($request->file('image1'), $report->image1);
         }
 
-        // ====== image2 ======
-        $fileNameToStore2 = $report->image2;
-        if ($request->hasFile('image2')) {
-            $fileNameToStore2 = $processImage($request->file('image2'), $report->image2);
-        }
+        $report->report = $request->report;
+        $report->save();
 
-        // ====== image3 ======
-        $fileNameToStore3 = $report->image3;
-        if ($request->hasFile('image3')) {
-            $fileNameToStore3 = $processImage($request->file('image3'), $report->image3);
-        }
-
-        // ====== image4 ======
-        $fileNameToStore4 = $report->image4;
-        if ($request->hasFile('image4')) {
-            $fileNameToStore4 = $processImage($request->file('image4'), $report->image4);
-        }
-
-
-        // === レコード更新 ===
-        $report->update([
-            'shop_id' => $request->shop_id,
-            'report'  => $request->report,
-            'image1'  => $fileNameToStore1,
-            'image2'  => $fileNameToStore2,
-            'image3'  => $fileNameToStore3,
-            'image4'  => $fileNameToStore4,
-        ]);
-
-        return to_route('reports.show', ['report' => $report->id])
-            ->with(['message' => '更新されました', 'status' => 'info']);
+        return to_route('reports.index')
+            ->with(['message' => 'Reportが更新されました', 'status' => 'info']);
     }
+
+
+    /* index / show / edit / destroy / del_image1 はあなたのコードのまま */
+
 
 
 
