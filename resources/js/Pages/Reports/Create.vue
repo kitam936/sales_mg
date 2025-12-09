@@ -89,9 +89,9 @@
           </div>
         </template>
 
-        <div class="p-2 bg-white rounded shadow">
+        <div class="p-1 bg-white rounded shadow">
           <form @submit.prevent="submit" enctype="multipart/form-data" class="ml-2">
-            <select v-model="form.sh_id" class="w-32 h-8 mb-4 rounded text-sm">
+            <select v-model="form.sh_id" class="w-32 h-8 mb-2 rounded text-sm">
               <option value="">店舗選択</option>
               <option v-for="s in props.shops" :key="s.id" :value="s.id">{{ s.shop_name }}</option>
             </select>
@@ -103,7 +103,7 @@
               <div v-for="i in 4" :key="i">
                 <input type="file" :id="'image' + i" :name="'image' + i" @input="form['image'+i]=$event.target.files[0]"
                   accept="image/png,image/jpeg,image/jpg"
-                  class="w-full bg-gray-100 rounded border border-gray-300 text-sm p-1"/>
+                  class="w-3/4 bg-gray-100 rounded border border-gray-300 text-sm p-1"/>
               </div>
             </div>
 

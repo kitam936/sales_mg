@@ -19,118 +19,143 @@ class SalesComparisonController extends Controller
 
         $today = Carbon::today();
 
+        // 期間設定（月：12ヶ月 / 週：52週）
         if ($compareType === 'monthly') {
-            $startDate = $today->copy()->subMonths(11)->startOfMonth();
+            $startDate = $today->copy()->subMonths(11)->startOfMonth(); // 直近12ヶ月
             $endDate = $today->copy()->endOfMonth();
-            $prevStart = $startDate->copy()->subYear();
-            $prevEnd = $endDate->copy()->subYear();
+
         } else { // weekly
-            $startDate = $today->copy()->subWeeks(51)->startOfWeek();
-            $endDate = $today->copy()->endOfWeek();
-            $prevStart = $startDate->copy()->subYear();
-            $prevEnd = $endDate->copy()->subYear();
+            $startDate = $today->copy()->subWeeks(51)->startOfWeek(); // 月曜始まり
+            $endDate = $today->copy()->endOfWeek(); // 日曜終わり
         }
+
+        // 前年期間
+        $prevStart = $startDate->copy()->subYear();
+        $prevEnd   = $endDate->copy()->subYear();
 
         $companies = Company::all();
         $shops = $company_id ? Shop::where('company_id', $company_id)->get() : collect();
 
-        // DB側で現年/前年をまとめて取得
+        /**
+         * ============================
+         *  DB一括取得（現年＋前年）
+         * ============================
+         */
         $query = SalesData::query()
             ->selectRaw(
-                match($compareType) {
-                    'monthly' => "
-                        YEAR(sales_date) as year,
+                $compareType === 'monthly'
+                    ? "
                         MONTH(sales_date) as period,
                         CASE WHEN sales_date BETWEEN ? AND ? THEN 1
-                             WHEN sales_date BETWEEN ? AND ? THEN 0
-                             ELSE NULL END as is_current,
+                             WHEN sales_date BETWEEN ? AND ? THEN 0 END as is_current,
                         SUM(kingaku) as total_sales,
                         SUM(arari) as total_profit
-                    ",
-                    'weekly' => "
-                        YEAR(sales_date) as year,
+                    "
+                    : "
                         WEEK(sales_date,1) as period,
                         CASE WHEN sales_date BETWEEN ? AND ? THEN 1
-                             WHEN sales_date BETWEEN ? AND ? THEN 0
-                             ELSE NULL END as is_current,
+                             WHEN sales_date BETWEEN ? AND ? THEN 0 END as is_current,
                         SUM(kingaku) as total_sales,
                         SUM(arari) as total_profit,
                         MAX(sales_date) as max_date
-                    "
-                }
-            , [$startDate, $endDate, $prevStart, $prevEnd])
+                    ",
+                [$startDate, $endDate, $prevStart, $prevEnd]
+            )
             ->when($company_id, fn($q) => $q->where('company_id', $company_id))
             ->when($shop_id, fn($q) => $q->where('shop_id', $shop_id))
-            ->groupBy('year','period','is_current')
-            ->orderBy('year')
+            ->groupBy('period', 'is_current')
             ->orderBy('period')
             ->get();
 
-        // 現年・前年データをDB側で振り分け
-        $currentData = $query->where('is_current',1)->keyBy(fn($item) => $item->period);
-        $prevData = $query->where('is_current',0)->keyBy(fn($item) => $item->period);
+        // 現年 / 前年に振り分け
+        $currentData = $query->where('is_current', 1)->keyBy('period');
+        $prevData = $query->where('is_current', 0)->keyBy('period');
 
-        // 表示行作成
+        /**
+         * ============================
+         *  表示行作成
+         * ============================
+         */
         $rows = [];
+
+        /**
+         * ----------------------------
+         *  月別 12ヶ月
+         * ----------------------------
+         */
         if ($compareType === 'monthly') {
+
             for ($i = 0; $i < 12; $i++) {
+
                 $date = $startDate->copy()->addMonths($i);
                 $m = intval($date->format('n'));
 
                 $cur = $currentData->get($m);
                 $pre = $prevData->get($m);
 
-                $sales = $cur->total_sales ?? 0;
-                $profit = $cur->total_profit ?? 0;
-                $sales_prev = $pre->total_sales ?? 0;
+                $sales       = $cur->total_sales ?? 0;
+                $profit      = $cur->total_profit ?? 0;
+                $sales_prev  = $pre->total_sales ?? 0;
                 $profit_prev = $pre->total_profit ?? 0;
-                $sales_rate = $sales_prev ? round(($sales/$sales_prev)*100,1) : null;
-                $profit_rate = $profit_prev ? round(($profit/$profit_prev)*100,1) : null;
 
                 $rows[] = [
-                    'period' => $date->format('y/n'),
-                    'sales' => $sales,
-                    'profit' => $profit,
-                    'sales_prev' => $sales_prev,
+                    'period'      => $date->format('y/m'),
+                    'sales'       => $sales,
+                    'profit'      => $profit,
+                    'sales_prev'  => $sales_prev,
                     'profit_prev' => $profit_prev,
-                    'sales_rate' => $sales_rate,
-                    'profit_rate' => $profit_rate,
+                    'sales_rate'  => $sales_prev ? round($sales / $sales_prev * 100, 1) : null,
+                    'profit_rate' => $profit_prev ? round($profit / $profit_prev * 100, 1) : null,
                 ];
             }
-        } else { // weekly
+
+        /**
+         * ----------------------------
+         *  週別 52週
+         * ----------------------------
+         * 週は必ず「月曜始まり」
+         * 週ラベルは
+         *   現年→ max_date があればそれを使用（その週の最大日付）
+         *   無ければ → Carbonでその週の日曜を計算
+         */
+        } else {
+
             for ($i = 0; $i < 52; $i++) {
+
                 $weekStart = $startDate->copy()->addWeeks($i);
-                $weekEnd = $weekStart->copy()->endOfWeek();
-                $w = intval($weekStart->format('W'));
+                $weekEnd   = $weekStart->copy()->endOfWeek(); // 日曜
+
+                $w = intval($weekStart->format('W')); // ISO-8601（月曜始まり）
 
                 $cur = $currentData->get($w);
                 $pre = $prevData->get($w);
 
-                $sales = $cur->total_sales ?? 0;
-                $profit = $cur->total_profit ?? 0;
-                $sales_prev = $pre->total_sales ?? 0;
+                $sales       = $cur->total_sales ?? 0;
+                $profit      = $cur->total_profit ?? 0;
+                $sales_prev  = $pre->total_sales ?? 0;
                 $profit_prev = $pre->total_profit ?? 0;
-                $sales_rate = $sales_prev ? round(($sales/$sales_prev)*100,1) : null;
-                $profit_rate = $profit_prev ? round(($profit/$profit_prev)*100,1) : null;
+
+                // ★週ラベル：DBの max_date（その週の最大日付）→ 無ければ週末の日曜
+                $periodLabel = $cur && $cur->max_date
+                    ? Carbon::parse($cur->max_date)->format('y/m/d')
+                    : $weekEnd->format('y/m/d');
 
                 $rows[] = [
-                    'period' => $weekEnd->format('y/m/d'),
-                    'sales' => $sales,
-                    'profit' => $profit,
-                    'sales_prev' => $sales_prev,
+                    'period'      => $periodLabel,
+                    'sales'       => $sales,
+                    'profit'      => $profit,
+                    'sales_prev'  => $sales_prev,
                     'profit_prev' => $profit_prev,
-                    'sales_rate' => $sales_rate,
-                    'profit_rate' => $profit_rate,
+                    'sales_rate'  => $sales_prev ? round($sales / $sales_prev * 100, 1) : null,
+                    'profit_rate' => $profit_prev ? round($profit / $profit_prev * 100, 1) : null,
                 ];
             }
         }
 
         return response()->json([
             'companies' => $companies,
-            'shops' => $shops,
-            'rows' => $rows,
+            'shops'     => $shops,
+            'rows'      => $rows,
         ]);
     }
 }
-
-

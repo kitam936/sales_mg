@@ -71,7 +71,7 @@
               <!-- 年度 -->
               <label for="year_code" class="text-sm mt-2 text-gray-800">年度：</label>
               <select v-model="year_code" id="year_code" class="w-24 h-8 rounded text-sm pt-1 mr-2 mb-2 border">
-                <option value="">指定なし</option>
+                <option value="">無指定</option>
                 <option v-for="year in years" :key="year.year_code" :value="year.year_code">
                   {{ year.year_code }}
                 </option>
@@ -80,7 +80,7 @@
               <!-- ブランド -->
               <label for="brand_code" class="text-sm mt-2 text-gray-800">Brand：</label>
               <select v-model="brand_code" id="brand_code" class="w-24 h-8 rounded text-sm pt-1 mr-2 mb-2 border">
-                <option value="">指定なし</option>
+                <option value="">無指定</option>
                 <option v-for="brand in brands" :key="brand.id" :value="brand.id">
                   {{ brand.id }}
                 </option>
@@ -91,7 +91,7 @@
               <!-- 季節 -->
               <label for="season_code" class="text-sm mt-2 text-gray-800">季節：</label>
               <select v-model="season_code" id="season_code" class="w-24 h-8 rounded text-sm pt-1 mr-2 mb-2 border">
-                <option value="">指定なし</option>
+                <option value="">無指定</option>
                 <option v-for="season in seasons" :key="season.season_id" :value="season.season_id">
                   {{ season.season_name }}
                 </option>
@@ -100,7 +100,7 @@
               <!-- Unit -->
               <label for="unit_code" class="text-sm mt-2 text-gray-800">Unit：　</label>
               <select v-model="unit_code" id="unit_code" class="w-24 h-8 rounded text-sm pt-1 mr-2 mb-2 border">
-                <option value="">指定なし</option>
+                <option value="">無指定</option>
                 <option v-for="unit in units" :key="unit.unit_code" :value="unit.unit_code">
                   {{ unit.id }}
                 </option>
@@ -110,7 +110,7 @@
               <!-- Face -->
               <label for="face" class="text-sm mt-0 text-gray-800">Face：</label>
               <select v-model="face" id="face" class="w-24 h-8 rounded text-sm pt-1 mr-2 mb-2 border">
-                <option value="">指定なし</option>
+                <option value="">無指定</option>
                 <option v-for="f in faces" :key="f.face" :value="f.face">
                   {{ f.face }}
                 </option>
