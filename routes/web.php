@@ -156,6 +156,7 @@ Route::middleware('auth')->group(function () {
     // Route::get('analysis', [AnalysisController::class, 'index'])->name('analysis');
     Route::get('analysis/test', [AnalysisController::class, 'test'])->name('analysis.test');
     Route::get('menu', [MenuController::class, 'menu'])->name('menu');
+    Route::get('welcome', [MenuController::class, 'welcome'])->name('welcome');
     Route::get('/sales/comparison', [SalesComparisonController::class, 'index'])
     ->name('sales.comparison');
 

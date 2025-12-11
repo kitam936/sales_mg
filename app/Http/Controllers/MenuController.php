@@ -43,4 +43,10 @@ class MenuController extends Controller
             'login_user' => $login_user,
         ]);
     }
+
+    public function welcome()
+    {
+
+        return Inertia::render('Welcome');
+    }
 }

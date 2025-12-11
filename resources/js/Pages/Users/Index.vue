@@ -38,10 +38,10 @@
             <div class="flex">
 
                 <div class="ml-2 md:ml-24 mt-4">
-                    <Link as="button" :href="route('menu')" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Menu</Link>
+                    <Link as="button" :href="route('menu')" class="w-40 h-10 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Menu</Link>
                 </div>
-                <div class="ml-4 md:ml-24 mt-4">
-                    <Link as="button" :href="route('users.create')" class="w-32 h-8 bg-green-500 text-sm text-white ml-0 hover:bg-green-600 rounded">Staff登録</Link>
+                <div class="ml-2 md:ml-24 mt-4">
+                    <Link as="button" :href="route('users.create')" class="w-40 h-10 bg-green-500 text-sm text-white ml-0 hover:bg-green-600 rounded">Staff登録</Link>
                 </div>
             </div>
         </template>
@@ -57,7 +57,7 @@
                             <div class="p-2 relative mt-0 ">
                                 <!-- <label for="role_id" class="leading-7 text-sm text-gray-600">Role</label> -->
                                 <select id="dept_id" name="dept_id" v-model="dept_id" class="h-8 w-32 rounded border border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
-                                    <option value="" selected>dept選択</option> <!-- 変更: 選択なしのオプションを追加 -->
+                                    <option value="" selected>所属選択</option> <!-- 変更: 選択なしのオプションを追加 -->
                                     <option v-for="dept in depts" :key="dept.id" :value="dept.id">{{ dept.dept_name }}</option>
                                 </select>
                             </div>
@@ -68,7 +68,7 @@
                                 <button class="ml-2 bg-blue-300 text-white px-2 w-20 h-8 rounded "
                                 @click="searchUsers">検索</button>
                                 <button class="ml-2 bg-gray-300 text-white px-2 w-24 h-8 rounded"
-                                @click="resetFilters">クリア</button>
+                                @click="resetFilters">全表示</button>
 
                             </div>
 

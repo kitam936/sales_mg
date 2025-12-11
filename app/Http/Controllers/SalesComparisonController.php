@@ -13,20 +13,39 @@ class SalesComparisonController extends Controller
 {
     public function index(Request $request)
     {
-        $compareType = $request->get('compareType', 'monthly'); // monthly / weekly
+        $compareType = $request->get('compareType', 'monthly');
         $company_id = $request->get('company_id');
         $shop_id = $request->get('shop_id');
 
-        $today = Carbon::today();
+        /**
+         * ============================
+         *  ★ 現年の売上データ最大日付を取得
+         * ============================
+         */
+        $maxSalesDate = SalesData::when($company_id, fn($q) => $q->where('company_id', $company_id))
+            ->when($shop_id, fn($q) => $q->where('shop_id', $shop_id))
+            ->max('sales_date');
 
-        // 期間設定（月：12ヶ月 / 週：52週）
+        // データがなければ今日とする
+        $maxDate = $maxSalesDate ? Carbon::parse($maxSalesDate) : Carbon::today();
+
+
+        /**
+         * ============================
+         *   期間設定（月：12ヶ月 / 週：maxDate の週まで）
+         * ============================
+         */
         if ($compareType === 'monthly') {
-            $startDate = $today->copy()->subMonths(11)->startOfMonth(); // 直近12ヶ月
-            $endDate = $today->copy()->endOfMonth();
 
-        } else { // weekly
-            $startDate = $today->copy()->subWeeks(51)->startOfWeek(); // 月曜始まり
-            $endDate = $today->copy()->endOfWeek(); // 日曜終わり
+            // 12ヶ月固定
+            $endDate = $maxDate->copy()->endOfMonth();
+            $startDate = $endDate->copy()->subMonths(11)->startOfMonth();
+
+        } else {
+
+            // ★週別 → maxDate の週で止める
+            $endDate = $maxDate->copy()->endOfWeek();  // 現年の最終週
+            $startDate = $endDate->copy()->subWeeks(51)->startOfWeek();
         }
 
         // 前年期間
@@ -36,9 +55,10 @@ class SalesComparisonController extends Controller
         $companies = Company::all();
         $shops = $company_id ? Shop::where('company_id', $company_id)->get() : collect();
 
+
         /**
          * ============================
-         *  DB一括取得（現年＋前年）
+         *  DB 一括取得（現年＋前年）
          * ============================
          */
         $query = SalesData::query()
@@ -67,21 +87,16 @@ class SalesComparisonController extends Controller
             ->orderBy('period')
             ->get();
 
-        // 現年 / 前年に振り分け
         $currentData = $query->where('is_current', 1)->keyBy('period');
         $prevData = $query->where('is_current', 0)->keyBy('period');
 
-        /**
-         * ============================
-         *  表示行作成
-         * ============================
-         */
         $rows = [];
 
+
         /**
-         * ----------------------------
+         * ============================
          *  月別 12ヶ月
-         * ----------------------------
+         * ============================
          */
         if ($compareType === 'monthly') {
 
@@ -110,22 +125,33 @@ class SalesComparisonController extends Controller
             }
 
         /**
-         * ----------------------------
-         *  週別 52週
-         * ----------------------------
-         * 週は必ず「月曜始まり」
-         * 週ラベルは
-         *   現年→ max_date があればそれを使用（その週の最大日付）
-         *   無ければ → Carbonでその週の日曜を計算
+         * ============================
+         *  週別（★maxDate の週まで）
+         * ============================
          */
         } else {
 
-            for ($i = 0; $i < 52; $i++) {
+            /**
+             * ★ maxDate の週番号（ISO-8601）
+             */
+            $maxWeek = intval($maxDate->format('W'));
+
+            /**
+             * ★ startDate の週番号
+             * （年をまたぐので単純に W では範囲のズレが出る）
+             * → 秒数で週数差分を算出する
+             */
+            $weekStartNum = intval($startDate->format('W'));
+
+            // ループ回数 = startDate 〜 maxDate の週数
+            $totalWeeks = $startDate->diffInWeeks($maxDate) + 1;
+
+            for ($i = 0; $i < $totalWeeks; $i++) {
 
                 $weekStart = $startDate->copy()->addWeeks($i);
-                $weekEnd   = $weekStart->copy()->endOfWeek(); // 日曜
+                $weekEnd   = $weekStart->copy()->endOfWeek();
 
-                $w = intval($weekStart->format('W')); // ISO-8601（月曜始まり）
+                $w = intval($weekStart->format('W'));
 
                 $cur = $currentData->get($w);
                 $pre = $prevData->get($w);
@@ -135,7 +161,7 @@ class SalesComparisonController extends Controller
                 $sales_prev  = $pre->total_sales ?? 0;
                 $profit_prev = $pre->total_profit ?? 0;
 
-                // ★週ラベル：DBの max_date（その週の最大日付）→ 無ければ週末の日曜
+                /** 週ラベル */
                 $periodLabel = $cur && $cur->max_date
                     ? Carbon::parse($cur->max_date)->format('y/m/d')
                     : $weekEnd->format('y/m/d');

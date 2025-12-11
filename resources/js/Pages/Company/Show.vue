@@ -5,7 +5,8 @@ import { Head ,Link} from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
 
 const props = defineProps({
-    company: Object
+    company: Object,
+    login_user: Object,
 })
 
 const deleteCompany = (id) => {
@@ -32,12 +33,12 @@ const goBack = () => {
                     <button
                         type="button"
                         @click="goBack"
-                        class="w-32 h-8 ml-4 md:ml-24 text-gray-700 bg-gray-200 border border-gray-300 focus:outline-none hover:bg-gray-300 rounded text-ml">
+                        class="w-40 h-10 ml-2 md:ml-24 text-gray-700 bg-gray-200 border border-gray-300 focus:outline-none hover:bg-gray-300 rounded text-ml">
                         戻る
                     </button>
                 </div>
-                <div class="ml-4 md:ml-24 mb-0">
-                    <Link as="button" :href="route('company.index')" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">取引先一覧</Link>
+                <div class="ml-2 md:ml-24 mb-0">
+                    <Link as="button" :href="route('company.index')" class="w-40 h-10 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">取引先一覧</Link>
                 </div>
             </div>
         </template>
@@ -87,13 +88,14 @@ const goBack = () => {
                                 </div>
 
 
-                                <div class="flex mt-8">
-                                    <div class="ml-2 w-full">
-                                        <Link as="button" :href="route('company.edit',{company:company.co_id})" class="w-32 h-8 flex mx-auto text-white bg-green-500 border-0 py-2 pl-12 focus:outline-none hover:bg-green-600 rounded text-sm">編集</Link>
+                                <div  v-if="login_user.role_id <= 2" class="flex mt-8">
+                                    <div class="ml-0 w-full">
+                                        <Link as="button" :href="route('company.edit',{company:company.co_id})" class="w-40 h-10 flex mx-auto text-white bg-green-500 border-0 py-2 pl-16 focus:outline-none hover:bg-green-600 rounded text-sm">編集</Link>
                                     </div>
                                     <div class="ml-2 w-full">
-                                        <button class="w-32 h-8 flex mx-auto text-white bg-red-500 border-0 py-2 pl-8 focus:outline-none hover:bg-red-600 rounded text-sm" @click="deleteCompany(company.co_id)" >削除する</button>
+                                        <button class="w-40 h-10 flex mx-auto text-white bg-red-500 border-0 py-2 pl-12 focus:outline-none hover:bg-red-600 rounded text-sm" @click="deleteCompany(company.co_id)" >削除する</button>
                                     </div>
+
                                 </div>
 
                                 </div>

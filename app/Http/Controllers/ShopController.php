@@ -12,6 +12,7 @@ use App\Http\Requests\StoreShopRequest;
 use App\Http\Requests\UpdateShopRequest;
 use Inertia\Inertia;
 use Throwable; // 追加
+use Illuminate\Support\Facades\Auth;
 
 class ShopController extends Controller
 {
@@ -130,6 +131,9 @@ class ShopController extends Controller
      */
     public function show(Shop $shop)
     {
+        // ユーザーの詳細を取得
+        $login_user = Auth::user(); // ← これの方が安全
+
         $shopDetail = DB::table('shops')
         ->join('areas', 'shops.area_id', '=', 'areas.id')
         ->join('companies', 'shops.company_id', '=', 'companies.id')
@@ -147,7 +151,8 @@ class ShopController extends Controller
         ->first();
 
         return Inertia::render('Shops/Show', [
-            'shop' => $shopDetail
+            'shop' => $shopDetail,
+            'login_user' => $login_user,
         ]);
     }
 

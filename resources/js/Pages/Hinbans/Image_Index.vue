@@ -52,11 +52,11 @@
 
           <div class="md:flex md:ml-0 mb-2">
 
-            <div class="ml-4 flex mt-2 md:mt-2">
+            <div class="ml-0 flex mt-2 md:mt-2">
               <div class="pl-2 mt-2 ml-0">
                 <Link
                   :href="route('menu')"
-                  class="w-32 h-8 text-center text-sm text-white bg-indigo-500 border-0 py-1 px-2 hover:bg-indigo-700 rounded inline-block"
+                  class="w-40 h-10 text-center text-sm text-white bg-indigo-500 border-0 py-3 px-2 hover:bg-indigo-700 rounded inline-block"
                 >
                   Menu
                 </Link>
@@ -130,14 +130,14 @@
               <button
                 type="button"
                 @click="search"
-                class="w-16 h-8 ml-2 text-sm text-center text-gray-900 bg-gray-200 py-0 px-2 hover:bg-gray-300 rounded"
+                class="w-16 h-8 ml-2 text-sm text-center text-white bg-blue-300 py-0 px-2 hover:bg-gray-300 rounded"
               >
                 検索
               </button>
 
               <Link
                 :href="route('hinbans.index')"
-                class="w-16 h-8 bg-blue-500 text-sm text-white ml-2 hover:bg-blue-600 rounded text-center py-1"
+                class="w-16 h-8 bg-gray-400 text-sm text-white ml-2 hover:bg-blue-600 rounded text-center py-1"
               >
                 全表示
               </Link>

@@ -111,40 +111,43 @@ const del_image4 = id => {
                     class="w-32 h-8 ml-8 text-white bg-indigo-500 border border-gray-300 focus:outline-none hover:bg-indigo-600 rounded text-ml">
                     戻る
                 </button> -->
-                <div class="ml-4 md:ml-24 mt-0">
-                    <Link as="button" :href="route('reports.show',{report:report.id})" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Report詳細</Link>
+                <div class="ml-2 md:ml-24 mt-0">
+                    <Link as="button" :href="route('reports.show',{report:report.id})" class="w-40 h-10 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Report詳細</Link>
                 </div>
             </div>
         </template>
 
-        <div class="py-12">
+        <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
+                    <div class="p-2 text-gray-900">
                         <section class="text-gray-600 body-font relative">
 
                             <form @submit.prevent="updateReport(form.id)" enctype="multipart/form-data">
-                            <div class="container px-5 py-8 mx-auto">
+                            <div class="container px-5 py-4 mx-auto">
                                 <div class="lg:w-1/2 md:w-2/3 mx-auto">
                                 <div class="flex flex-wrap -m-2">
 
 
                                     <div class="p-2 w-full">
+                                        <div class="flex">
                                         <div class="relative">
                                             <label for="id" class="leading-7 text-sm text-gray-600">ID</label>
-                                            <input disabled type="text" id="id" name="id" v-model="form.id" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                            <input disabled type="text" id="id" name="id" v-model="form.id" class="w-24 h-8 bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                             <div v-if="errors.id" class="text-red-500">{{ errors.id }}</div>
                                         </div>
-                                        <div class="relative">
+                                        <div class="relative ml-2">
                                             <label for="shop_id" class="leading-7 text-sm text-gray-600">店ID</label>
-                                            <input disabled type="text" id="shop_id" name="shop_id" v-model="form.shop_id" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                            <input disabled type="text" id="shop_id" name="shop_id" v-model="form.shop_id" class="w-24 h-8 bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                             <div v-if="errors.shop_id" class="text-red-500">{{ errors.shop_id }}</div>
                                         </div>
+                                        </div>
+
                                         <div class=" relative">
                                             <div class="relative">
                                                 <label for="title" class="leading-7 text-sm text-gray-600">店名</label>
-                                                <div class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ report.co_name }}---{{ report.shop_name }}</div>
+                                                <div class="w-full h-8 bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 transition-colors duration-200 ease-in-out">{{ report.co_name }}---{{ report.shop_name }}</div>
                                                 <div v-if="errors.title" class="text-red-500">{{ errors.title }}</div>
                                             </div>
                                             <div v-if="errors.report_category_id" class="text-red-500">{{ errors.title }}</div>
@@ -154,7 +157,7 @@ const del_image4 = id => {
                                     <div class="p-2 w-full">
                                     <div class="relative">
                                         <label for="report" class="leading-7 text-sm text-gray-600">Report</label>
-                                        <textarea id="report" name="report"  v-model="form.report" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
+                                        <textarea id="report" name="report"  rows="8"  v-model="form.report" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
                                         <div v-if="errors.report" class="text-red-500">{{ errors.report }}</div>
                                     </div>
                                     </div>
@@ -162,45 +165,45 @@ const del_image4 = id => {
                                     <div class="flex p-2 w-full">
                                         <div v-if="report.image1" class="relative">
                                         <label class="leading-7 text-sm text-gray-600">保存画像1</label>
-                                            <div class="w-full mb-1">
+                                            <div class="w-20 mb-1">
                                                 <div >
                                                     <img :src="`/storage/reports/${report.image1}`" alt="Image1">
                                                 </div>
-                                                <div class="h-8 ml-16 mt-4">
-                                                    <button class="ml-2 bg-red-500 text-white px-2 h-8 rounded" @click.prevent="del_image1(report.id)">削除</button>
+                                                <div class="h-8 ml-2 w-16 mt-4">
+                                                    <button class="ml-2 bg-red-500 text-sm text-white px-2 h-8 rounded" @click.prevent="del_image1(report.id)">削除</button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div v-if="report.image2" class="relative">
                                             <label class="leading-7 text-sm text-gray-600">保存画像2</label>
-                                                <div class="w-full mb-1">
+                                                <div class="w-20 mb-1">
                                                     <div >
                                                         <img :src="`/storage/reports/${report.image2}`" alt="Image2">
                                                     </div>
-                                                    <div class="h-8 ml-16 mt-4">
-                                                        <button class="ml-2 bg-red-500 text-white px-2 h-8 rounded" @click.prevent="del_image2(report.id)">削除</button>
+                                                    <div class="h-8 ml-2 w-16 mt-4">
+                                                        <button class="ml-2 bg-red-500 text-sm text-white px-2 h-8 rounded" @click.prevent="del_image2(report.id)">削除</button>
                                                     </div>
                                                 </div>
                                         </div>
                                         <div v-if="report.image3" class="relative">
                                             <label class="leading-7 text-sm text-gray-600">保存画像3</label>
-                                                <div class="w-full mb-1">
+                                                <div class="w-20 mb-1">
                                                     <div >
                                                         <img :src="`/storage/reports/${report.image3}`" alt="Image3">
                                                     </div>
-                                                    <div class="h-8 ml-16 mt-4">
-                                                        <button class="ml-2 bg-red-500 text-white px-2 h-8 rounded" @click.prevent="del_image3(report.id)">削除</button>
+                                                    <div class="h-8 ml-2 w-16 mt-4">
+                                                        <button class="ml-2 bg-red-500 text-sm text-white px-2 h-8 rounded" @click.prevent="del_image3(report.id)">削除</button>
                                                     </div>
                                                 </div>
                                         </div>
                                         <div  v-if="report.image4" class="relative">
                                             <label class="leading-7 text-sm text-gray-600">保存画像4</label>
-                                                <div class="w-full mb-1">
+                                                <div class="w-20 mb-1">
                                                     <div>
                                                         <img :src="`/storage/reports/${report.image4}`" alt="Image4">
                                                     </div>
-                                                    <div class="h-8 ml-16 mt-4">
-                                                        <button class="ml-2 bg-red-500 text-white px-2 h-8 rounded" @click.prevent="del_image4(report.id)">削除</button>
+                                                    <div class="h-8 ml-2 w-16 mt-4">
+                                                        <button class="ml-2 bg-red-500 text-sm text-white px-2 h-8 rounded" @click.prevent="del_image4(report.id)">削除</button>
                                                     </div>
                                                 </div>
                                         </div>
@@ -237,8 +240,8 @@ const del_image4 = id => {
                                         </div>
                                     </div>
 
-                                    <div class="p-2 w-full">
-                                        <button class="flex mx-auto text-white bg-pink-500 border-0 py-2 px-8 focus:outline-none hover:bg-pink-600 rounded text-lg"> 更新</button>
+                                    <div class="p-2 w-full mb-6">
+                                        <button class="w-40 flex mx-auto text-white bg-pink-500 border-0 py-2 pl-14 focus:outline-none hover:bg-pink-600 rounded text-ml"> 更　新</button>
                                     </div>
 
                                 </div>

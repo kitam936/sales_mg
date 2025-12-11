@@ -42,7 +42,8 @@
                 <button
                     type="button"
                     @click="goBack"
-                    class="w-32 h-8 ml-24 text-gray-700 bg-gray-200 border border-gray-300 focus:outline-none hover:bg-gray-300 rounded text-ml">
+                    class="w-40 h-10 ml-2 md:ml-24 text-gray-700 bg-gray-200 border border-gray-300 focus:outline-none hover:bg-gray-300 rounded text-ml">
+
                     戻る
                 </button>
             </div>
@@ -81,7 +82,7 @@
 
 
                                     <div class="p-2 w-full">
-                                        <button class="w-32 h-8 flex mx-auto text-white bg-pink-500 border-0 py-2 pl-12 focus:outline-none hover:bg-pink-600 rounded text-sm"> 登録</button>
+                                        <button class="w-40 h-10 flex mx-auto text-white bg-pink-500 border-0 py-2 pl-16 focus:outline-none hover:bg-pink-600 rounded text-sm"> 登　録</button>
                                     </div>
 
                                 </div>

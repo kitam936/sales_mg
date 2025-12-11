@@ -18,7 +18,7 @@ const logout = () => {
     router.post(route('logout'), {}, {
         onSuccess: () => {
             // ログアウト後にウェルカムページへ
-            window.location.href = route('welcome');
+            //window.location.href = route('welcome');
             // ログアウト後にLoginページへ
             //window.location.href = route('login');
         },
@@ -88,7 +88,7 @@ const logout = () => {
                                 <div class="md:flex ">
                                     <div class="flex">
                                     <div class="p-2 ">
-                                        <Link as="button" :href="route('hinbans.index')" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-12 focus:outline-none hover:bg-indigo-600 rounded text-ml">商品リスト</Link>
+                                        <Link as="button" :href="route('hinbans.index')" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-11 focus:outline-none hover:bg-indigo-600 rounded text-ml">商品リスト</Link>
                                     </div>
                                     <div class="p-2 ">
                                         <Link as="button" :href="route('shops.index')" class="w-40 flex mx-auto text-white bg-indigo-500 border-0 h-10 py-2 pl-11 focus:outline-none hover:bg-indigo-600 rounded text-ml">店舗リスト</Link>

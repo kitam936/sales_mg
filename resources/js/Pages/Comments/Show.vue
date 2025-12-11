@@ -35,8 +35,8 @@ const goBack = () => {
                     class="w-32 h-8 ml-24 text-gray-700 bg-gray-200 border border-gray-300 focus:outline-none hover:bg-gray-300 rounded text-ml">
                     戻る
                 </button> -->
-                <div class="ml-4 md:ml-24 mt-0">
-                    <Link as="button" :href="route('reports.show',{report:comment.report_id})" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Report詳細</Link>
+                <div class="ml-2 md:ml-24 mt-0">
+                    <Link as="button" :href="route('reports.show',{report:comment.report_id})" class="w-40 h-10 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Report詳細</Link>
                 </div>
             </div>
         </template>
@@ -78,10 +78,10 @@ const goBack = () => {
 
                                     <div v-if="comment.user_id == login_user" class="p-2 w-full">
                                     <div class="p-2 w-full">
-                                        <Link as="button" :href="route('comments.edit',{comment:comment.id})" class="w-32 h-8 flex mx-auto text-white bg-green-500 border-0 py-2 pl-7 focus:outline-none hover:bg-green-600 rounded text-sm">コメント編集</Link>
+                                        <Link as="button" :href="route('comments.edit',{comment:comment.id})" class="w-40 h-10 flex mx-auto text-white bg-green-500 border-0 py-2 pl-10 focus:outline-none hover:bg-green-600 rounded text-sm">コメント編集</Link>
                                     </div>
                                     <div class="p-2 w-full">
-                                        <button class="w-32 h-8 flex mx-auto text-white bg-red-500 border-0 py-2 pl-9 focus:outline-none hover:bg-red-600 rounded text-sm" @click="deleteComment(comment.id)" >削除する</button>
+                                        <button class="w-40 h-10 flex mx-auto text-white bg-red-500 border-0 py-2 pl-12 focus:outline-none hover:bg-red-600 rounded text-sm" @click="deleteComment(comment.id)" >削除する</button>
                                     </div>
                                     </div>
                                 </div>
