@@ -57,11 +57,11 @@
       <AuthenticatedLayout>
         <template #header>
         <h2 class="font-semibold text-xl text-gray-800 leading-tight mb-4">店舗Report登録 </h2>
-        <div class="ml-6 flex mt-2 mb-4">
+        <div class="ml-2 flex mt-2 mb-4">
         <button
             type="button"
             @click="goBack"
-            class="w-32 h-8 text-white text-sm bg-indigo-500 border-0 py-1 px-2 hover:bg-indigo-600 rounded"
+            class="w-40 h-10 text-sm text-gray-700 bg-gray-200 border-0 py-1 px-2 hover:bg-gray-300 rounded"
           >
             戻る
           </button>
@@ -72,12 +72,12 @@
 
 
           <div class="mb-0 flex space-x-2">
-            <select v-model.number="co_id" @change="reloadFiltered" class="w-28 h-8 rounded text-sm">
+            <select v-model.number="co_id" @change="reloadFiltered" class="w-28 h-8 rounded text-sm  py-1">
               <option :value="null">社選択</option>
               <option v-for="co in props.companies" :key="co.id" :value="co.id">{{ co.co_name }}</option>
             </select>
 
-            <select v-model.number="area_id" @change="reloadFiltered" class="w-28 h-8 rounded text-sm">
+            <select v-model.number="area_id" @change="reloadFiltered" class="w-28 h-8 rounded text-sm  py-1">
               <option :value="null">エリア選択</option>
               <option v-for="ar in props.areas" :key="ar.id" :value="ar.id">{{ ar.area_name }}</option>
             </select>
@@ -89,15 +89,15 @@
           </div>
         </template>
 
-        <div class="p-2 bg-white rounded shadow">
+        <div class="p-1 bg-white rounded shadow">
           <form @submit.prevent="submit" enctype="multipart/form-data" class="ml-2">
-            <select v-model="form.sh_id" class="w-32 h-8 mb-4 rounded text-sm">
+            <select v-model="form.sh_id" class="w-32 h-8 mb-2 rounded text-sm  py-1">
               <option value="">店舗選択</option>
               <option v-for="s in props.shops" :key="s.id" :value="s.id">{{ s.shop_name }}</option>
             </select>
 
             <textarea v-model="form.report" rows="8" required
-              class="w-full bg-gray-100 rounded border border-gray-300 focus:ring-2 focus:ring-indigo-200 p-2 text-sm"></textarea>
+              class="w-full bg-gray-100 rounded border border-gray-300 focus:ring-2 focus:ring-indigo-200 p-2 text-base"></textarea>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
               <div v-for="i in 4" :key="i">
@@ -107,9 +107,9 @@
               </div>
             </div>
 
-            <div class="mt-6 flex justify-center">
+            <div class="mt-6 mb-16 flex justify-center">
               <button type="submit"
-                class="w-32 h-8 text-sm text-white bg-green-500 rounded hover:bg-green-700">
+                class="w-40 h-10 text-sm text-white bg-pink-500 rounded hover:bg-pink-700">
                 登録
               </button>
             </div>

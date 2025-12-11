@@ -38,10 +38,10 @@
             <div class="flex">
 
                 <div class="ml-2 md:ml-24 mt-4">
-                    <Link as="button" :href="route('menu')" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Menu</Link>
+                    <Link as="button" :href="route('menu')" class="w-40 h-10 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Menu</Link>
                 </div>
-                <div class="ml-4 md:ml-24 mt-4">
-                    <Link as="button" :href="route('company.create')" class="w-32 h-8 bg-green-500 text-sm text-white ml-0 hover:bg-green-600 rounded">取引先登録</Link>
+                <div class="ml-2 md:ml-24 mt-4">
+                    <Link as="button" :href="route('company.create')" class="w-40 h-10 bg-green-500 text-sm text-white ml-0 hover:bg-green-600 rounded">取引先登録</Link>
                 </div>
             </div>
         </template>
@@ -68,7 +68,7 @@
                                 <button class="ml-2 bg-blue-300 text-white px-2 w-20 h-8 rounded "
                                 @click="searchcompanies">検索</button>
                                 <button class="ml-2 bg-gray-300 text-white px-2 w-24 h-8 rounded"
-                                @click="resetFilters">クリア</button>
+                                @click="resetFilters">全表示</button>
 
                             </div>
 
@@ -81,8 +81,8 @@
                                 <tr>
                                     <th class="w-1/15 md:1/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">id</th>
                                     <th class="w-2/15 md:2/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">取引先名</th>
-                                    <th class="w-3/15 md:3/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">info</th>
-                                    <th class="w-2/15 md:2/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 ">担当者</th>
+                                    <th class="w-3/15 md:3/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100  hidden sm:table-cell">info</th>
+                                    <th class="w-2/15 md:2/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 ">担当</th>
                                 </tr>
                             </thead>
 
@@ -92,7 +92,7 @@
                                         <Link class="text-indigo-500" :href="route('company.show',{company:company.company_id})">{{ company.company_id }} </Link>
                                     </td>
                                     <td class="border-b-2 boder-gray-200 ">{{ company.co_name }} </td>
-                                    <td class="border-b-2 boder-gray-200 text-left">{{ company.co_info ? company.co_info.substring(0, 15) : '' }} </td>
+                                    <td class="border-b-2 boder-gray-200 text-left hidden sm:table-cell">{{ company.co_info ? company.co_info.substring(0, 15) : '' }} </td>
                                     <td class="border-b-2 boder-gray-200">{{ company.pic_name }} </td>
                                 </tr>
 

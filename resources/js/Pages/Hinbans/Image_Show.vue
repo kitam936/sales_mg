@@ -78,27 +78,27 @@
           </h2>
 
           <div class="flex">
-            <div class="ml-6 flex mt-2">
+            <div class="ml-2 flex mt-2">
               <button
                 type="button"
                 @click="goBack"
-                class="w-32 h-8 text-white text-sm bg-indigo-500 border-0 py-1 px-2 hover:bg-indigo-600 rounded"
+                class="w-40 h-10 text-sm text-gray-700 bg-gray-200 border-0 py-1 px-2 hover:bg-gray-300 rounded"
               >
                 戻る
               </button>
               <Link
                 :href="route('hinbans.index')"
-                class="w-32 h-8 ml-6 text-white text-sm bg-indigo-500 border-0 py-1 px-2 hover:bg-indigo-600 rounded text-center"
+                class="w-40 h-10 ml-2 text-white text-sm bg-indigo-500 border-0 py-2 px-2 hover:bg-indigo-600 rounded text-center"
               >
                 商品リスト
               </Link>
             </div>
           </div>
 
-          <div v-if="login_user.role_id <= 2" class="p-2 w-full ml-4 flex mt-2">
+          <div v-if="login_user.role_id <= 2" class="p-2 w-full ml-0 flex mt-2">
             <div
               @click="deleteImage(image.hinban_id)"
-              class="cursor-pointer w-32 h-8 text-center text-sm text-white bg-red-500 py-2 px-2 hover:bg-red-700 rounded"
+              class="cursor-pointer w-40 h-10 text-center text-sm text-white bg-red-500 py-2 px-2 hover:bg-red-700 rounded"
             >
               削除
             </div>

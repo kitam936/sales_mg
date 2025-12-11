@@ -274,7 +274,7 @@
             </h2>
 
             <div class="flex gap-2 mt-4">
-                <Link as="button" :href="route('menu')" class="w-32 h-8 bg-indigo-500 text-sm text-white hover:bg-indigo-600 rounded">Menu</Link>
+                <Link as="button" :href="route('menu')" class="w-40 h-10 bg-indigo-500 text-sm text-white hover:bg-indigo-600 rounded">Menu</Link>
                 <!-- <Link as="button" :href="route('sales.comparison')" class="w-32 h-8 bg-indigo-500 text-sm text-white hover:bg-indigo-600 rounded">前年対比ページ</Link> -->
             </div>
         </template>
@@ -469,10 +469,10 @@
 
                             <!-- 分析開始ボタン押下 -->
                             <div class="flex mt-2 mb-2">
-                                <button type="button" @click="onAnalyze" class="w-32 ml-0 h-8 px-4 bg-blue-500 text-white rounded">
+                                <button type="button" @click="onAnalyze" class="w-40 ml-0 h-8 px-4 bg-blue-500 text-white rounded">
                                 分析開始
                                 </button>
-                                <button type="button" @click="clearFilters" class="ml-4 w-32 h-8 bg-gray-500 text-white rounded">
+                                <button type="button" @click="clearFilters" class="ml-2 w-40 h-8 bg-gray-500 text-white rounded">
                                 絞込条件クリア
                                 </button>
                             </div>

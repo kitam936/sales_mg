@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Throwable; // 追加
+use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {
@@ -105,6 +106,9 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
+        // ユーザーの詳細を取得
+        $login_user = Auth::user(); // ← これの方が安全
+
         $companyDetail = DB::table('companies')
         ->join('users', 'companies.pic_id', '=', 'users.id')
         ->where('companies.id', $company->id)
@@ -119,7 +123,8 @@ class CompanyController extends Controller
         ->first();
 
         return Inertia::render('Company/Show', [
-            'company' => $companyDetail
+            'company' => $companyDetail,
+            'login_user' => $login_user,
         ]);
     }
 

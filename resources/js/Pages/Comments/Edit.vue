@@ -42,7 +42,7 @@ const goBack = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">comment編集</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">コメント編集</h2>
             <div class="mt-4">
                 <!-- <button
                     type="button"
@@ -50,8 +50,8 @@ const goBack = () => {
                     class="w-32 h-8 ml-24 text-gray-700 bg-gray-200 border border-gray-300 focus:outline-none hover:bg-gray-300 rounded text-ml">
                     戻る
                 </button> -->
-                <div class="ml-4 md:ml-24 mt-0">
-                    <Link as="button" :href="route('comments.show',{comment:comment.id})" class="w-32 h-8 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Comment詳細</Link>
+                <div class="ml-2 md:ml-24 mt-0">
+                    <Link as="button" :href="route('comments.show',{comment:comment.id})" class="w-40 h-10 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">コメント詳細</Link>
                 </div>
             </div>
         </template>
@@ -84,7 +84,7 @@ const goBack = () => {
 
                                     <div class="p-2 w-full">
                                     <div class="relative">
-                                        <label for="comment" class="leading-7 text-sm text-gray-600">comment</label>
+                                        <label for="comment" class="leading-7 text-sm text-gray-600">コメント</label>
                                         <textarea id="comment" name="comment"  v-model="form.comment" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
                                         <div v-if="errors.comment" class="text-red-500">{{ errors.comment }}</div>
                                     </div>
@@ -92,7 +92,7 @@ const goBack = () => {
 
 
                                     <div class="p-2 w-full">
-                                        <button class="w-32 h-8 flex mx-auto text-white bg-pink-500 border-0 py-2 pl-12 focus:outline-none hover:bg-pink-600 rounded text-sm"> 更新</button>
+                                        <button class="w-40 h-10 flex mx-auto text-white bg-pink-500 border-0 py-2 pl-16 focus:outline-none hover:bg-pink-600 rounded text-sm"> 更新</button>
                                     </div>
 
                                 </div>

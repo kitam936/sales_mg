@@ -14,6 +14,7 @@ use App\Models\User;
 use App_models\Role;
 use Inertia\Inertia;
 use Throwable; // 追加
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -58,6 +59,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         // ユーザーの詳細を取得
+        $login_user = Auth::user(); // ← これの方が安全
 
         // dd($user->id);
         $userDetail = DB::table('users')
@@ -78,7 +80,8 @@ class UserController extends Controller
         ->first();
 
         return Inertia::render('Users/Show', [
-            'user' => $userDetail
+            'user' => $userDetail,
+            'login_user' => $login_user,
         ]);
     }
 

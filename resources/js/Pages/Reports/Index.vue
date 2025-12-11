@@ -36,13 +36,13 @@
           <div class="flex space-x-4 mb-4">
 
             <button
-              class="w-32 h-8 text-sm text-white bg-indigo-500 hover:bg-indigo-700 rounded"
+              class="w-40 h-10 text-sm text-white bg-indigo-500 hover:bg-indigo-700 rounded"
               @click="$inertia.visit(route('menu'))"
             >
               Menu
             </button>
             <button
-              class="w-32 h-8 text-sm text-white bg-indigo-500 hover:bg-indigo-700 rounded"
+              class="w-40 h-10 text-sm text-white bg-indigo-500 hover:bg-indigo-700 rounded"
               @click="$inertia.visit(route('reports.create'))"
             >
               新規Report
@@ -54,12 +54,12 @@
             <span class="text-sm text-gray-800">※エリア・会社を選択してください</span>
             <div class="md:flex">
             <div class="flex space-x-2">
-              <select v-model="ar_id" @change="submitFilters" class="w-32 h-8 rounded text-sm">
+              <select v-model="ar_id" @change="submitFilters" class="w-40 h-10 rounded text-sm py-1">
                 <option value="null">全エリア</option>
                 <option v-for="area in areas" :key="area.id" :value="area.id">{{ area.area_name }}</option>
               </select>
 
-              <select v-model="co_id" @change="submitFilters" class="w-32 h-8 rounded text-sm">
+              <select v-model="co_id" @change="submitFilters" class="w-40 h-10 rounded text-sm py-1">
                 <option value="null">全社</option>
                 <option v-for="co in companies" :key="co.id" :value="co.id">{{ co.co_name }}</option>
               </select>
@@ -93,8 +93,8 @@
                   <th class="py-1 px-2">Date</th>
                   <th class="py-1 px-2">社名</th>
                   <th class="py-1 px-2">店名</th>
-                  <th class="py-1 px-2">コメント数</th>
-                  <th class="py-1 px-2">状態</th>
+                  <th class="py-1 px-2">コメント</th>
+                  <th class="py-1 px-2">ST</th>
                 </tr>
               </thead>
               <tbody>
@@ -109,7 +109,7 @@
                   <td class="py-1 px-2 ">{{ report.shop_name }}</td>
                   <td class="py-1 px-2 ">{{ report.comment_count }}</td>
                   <td class="py-1 px-2 " :class="{'text-red-600': !report.report_reads || (report.comment_count>0 && !report.comment_reads)}">
-                    {{ (report.comment_count>0 && report.report_reads && report.comment_reads) || (report.comment_count===0 && report.report_reads) ? '既読' : '未読' }}
+                    {{ (report.comment_count>0 && report.report_reads && report.comment_reads) || (report.comment_count===0 && report.report_reads) ? '既' : '未' }}
                   </td>
                 </tr>
               </tbody>

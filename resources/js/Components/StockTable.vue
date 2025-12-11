@@ -50,9 +50,9 @@
             <tr class="bg-gray-100">
               <th class="px-2 py-1 text-left">ID</th>
               <th class="px-2 py-1 text-left">名称</th>
-              <th class="px-2 py-1 text-right">数</th>
-              <th class="px-2 py-1 text-right">コスト</th>
-              <th class="px-2 py-1 text-right">上代</th>
+              <th class="px-2 py-1 text-center">数</th>
+              <th class="px-2 py-1 text-center">コスト</th>
+              <th class="px-2 py-1 text-center">上代</th>
             </tr>
           </thead>
           <tbody>

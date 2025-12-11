@@ -59,9 +59,9 @@
                             <template v-else>
                                 <Link
                                     :href="route('login')"
-                                    class="text-ml rounded-md px-3 py-2 text-indigo-700 ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#2563eb] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                    class="text-xl rounded-md px-3 py-2 text-indigo-700 ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#2563eb] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                 >
-                                    [Log in]
+                                <span class="text-xl font-semibold "> [Log in]</span>
                                 </Link>
 
                                 <!-- <Link
@@ -121,7 +121,7 @@
                                         モデル企業
                                     </h2> -->
 
-                                    <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                                    <p class="mt-0 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
 
                                         下記機能が追加されました。<br><br>
 

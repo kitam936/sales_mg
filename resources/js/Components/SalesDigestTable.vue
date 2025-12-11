@@ -45,15 +45,15 @@
 
     <template>
       <div class="overflow-x-auto">
-        ※各社・各店において返品済の商品は100％と表示されます。<br />
+        ※在庫クリア済　および　各社・各店において返品済の商品は100％と表示されます。<br />
         <table class="w-full text-sm border border-gray-200">
           <thead>
             <tr class="bg-gray-100">
               <th class="px-2 py-1 text-left">ID</th>
               <th class="px-2 py-1 text-left">名称</th>
-              <th class="px-2 py-1 text-right">売上数</th>
-              <th class="px-2 py-1 text-right">在庫数</th>
-              <th class="px-2 py-1 text-right">消化率</th>
+              <th class="px-1 py-1 text-right">売数</th>
+              <th class="px-1 py-1 text-right">在数</th>
+              <th class="px-1 py-1 text-right">消化</th>
             </tr>
           </thead>
           <tbody>
@@ -62,7 +62,7 @@
               <td class="px-2 py-1"  style="font-variant-numeric:tabular-nums">{{ row.name ?? 'その他'}}</td>
               <td class="px-2 py-1 text-right"  style="font-variant-numeric:tabular-nums">{{ Number(row.sales_total).toLocaleString() }}</td>
               <td class="px-2 py-1 text-right"  style="font-variant-numeric:tabular-nums"> {{ Number(row.stock_total).toLocaleString() }}</td>
-              <td class="px-2 py-1 text-right font-bold"  style="font-variant-numeric:tabular-nums">{{ row.rate }}%</td>
+              <td class="px-2 py-1 text-right font-bold"  style="font-variant-numeric:tabular-nums">{{ Math.floor(row.rate) }}%</td>
             </tr>
             <tr v-if="!datas.data.length">
               <td colspan="4" class="text-center py-2 text-gray-500">該当データがありません</td>
