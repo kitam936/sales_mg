@@ -12,7 +12,7 @@ class SalesDigestController extends Controller
     {
         $type = $request->shoukaType ?? 'hinban';
 
-        // 集計軸
+        // 集計軸の設定
         switch ($type) {
             case 'brand':
                 $groupField = 'hinbans.brand_id';
@@ -36,38 +36,43 @@ class SalesDigestController extends Controller
                 break;
             default:
                 $groupField = 'hinbans.id';
-                $nameField  = 'hinbans.id';
+                $nameField  = 'hinbans.hinban_name';
         }
 
-        // サブクエリ：売上
+        // shop_id 絞り込み
+        $shopIds = null;
+        if ($request->filled('company_id')) {
+            $shopIds = DB::table('shops')
+                        ->where('company_id', $request->company_id)
+                        ->pluck('id')
+                        ->toArray();
+        } elseif ($request->filled('shop_id')) {
+            $shopIds = [$request->shop_id];
+        }
+
+        // sales 集計サブクエリ
         $salesSub = DB::table('sales')
             ->select('hinban_id', DB::raw('SUM(pcs) as sales_total'))
-            ->when($request->company_id, fn($q) => $q->whereIn('shop_id', function($q2) use ($request) {
-                $q2->select('id')->from('shops')->where('company_id', $request->company_id);
-            }))
-            ->when($request->shop_id, fn($q) => $q->where('shop_id', $request->shop_id))
+            ->when($shopIds, fn($q) => $q->whereIn('shop_id', $shopIds))
             ->groupBy('hinban_id');
 
-        // サブクエリ：在庫
+        // stocks 集計サブクエリ
         $stockSub = DB::table('stocks')
             ->select('hinban_id', DB::raw('SUM(pcs) as stock_total'))
             ->groupBy('hinban_id');
 
         // メインクエリ
         $query = DB::table('hinbans')
-            ->leftJoin('units', 'hinbans.unit_id', '=', 'units.id')
-            ->leftJoin('faces', 'hinbans.face', '=', 'faces.face_code')
-            ->leftJoin('designers', 'hinbans.designer_id', '=', 'designers.id')
-            ->leftJoin('brands', 'hinbans.brand_id', '=', 'brands.id')
-            ->leftJoinSub($salesSub, 'sales_total_sub', function($join) {
-                $join->on('hinbans.id', '=', 'sales_total_sub.hinban_id');
-            })
-            ->leftJoinSub($stockSub, 'stock_total_sub', function($join) {
-                $join->on('hinbans.id', '=', 'stock_total_sub.hinban_id');
-            })
+            // ->where('hinbans.vendor_id', '<>', 8200)
+            ->when(in_array($type, ['brand', 'season', 'unit']), fn($q) => $q->leftJoin('units', 'hinbans.unit_id', '=', 'units.id'))
+            ->when($type === 'face', fn($q) => $q->leftJoin('faces', 'hinbans.face', '=', 'faces.face_code'))
+            ->when($type === 'designer', fn($q) => $q->leftJoin('designers', 'hinbans.designer_id', '=', 'designers.id'))
+            ->when($type === 'brand', fn($q) => $q->leftJoin('brands', 'hinbans.brand_id', '=', 'brands.id'))
+            ->leftJoinSub($salesSub, 'sales_total_sub', fn($join) => $join->on('hinbans.id', '=', 'sales_total_sub.hinban_id'))
+            ->leftJoinSub($stockSub, 'stock_total_sub', fn($join) => $join->on('hinbans.id', '=', 'stock_total_sub.hinban_id'))
             ->select(
                 DB::raw("$groupField as id"),
-                DB::raw("$nameField as name"), // MAXは不要
+                DB::raw("$nameField as name"),
                 DB::raw("COALESCE(MAX(sales_total_sub.sales_total),0) as sales_total"),
                 DB::raw("COALESCE(MAX(stock_total_sub.stock_total),0) as stock_total"),
                 DB::raw('CASE
@@ -80,26 +85,20 @@ class SalesDigestController extends Controller
                 END as rate')
             )
             ->groupBy($groupField, $nameField)
-            ->havingRaw('COALESCE(MAX(stock_total_sub.stock_total),0) > 0');
+            ->havingRaw('COALESCE(MAX(stock_total_sub.stock_total),0) >= 0')
+            // フィルタ
+            ->when($request->filled('year_code'), fn($q) => $q->where('hinbans.year_code', $request->year_code))
+            ->when($request->filled('brand_id'), fn($q) => $q->where('hinbans.brand_id', $request->brand_id))
+            ->when($request->filled('season_id'), fn($q) => $q->where('units.season_id', $request->season_id))
+            ->when($request->filled('unit_id'), fn($q) => $q->where('units.id', $request->unit_id))
+            ->when($request->filled('face'), fn($q) => $q->where('faces.id', $request->face))
+            ->when($request->filled('designer_id'), fn($q) => $q->where('designers.id', $request->designer_id));
 
-        // その他の絞り込み（外側でJOINされているテーブルに対して）
-        if ($request->filled('brand_id')) $query->where('hinbans.brand_id', $request->brand_id);
-        if ($request->filled('season_id')) $query->where('units.season_id', $request->season_id);
-        if ($request->filled('unit_id')) $query->where('units.id', $request->unit_id);
-        if ($request->filled('face')) $query->where('faces.id', $request->face);
-        if ($request->filled('designer_id')) $query->where('designers.id', $request->designer_id);
-
-        // ★ 年度コードによる絞り込み追加
-        if ($request->filled('year_code')) {
-            $query->where('hinbans.year_code', $request->year_code);
-        }
-
-        // 並び替え
-       // 並び替え
-if ($type === 'hinban') {
-    $query->orderBy('rate', 'desc'); // rate 列を使う
+        // 並び順
+        if ($type === 'hinban') {
+            // $query->orderByDesc('rate');
+            $query->where('hinbans.vendor_id', '<>', 8200)->orderByDesc('rate');
         } else {
-            // それ以外：名前順
             $query->orderBy('id');
         }
 
@@ -108,4 +107,5 @@ if ($type === 'hinban') {
         return response()->json($data);
     }
 }
+
 

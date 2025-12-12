@@ -9,6 +9,7 @@
     import CompareTable from '@/Components/CompareTable.vue';
     import SalesProductTable from '@/Components/SalesProductTable.vue';
     import SalesDigestTable from '@/Components/SalesDigestTable.vue';
+    import StockTable from '@/Components/StockTable.vue';
     import axios from 'axios';
     import { watch } from 'vue';
 
@@ -21,6 +22,7 @@
         type: '', // 分析タイプ
         compareType: 'monthly', // 比較タイプ
         shoukaType: '', // 消化率タイプ
+        zaikoType: '', // 在庫タイプ
         company_id: '',
         shop_id: '',
         pic_id: '',
@@ -60,6 +62,11 @@
 
     //shouka率用
     const shoukaData = reactive({
+        rows: [],
+    });
+
+    //Zaiko用
+    const zaikoData = reactive({
         rows: [],
     });
 
@@ -105,6 +112,7 @@
                     type: form.type,
                     compareType: form.compareType,
                     shoukaType: form.shoukaType,
+                    zaikoType: form.zaikoType,
                     company_id: form.company_id,
                     shop_id: form.shop_id,
                     pic_id: form.pic_id,
@@ -182,6 +190,33 @@
 
     form.triggerRanking = 0;
 
+     //Zaiko用データ取得
+     const getZaikoData = async () => {
+        try {
+            const res = await axios.get('/stock', {
+                params: {
+                    zaikoType: form.zaikoType,
+                    company_id: form.company_id,
+                    shop_id: form.shop_id,
+                    brand_id: form.brand_id,
+                    season_id: form.season_id,
+                    unit_id: form.unit_id,
+                    face: form.face,
+                    designer_id: form.designer_id,
+                    year_code: form.year_code,
+                }
+            });
+            zaikoData.rows = res.data.rows ?? [];
+        } catch(e) {
+            console.log(e.message);
+        }
+    };
+
+    // Zaiko用の分析開始トリガー
+    const zaikoTrigger = ref(0);
+
+    form.triggerZaiko = 0;
+
     // 分析ボタン押下
     const onAnalyze = async () => {
         await getData();
@@ -193,6 +228,9 @@
         }
         if(activeTab.value === 'shouka') {
             shoukaTrigger.value++; // 分析開始トリガーを更新
+        }
+        if(activeTab.value === 'zaiko') {
+            zaikoTrigger.value++; // 分析開始トリガーを更新
         }
     };
 
@@ -236,7 +274,7 @@
             </h2>
 
             <div class="flex gap-2 mt-4">
-                <Link as="button" :href="route('menu')" class="w-32 h-8 bg-indigo-500 text-sm text-white hover:bg-indigo-600 rounded">Menu</Link>
+                <Link as="button" :href="route('menu')" class="w-40 h-10 bg-indigo-500 text-sm text-white hover:bg-indigo-600 rounded">Menu</Link>
                 <!-- <Link as="button" :href="route('sales.comparison')" class="w-32 h-8 bg-indigo-500 text-sm text-white hover:bg-indigo-600 rounded">前年対比ページ</Link> -->
             </div>
         </template>
@@ -289,12 +327,13 @@
                             <!-- 在庫タイプ切替 -->
                             <div  v-if="activeTab === 'zaiko' " class="text-sm font-medium">在庫種別選択:　※必須</div>
                             <div  v-if="activeTab === 'zaiko'" class="flex flex-wrap gap-2 mt-2">
-                                <label><input type="radio" value="co_zaiko" v-model="form.type" /> 社計</label>
-                                <label><input type="radio" value="sh_zaiko" v-model="form.type" /> 店計</label>
-                                <label><input type="radio" value="bd_zaiko" v-model="form.type" /> Brand計</label>
-                                <label><input type="radio" value="ss_zaiko" v-model="form.type" /> 季節計</label>
-                                <label><input type="radio" value="un_zaiko" v-model="form.type" /> Unit計</label>
-                                <label><input type="radio" value="fa_zaiko" v-model="form.type" /> Face計</label>
+                                <label><input type="radio" value="hinban" v-model="form.zaikoType" /> 品番計</label>
+                                <label><input type="radio" value="brand" v-model="form.zaikoType" /> Brand計</label>
+                                <label><input type="radio" value="season" v-model="form.zaikoType" /> 季節計</label>
+                                <label><input type="radio" value="unit" v-model="form.zaikoType" /> Unit計</label>
+                                <label><input type="radio" value="face" v-model="form.zaikoType" /> Face計</label>
+                                <label><input type="radio" value="co" v-model="form.zaikoType" /> 社計</label>
+                                <label><input type="radio" value="shop" v-model="form.zaikoType" /> 店計</label>
                             </div>
 
                             <!-- 消化率タイプ切替 -->
@@ -430,10 +469,10 @@
 
                             <!-- 分析開始ボタン押下 -->
                             <div class="flex mt-2 mb-2">
-                                <button type="button" @click="onAnalyze" class="w-32 ml-0 h-8 px-4 bg-blue-500 text-white rounded">
+                                <button type="button" @click="onAnalyze" class="w-40 ml-0 h-8 px-4 bg-blue-500 text-white rounded">
                                 分析開始
                                 </button>
-                                <button type="button" @click="clearFilters" class="ml-4 w-32 h-8 bg-gray-500 text-white rounded">
+                                <button type="button" @click="clearFilters" class="ml-2 w-40 h-8 bg-gray-500 text-white rounded">
                                 絞込条件クリア
                                 </button>
                             </div>
@@ -450,11 +489,7 @@
 
                         <!-- 分析タブ -->
                         <div v-if="activeTab === 'analysis'">
-
-
-                                    <Chart v-if="data.labels.length" :data="data" />
-
-
+                            <Chart v-if="data.labels.length" :data="data" />
                             <ResultTable v-if="data.data && data.data.length" :data="data" :type="form.type" />
                         </div>
 
@@ -477,6 +512,11 @@
                         <!-- 消化率タブ -->
                         <div v-if="activeTab === 'shouka'">
                             <SalesDigestTable :filters="form" :fetchTrigger="shoukaTrigger" />
+                        </div>
+
+                        <!-- 在庫タブ -->
+                        <div v-if="activeTab === 'zaiko'">
+                            <StockTable :filters="form" :fetchTrigger="zaikoTrigger" />
                         </div>
                     </div>
                 </div>

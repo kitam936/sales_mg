@@ -54,12 +54,12 @@
             <span class="text-sm text-gray-800">※エリア・会社を選択してください</span>
             <div class="md:flex">
             <div class="flex space-x-2">
-              <select v-model="ar_id" @change="submitFilters" class="w-40 h-10 rounded text-sm py-1">
+              <select v-model="ar_id" @change="submitFilters" class="w-40 h-8 rounded text-sm py-1">
                 <option value="null">全エリア</option>
                 <option v-for="area in areas" :key="area.id" :value="area.id">{{ area.area_name }}</option>
               </select>
 
-              <select v-model="co_id" @change="submitFilters" class="w-40 h-10 rounded text-sm py-1">
+              <select v-model="co_id" @change="submitFilters" class="w-40 h-8 rounded text-sm py-1">
                 <option value="null">全社</option>
                 <option v-for="co in companies" :key="co.id" :value="co.id">{{ co.co_name }}</option>
               </select>
@@ -84,8 +84,8 @@
           </form>
         </template>
 
-        <div class="py-6 border">
-          <div class="mx-auto sm:px-4 lg:px-4 border">
+        <div class="py-3 border">
+          <div class="mx-auto sm:px-4 lg:px-4 border mb-12">
             <table class="w-full table-auto text-center bg-white">
               <thead>
                 <tr class="bg-gray-100 text-sm">
@@ -93,7 +93,7 @@
                   <th class="py-1 px-2">Date</th>
                   <th class="py-1 px-2">社名</th>
                   <th class="py-1 px-2">店名</th>
-                  <th class="py-1 px-2">コメント</th>
+                  <th class="py-1 px-2">ｺﾒﾝﾄ</th>
                   <th class="py-1 px-2">ST</th>
                 </tr>
               </thead>

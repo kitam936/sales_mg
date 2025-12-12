@@ -56,23 +56,23 @@
                                     <div class="lg:w-1/2 md:w-2/3 mx-auto">
                                     <div class="flex flex-wrap -m-2">
                                         <div class="md:flex p-2 w-full">
-
+                                        <div class="flex">
                                         <div class="relative">
                                             <label for="id" class="py-1 text-sm text-gray-600">Report_ID</label>
                                             <div id="id" name="id" class="text-sm w-16 h-8 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 transition-colors duration-200 ease-in-out">{{ report.id }}</div>
 
                                         </div>
-                                        <div class="flex">
-                                        <div class="ml-0 md:ml-2 relative">
+
+                                        <div class="ml-2 md:ml-2 relative">
                                             <label for="co_id" class="py-1 text-sm text-gray-600">取引先</label>
-                                            <div id="co_id" name="co_id" class="text-sm w-24 h-8 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 transition-colors duration-200 ease-in-out">{{ report.co_name }}</div>
-
+                                            <div id="co_id" name="co_id" class="text-sm w-40 h-8 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 transition-colors duration-200 ease-in-out">{{ report.co_name }}</div>
                                         </div>
-                                        <div class="ml-2 relative">
+                                        </div>
+                                        <div class="ml-0 md:ml-2 relative">
                                             <label for="shop_id" class="py-1 text-sm text-gray-600">店名</label>
-                                            <div id="shop_id" name="shop_id" class="text-sm w-40 h-8 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 transition-colors duration-200 ease-in-out">{{ report.shop_name }}</div>
+                                            <div id="shop_id" name="shop_id" class="text-sm w-60 h-8 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 transition-colors duration-200 ease-in-out">{{ report.shop_name }}</div>
 
-                                        </div>
+
                                         </div>
                                         </div>
 
@@ -139,7 +139,7 @@
             </div>
 
 
-            <div class=" mx-auto w-full sm:px-4 lg:px-4 border ">
+            <div class=" mx-auto w-full sm:px-4 lg:px-4 border mb-12">
 
                 <table class="bg-white table-auto w-full text-center whitespace-no-wrap">
                     <thead>

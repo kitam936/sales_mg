@@ -48,8 +48,8 @@
         <table class="w-full text-sm border border-gray-200">
           <thead>
             <tr class="bg-gray-100">
-              <th class="px-2 py-1 text-left">ID</th>
-              <th class="px-2 py-1 text-left">名称</th>
+              <th class="px-2 py-1 text-center">ID</th>
+              <th class="px-2 py-1 text-center">名称</th>
               <th class="px-2 py-1 text-center">数</th>
               <th class="px-2 py-1 text-center">コスト</th>
               <th class="px-2 py-1 text-center">上代</th>
