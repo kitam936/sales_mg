@@ -67,14 +67,14 @@
                                 <input class="h-8 w-60 rounded" type="text" name="search" v-model="search" placeholder="ワード検索">
                                 <button class="ml-2 bg-blue-300 text-white px-2 w-20 h-8 rounded "
                                 @click="searchUsers">検索</button>
-                                <button class="ml-2 bg-gray-300 text-white px-2 w-24 h-8 rounded"
+                                <button class="ml-2 bg-gray-400 text-white px-2 w-24 h-8 rounded"
                                 @click="resetFilters">全表示</button>
 
                             </div>
 
                         </div>
 
-                        <div class=" mx-auto w-full sm:px-4 lg:px-4 border ">
+                        <div class=" mx-auto w-full sm:px-4 lg:px-4 border mb-12">
 
                         <table class="bg-white table-auto w-full text-center whitespace-no-wrap">
                             <thead>
@@ -84,9 +84,8 @@
                                     <th class="w-2/15 md:2/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Name</th>
                                     <th class="w-2/15 md:2/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 hidden sm:table-cell ">Mail</th>
                                     <th class="w-3/15 md:3/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">info</th>
-                                    <th class="w-2/15 md:2/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 hidden sm:table-cell ">adress</th>
-                                    <th class="w-2/15 md:2/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">tel</th>
-                                    <th class="w-1/15 md:1/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 hidden sm:table-cell ">メール</th>
+
+                                    <th class="w-1/15 md:1/15 md:px-4 py-1 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 ">Mail</th>
                                 </tr>
                             </thead>
 
@@ -99,9 +98,8 @@
                                     <td class="border-b-2 boder-gray-200">{{ user.name }} </td>
                                     <td class="border-b-2 boder-gray-200 hidden sm:table-cell ">{{ user.email }} </td>
                                     <td class="border-b-2 boder-gray-200 text-left">{{ user.user_info ? user.user_info.substring(0, 15) : '' }} </td>
-                                    <td class="border-b-2 boder-gray-200 text-left hidden sm:table-cell ">{{ user.address ? user.address.substring(0, 15) : '' }} </td>
-                                    <td class="border-b-2 boder-gray-200">{{ user.tel }} </td>
-                                    <td class="border-b-2 boder-gray-200 hidden sm:table-cell ">
+
+                                    <td class="border-b-2 boder-gray-200 ">
                                         <span v-if="user.mailService == 1 ">〇</span>
                                         <span v-if="user.mailService == 0 ">×</span>
                                     </td>

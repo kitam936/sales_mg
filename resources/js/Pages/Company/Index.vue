@@ -67,14 +67,14 @@
                                 <input class="h-8 w-60 rounded" type="text" name="search" v-model="search" placeholder="ワード検索">
                                 <button class="ml-2 bg-blue-300 text-white px-2 w-20 h-8 rounded "
                                 @click="searchcompanies">検索</button>
-                                <button class="ml-2 bg-gray-300 text-white px-2 w-24 h-8 rounded"
+                                <button class="ml-2 bg-gray-400 text-white px-2 w-24 h-8 rounded"
                                 @click="resetFilters">全表示</button>
 
                             </div>
 
                         </div>
 
-                        <div class=" mx-auto w-full sm:px-4 lg:px-4 border ">
+                        <div class=" mx-auto w-full sm:px-4 lg:px-4 border mb-12">
 
                         <table class="bg-white table-auto w-full text-center whitespace-no-wrap">
                             <thead>

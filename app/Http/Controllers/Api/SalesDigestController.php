@@ -39,15 +39,20 @@ class SalesDigestController extends Controller
                 $nameField  = 'hinbans.hinban_name';
         }
 
-        // shop_id 絞り込み
+        // shop_id 絞り込み（← 修正済み）
         $shopIds = null;
-        if ($request->filled('company_id')) {
+
+        // ① 店舗が選ばれていれば最優先
+        if ($request->filled('shop_id')) {
+            $shopIds = [$request->shop_id];
+
+        }
+        // ② 店舗が未指定で会社が指定されている場合
+        elseif ($request->filled('company_id')) {
             $shopIds = DB::table('shops')
                         ->where('company_id', $request->company_id)
                         ->pluck('id')
                         ->toArray();
-        } elseif ($request->filled('shop_id')) {
-            $shopIds = [$request->shop_id];
         }
 
         // sales 集計サブクエリ
@@ -59,6 +64,7 @@ class SalesDigestController extends Controller
         // stocks 集計サブクエリ
         $stockSub = DB::table('stocks')
             ->select('hinban_id', DB::raw('SUM(pcs) as stock_total'))
+            ->when($shopIds, fn($q) => $q->whereIn('shop_id', $shopIds))
             ->groupBy('hinban_id');
 
         // メインクエリ
@@ -91,8 +97,8 @@ class SalesDigestController extends Controller
             ->when($request->filled('brand_id'), fn($q) => $q->where('hinbans.brand_id', $request->brand_id))
             ->when($request->filled('season_id'), fn($q) => $q->where('units.season_id', $request->season_id))
             ->when($request->filled('unit_id'), fn($q) => $q->where('units.id', $request->unit_id))
-            ->when($request->filled('face'), fn($q) => $q->where('faces.id', $request->face))
-            ->when($request->filled('designer_id'), fn($q) => $q->where('designers.id', $request->designer_id));
+            ->when($request->filled('face'), fn($q) => $q->where('hinbans.face', $request->face))
+            ->when($request->filled('designer_id'), fn($q) => $q->where('hinbans.designer_id', $request->designer_id));
 
         // 並び順
         if ($type === 'hinban') {
@@ -107,5 +113,8 @@ class SalesDigestController extends Controller
         return response()->json($data);
     }
 }
+
+
+
 
 

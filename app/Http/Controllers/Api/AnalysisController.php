@@ -215,22 +215,22 @@ class AnalysisController extends Controller
                 break;
 
             case 'de_total':
-                // $data = $query
-                //     ->join('designers','hinbans.designer_id','=','designers.id')
-                //     ->where('designers.id','<>',99)
-                //     ->selectRaw('designers.designer_name, SUM(kingaku) as total, SUM(arari) as total_profit')
-                //     ->groupBy('designers.designer_name')
-                //     ->orderByDesc('total')
-                //     ->get();
-
-                $data = DB::table('sales')
-                    ->join('hinbans','sales.hinban_id','=','hinbans.id')
+                $data = $query
                     ->join('designers','hinbans.designer_id','=','designers.id')
                     ->where('designers.id','<>',99)
-                    ->select('designers.designer_name', DB::raw('SUM(kingaku) as total'), DB::raw('SUM(arari) as total_profit'))
+                    ->selectRaw('designers.designer_name, SUM(kingaku) as total, SUM(arari) as total_profit')
                     ->groupBy('designers.designer_name')
                     ->orderByDesc('total')
                     ->get();
+
+                // $data = DB::table('sales')
+                //     ->join('hinbans','sales.hinban_id','=','hinbans.id')
+                //     ->join('designers','hinbans.designer_id','=','designers.id')
+                //     ->where('designers.id','<>',99)
+                //     ->select('designers.designer_name', DB::raw('SUM(kingaku) as total'), DB::raw('SUM(arari) as total_profit'))
+                //     ->groupBy('designers.designer_name')
+                //     ->orderByDesc('total')
+                //     ->get();
                 break;
         }
 

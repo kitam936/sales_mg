@@ -137,7 +137,7 @@
 
               <Link
                 :href="route('hinbans.index')"
-                class="w-16 h-8 bg-gray-400 text-sm text-white ml-2 hover:bg-blue-600 rounded text-center py-1"
+                class="w-16 h-8 bg-gray-400 text-sm text-white ml-2 hover:bg-gray-500 rounded text-center py-1"
               >
                 全表示
               </Link>

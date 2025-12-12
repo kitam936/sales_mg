@@ -49,11 +49,11 @@
         <table class="w-full text-sm border border-gray-200">
           <thead>
             <tr class="bg-gray-100">
-              <th class="px-2 py-1 text-left">ID</th>
-              <th class="px-2 py-1 text-left">名称</th>
-              <th class="px-1 py-1 text-right">売数</th>
-              <th class="px-1 py-1 text-right">在数</th>
-              <th class="px-1 py-1 text-right">消化</th>
+              <th class="px-2 py-1 text-center">ID</th>
+              <th class="px-2 py-1 text-center">名称</th>
+              <th class="px-1 py-1 text-center">売数</th>
+              <th class="px-1 py-1 text-center">在数</th>
+              <th class="px-1 py-1 text-center">消化</th>
             </tr>
           </thead>
           <tbody>

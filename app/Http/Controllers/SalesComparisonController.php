@@ -7,173 +7,162 @@ use App\Models\Company;
 use App\Models\Shop;
 use App\Models\SalesData;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class SalesComparisonController extends Controller
 {
     public function index(Request $request)
     {
         $compareType = $request->get('compareType', 'monthly');
-        $company_id = $request->get('company_id');
-        $shop_id = $request->get('shop_id');
+        $company_id  = $request->get('company_id');
+        $shop_id     = $request->get('shop_id');
 
-        /**
-         * ============================
-         *  ★ 現年の売上データ最大日付を取得
-         * ============================
-         */
-        $maxSalesDate = SalesData::when($company_id, fn($q) => $q->where('company_id', $company_id))
-            ->when($shop_id, fn($q) => $q->where('shop_id', $shop_id))
-            ->max('sales_date');
+        // 追加フィルター
+        $filters = ['pic_id','brand_id','season_id','unit_id','face','designer_id','year_code'];
 
-        // データがなければ今日とする
-        $maxDate = $maxSalesDate ? Carbon::parse($maxSalesDate) : Carbon::today();
+        // 現年の最大売上日
+        $maxSalesDateQuery = SalesData::query()
+            ->when($company_id, fn($q) => $q->where('company_id', $company_id))
+            ->when($shop_id, fn($q) => $q->where('shop_id', $shop_id));
 
+        foreach ($filters as $f) {
+            if (!empty($request->$f)) {
+                $maxSalesDateQuery->where($f, $request->$f);
+            }
+        }
 
-        /**
-         * ============================
-         *   期間設定（月：12ヶ月 / 週：maxDate の週まで）
-         * ============================
-         */
+        $maxSalesDate = $maxSalesDateQuery->max('sales_date');
+
+        $today = Carbon::today();
+        $maxDate = $maxSalesDate ? Carbon::parse($maxSalesDate) : $today;
+
+        // 期間設定
+        if ($compareType === 'monthly') {
+            $endDate   = $maxDate->copy()->endOfMonth();
+            $startDate = $endDate->copy()->subMonths(11)->startOfMonth();
+
+            $prevStart = $startDate->copy()->subYear()->startOfMonth();
+            $prevEnd   = $endDate->copy()->subYear()->endOfMonth();
+
+        } else {
+            $maxSunday = $maxDate->copy()->endOfWeek(Carbon::SUNDAY);
+            $endDate   = $maxSunday;
+            $startDate = $endDate->copy()->subWeeks(51)->startOfWeek(Carbon::MONDAY);
+
+            $prevStart = $startDate->copy()->subYear()->startOfWeek(Carbon::MONDAY);
+            $prevEnd   = $endDate->copy()->subYear()->startOfWeek(Carbon::MONDAY);
+        }
+
+        // マスタ取得
+        $companies = Company::all();
+        $shops     = $company_id ? Shop::where('company_id', $company_id)->get() : collect();
+
+        // DB 一括取得
+        $baseQuery = SalesData::query()
+            ->when($company_id, fn($q) => $q->where('company_id', $company_id))
+            ->when($shop_id, fn($q) => $q->where('shop_id', $shop_id));
+
+        // すべての追加フィルター適用
+        foreach ($filters as $f) {
+            if (!empty($request->$f)) {
+                $baseQuery->where($f, $request->$f);
+            }
+        }
+
         if ($compareType === 'monthly') {
 
-            // 12ヶ月固定
-            $endDate = $maxDate->copy()->endOfMonth();
-            $startDate = $endDate->copy()->subMonths(11)->startOfMonth();
+            $query = $baseQuery
+                ->selectRaw("
+                    DATE_FORMAT(sales_date, '%Y-%m-01') as period_key,
+                    CASE WHEN sales_date BETWEEN ? AND ? THEN 1
+                         WHEN sales_date BETWEEN ? AND ? THEN 0 END as is_current,
+                    SUM(kingaku) as total_sales,
+                    SUM(arari) as total_profit
+                ", [$startDate, $endDate, $prevStart, $prevEnd])
+                ->groupBy('period_key', 'is_current')
+                ->orderBy('period_key')
+                ->get();
 
         } else {
 
-            // ★週別 → maxDate の週で止める
-            $endDate = $maxDate->copy()->endOfWeek();  // 現年の最終週
-            $startDate = $endDate->copy()->subWeeks(51)->startOfWeek();
+            $query = $baseQuery
+                ->selectRaw("
+                    DATE_FORMAT(
+                        DATE_SUB(sales_date, INTERVAL WEEKDAY(sales_date) DAY),
+                        '%Y-%m-%d'
+                    ) as period_key,
+                    CASE WHEN sales_date BETWEEN ? AND ? THEN 1
+                         WHEN sales_date BETWEEN ? AND ? THEN 0 END as is_current,
+                    SUM(kingaku) as total_sales,
+                    SUM(arari) as total_profit
+                ", [$startDate, $endDate, $prevStart, $prevEnd])
+                ->groupBy('period_key', 'is_current')
+                ->orderBy('period_key')
+                ->get();
         }
 
-        // 前年期間
-        $prevStart = $startDate->copy()->subYear();
-        $prevEnd   = $endDate->copy()->subYear();
-
-        $companies = Company::all();
-        $shops = $company_id ? Shop::where('company_id', $company_id)->get() : collect();
-
-
-        /**
-         * ============================
-         *  DB 一括取得（現年＋前年）
-         * ============================
-         */
-        $query = SalesData::query()
-            ->selectRaw(
-                $compareType === 'monthly'
-                    ? "
-                        MONTH(sales_date) as period,
-                        CASE WHEN sales_date BETWEEN ? AND ? THEN 1
-                             WHEN sales_date BETWEEN ? AND ? THEN 0 END as is_current,
-                        SUM(kingaku) as total_sales,
-                        SUM(arari) as total_profit
-                    "
-                    : "
-                        WEEK(sales_date,1) as period,
-                        CASE WHEN sales_date BETWEEN ? AND ? THEN 1
-                             WHEN sales_date BETWEEN ? AND ? THEN 0 END as is_current,
-                        SUM(kingaku) as total_sales,
-                        SUM(arari) as total_profit,
-                        MAX(sales_date) as max_date
-                    ",
-                [$startDate, $endDate, $prevStart, $prevEnd]
-            )
-            ->when($company_id, fn($q) => $q->where('company_id', $company_id))
-            ->when($shop_id, fn($q) => $q->where('shop_id', $shop_id))
-            ->groupBy('period', 'is_current')
-            ->orderBy('period')
-            ->get();
-
-        $currentData = $query->where('is_current', 1)->keyBy('period');
-        $prevData = $query->where('is_current', 0)->keyBy('period');
+        // 整形
+        $currentData = $query->where('is_current', 1)->keyBy('period_key');
+        $prevData    = $query->where('is_current', 0)->keyBy('period_key');
 
         $rows = [];
 
-
-        /**
-         * ============================
-         *  月別 12ヶ月
-         * ============================
-         */
+        // 月別処理
         if ($compareType === 'monthly') {
 
             for ($i = 0; $i < 12; $i++) {
+                $monthStart = $startDate->copy()->addMonths($i)->startOfMonth();
+                $key        = $monthStart->format('Y-m-01');
 
-                $date = $startDate->copy()->addMonths($i);
-                $m = intval($date->format('n'));
-
-                $cur = $currentData->get($m);
-                $pre = $prevData->get($m);
-
-                $sales       = $cur->total_sales ?? 0;
-                $profit      = $cur->total_profit ?? 0;
-                $sales_prev  = $pre->total_sales ?? 0;
-                $profit_prev = $pre->total_profit ?? 0;
+                $cur = $currentData->get($key);
+                $pre = $prevData->get($monthStart->copy()->subYear()->format('Y-m-01'));
 
                 $rows[] = [
-                    'period'      => $date->format('y/m'),
-                    'sales'       => $sales,
-                    'profit'      => $profit,
-                    'sales_prev'  => $sales_prev,
-                    'profit_prev' => $profit_prev,
-                    'sales_rate'  => $sales_prev ? round($sales / $sales_prev * 100, 1) : null,
-                    'profit_rate' => $profit_prev ? round($profit / $profit_prev * 100, 1) : null,
+                    'period'      => $monthStart->format('y/m'),
+                    'sales'       => $cur->total_sales ?? 0,
+                    'profit'      => $cur->total_profit ?? 0,
+                    'sales_prev'  => $pre->total_sales ?? 0,
+                    'profit_prev' => $pre->total_profit ?? 0,
+                    'sales_rate'  => ($pre && $pre->total_sales > 0)
+                        ? round(($cur->total_sales ?? 0) / $pre->total_sales * 100, 1)
+                        : null,
+                    'profit_rate' => ($pre && $pre->total_profit > 0)
+                        ? round(($cur->total_profit ?? 0) / $pre->total_profit * 100, 1)
+                        : null,
                 ];
             }
 
-        /**
-         * ============================
-         *  週別（★maxDate の週まで）
-         * ============================
-         */
         } else {
 
-            /**
-             * ★ maxDate の週番号（ISO-8601）
-             */
-            $maxWeek = intval($maxDate->format('W'));
-
-            /**
-             * ★ startDate の週番号
-             * （年をまたぐので単純に W では範囲のズレが出る）
-             * → 秒数で週数差分を算出する
-             */
-            $weekStartNum = intval($startDate->format('W'));
-
-            // ループ回数 = startDate 〜 maxDate の週数
-            $totalWeeks = $startDate->diffInWeeks($maxDate) + 1;
+            $maxSunday = $maxSalesDate ? Carbon::parse($maxSalesDate)->copy()->endOfWeek(Carbon::SUNDAY) : $endDate->copy();
+            $totalWeeks = $startDate->diffInWeeks($endDate) + 1;
 
             for ($i = 0; $i < $totalWeeks; $i++) {
 
-                $weekStart = $startDate->copy()->addWeeks($i);
-                $weekEnd   = $weekStart->copy()->endOfWeek();
+                $weekStart = $startDate->copy()->addWeeks($i)->startOfWeek(Carbon::MONDAY);
+                $weekEnd   = $weekStart->copy()->endOfWeek(Carbon::SUNDAY);
 
-                $w = intval($weekStart->format('W'));
+                if ($weekEnd->greaterThan($maxSunday)) {
+                    break;
+                }
 
-                $cur = $currentData->get($w);
-                $pre = $prevData->get($w);
+                $key     = $weekStart->format('Y-m-d');
+                $prevKey = $weekStart->copy()->subYear()->startOfWeek(Carbon::MONDAY)->format('Y-m-d');
 
-                $sales       = $cur->total_sales ?? 0;
-                $profit      = $cur->total_profit ?? 0;
-                $sales_prev  = $pre->total_sales ?? 0;
-                $profit_prev = $pre->total_profit ?? 0;
-
-                /** 週ラベル */
-                $periodLabel = $cur && $cur->max_date
-                    ? Carbon::parse($cur->max_date)->format('y/m/d')
-                    : $weekEnd->format('y/m/d');
+                $cur = $currentData->get($key);
+                $pre = $prevData->get($prevKey);
 
                 $rows[] = [
-                    'period'      => $periodLabel,
-                    'sales'       => $sales,
-                    'profit'      => $profit,
-                    'sales_prev'  => $sales_prev,
-                    'profit_prev' => $profit_prev,
-                    'sales_rate'  => $sales_prev ? round($sales / $sales_prev * 100, 1) : null,
-                    'profit_rate' => $profit_prev ? round($profit / $profit_prev * 100, 1) : null,
+                    'period'      => $weekEnd->format('y/m/d'),
+                    'sales'       => $cur->total_sales ?? 0,
+                    'profit'      => $cur->total_profit ?? 0,
+                    'sales_prev'  => $pre->total_sales ?? 0,
+                    'profit_prev' => $pre->total_profit ?? 0,
+                    'sales_rate'  => ($pre && $pre->total_sales > 0)
+                        ? round(($cur->total_sales ?? 0) / $pre->total_sales * 100, 1)
+                        : null,
+                    'profit_rate' => ($pre && $pre->total_profit > 0)
+                        ? round(($cur->total_profit ?? 0) / $pre->total_profit * 100, 1)
+                        : null,
                 ];
             }
         }
