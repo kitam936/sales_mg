@@ -29,6 +29,8 @@ use App\Http\Controllers\DataDownloadController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\Api\AnalysisController as ApiAnalysisController;
 use App\Http\Controllers\SalesComparisonController;
+use Illuminate\Support\Facades\Storage; //追記25／12／12
+
 
 
 use Inertia\Inertia;
@@ -159,7 +161,7 @@ Route::middleware('auth')->group(function () {
     Route::get('welcome', [MenuController::class, 'welcome'])->name('welcome');
     Route::get('/sales/comparison', [SalesComparisonController::class, 'index'])
     ->name('sales.comparison');
-
+    Route::get('manual_download',[DataDownloadController::class,'manual_download'])->name('manual_download');//追記25／12／12　
 
 });
 

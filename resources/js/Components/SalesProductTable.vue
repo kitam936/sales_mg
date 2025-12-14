@@ -61,6 +61,10 @@
           読み込み中...
         </div>
 
+        <div v-if="!datas.data.length" class="text-left text-sm py-2 ">
+           ※ 統合品番管理の社店では表示されません
+        </div>
+
         <table class="table-auto w-full border">
           <thead class="bg-gray-100">
             <tr>
@@ -95,6 +99,7 @@
               </td>
             </tr>
           </tbody>
+
         </table>
 
 

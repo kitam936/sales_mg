@@ -67,11 +67,11 @@ const logout = () => {
                             <h3 class="ml-4 font-semibold text-lg text-indigo-800 leading-tight">
                                 店舗Report
                             </h3>
-                            <div v-if="reports" class="ml-12 text-ml text-red-600">
+                            <div v-if="reports" class="ml-8 text-ml text-red-600">
                                 ※ 未読のReportがあります !
                             </div>
 
-                            <div v-if="comments" class="ml-12 text-ml text-red-600">
+                            <div v-if="comments" class="ml-8 text-ml text-red-600">
                                 ※ 未読のReportコメントがあります !
                             </div>
                                 <div class="p-2 ">
@@ -107,13 +107,21 @@ const logout = () => {
 
                             <br>
 
+
+
                             <div class="flex">
-                                <div v-if="login_user.role_id <= 2" class="p-2 ">
+                                <div v-if="login_user.role_id <= 2" class="p-2  hidden md:block">
                                     <Link as="button" :href="route('admin.data.data_menu')" class="w-40 flex text-white bg-blue-500 border-0 h-10 py-2 pl-12 focus:outline-none hover:bg-blue-600 rounded text-ml">Data管理</Link>
+                                </div>
+                                <div v-if="login_user.role_id <= 2" class="p-2">
+                                    <a :href="route('manual_download')"
+                                    class="w-40 flex text-white bg-green-500 border-0 h-10 py-2 pl-11 focus:outline-none hover:bg-green-600 rounded text-ml">
+                                    マニュアル
+                                    </a>
                                 </div>
                                 <div class="flex ">
                                     <!-- ログアウトボタン -->
-                                    <button @click="logout" class="w-40 flex ml-2 mt-2 text-white bg-gray-500 h-10 py-2 pl-12 hover:bg-red-gray rounded">
+                                    <button @click="logout" class="w-40 flex ml-2 mt-2 text-white bg-gray-500 h-10 py-2 pl-11 hover:bg-red-gray rounded">
                                         ログアウト
                                     </button>
                                 </div>
