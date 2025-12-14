@@ -45,7 +45,7 @@
 
     <template>
       <div class="overflow-x-auto">
-        ※在庫クリア済　および　各社・各店において返品済の商品は100％と表示されます。<br />
+        <span class="text-sm" >※在庫クリア済　および　各社・各店において返品済の商品は100％と表示されます</span>
         <table class="w-full text-sm border border-gray-200">
           <thead>
             <tr class="bg-gray-100">

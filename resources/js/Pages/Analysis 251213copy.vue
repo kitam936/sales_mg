@@ -148,20 +148,30 @@
     // CompareTable用データ取得
     const getCompareData = async () => {
         try {
-            const res = await axios.get('/sales/comparison', {
-                params: {
-                    compareType: form.compareType,
-                    company_id: form.company_id,
-                    shop_id: form.shop_id,
-                    startDate: form.startDate,
-                    endDate: form.endDate,
-                }
-            });
-            compareData.rows = res.data.rows ?? [];
-        } catch(e) {
-            console.log(e.message);
+        const res = await axios.get('/sales/comparison', {
+            params: {
+            compareType: form.compareType,
+            company_id: form.company_id,
+            shop_id: form.shop_id,
+            // 追加フィルターをここで全て送る
+            pic_id: form.pic_id,
+            brand_id: form.brand_id,
+            season_id: form.season_id,
+            unit_id: form.unit_id,
+            face: form.face,
+            designer_id: form.designer_id,
+            year_code: form.year_code,
+            // 期間（もしバックエンドで使うなら）
+            startDate: form.startDate,
+            endDate: form.endDate,
+            }
+        });
+        compareData.rows = res.data.rows ?? [];
+        } catch (e) {
+        console.log(e.message);
         }
     };
+
 
     //shouka率用データ取得
     const getShoukaData = async () => {
@@ -403,7 +413,7 @@
                                     </div>
 
                                     <!-- PIC選択 -->
-                                    <div  v-if="showFilters || activeTab === 'compare' || activeTab === 'ranking'" class="relative ml-2 mt-2 md:mt-0">
+                                    <div  v-if="showFilters || activeTab === 'compare' " class="relative ml-2 mt-2 md:mt-0">
                                         <select v-model="form.pic_id" class="h-8 w-36 rounded border focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-0 px-1 leading-8 transition-colors duration-200 ease-in-out">
                                             <option value="">担当者選択なし</option>
                                             <option v-for="pic in data.pics" :key="pic.pic_id" :value="pic.pic_id">
@@ -468,6 +478,7 @@
 
 
                             <!-- 分析開始ボタン押下 -->
+
                             <div class="flex mt-2 mb-2">
                                 <button type="button" @click="onAnalyze" class="w-40 ml-0 h-8 px-4 bg-blue-500 text-white rounded">
                                 分析開始
