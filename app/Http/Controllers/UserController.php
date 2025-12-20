@@ -22,6 +22,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
+        $login_user = Auth::user(); // ← これの方が安全
         $users = User::searchUsers($request->search)
         ->join('roles', 'users.role_id', '=', 'roles.id')
         ->join('depts', 'users.dept_id', '=', 'depts.id')
@@ -52,7 +53,7 @@ class UserController extends Controller
         return Inertia::render('Users/Index', [
             'users' => $users,
             'depts' => $depts,
-
+            'login_user' => $login_user,
         ]);
     }
 

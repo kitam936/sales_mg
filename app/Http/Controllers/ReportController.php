@@ -37,6 +37,7 @@ class ReportController extends Controller
             ->join('shops', 'shops.id', '=', 'reports.shop_id')
             ->join('companies', 'companies.id', '=', 'shops.company_id')
             ->join('areas', 'areas.id', '=', 'shops.area_id')
+            ->join('users', 'users.id', '=', 'reports.user_id')
             ->leftJoin('comments', 'comments.report_id', '=', 'reports.id')
             ->leftJoin('report_reads', function ($join) use ($userId) {
                 $join->on('reports.id', '=', 'report_reads.report_id')
@@ -56,6 +57,8 @@ class ReportController extends Controller
                 'shops.company_id',
                 'companies.co_name',
                 'reports.shop_id',
+                'reports.user_id',
+                'users.name',
                 'shops.shop_name',
                 'areas.area_name',
                 'shops.shop_info',
@@ -84,6 +87,8 @@ class ReportController extends Controller
                 'shops.company_id',
                 'companies.co_name',
                 'reports.shop_id',
+                'reports.user_id',
+                'users.name',
                 'shops.shop_name',
                 'areas.area_name',
                 'shops.shop_info',

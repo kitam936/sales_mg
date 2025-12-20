@@ -8,7 +8,8 @@
 
     defineProps({
         companies: Object,
-        pics:Array
+        pics:Array,
+        login_user: Object,
     });
 
     const search = ref('')
@@ -40,7 +41,7 @@
                 <div class="ml-2 md:ml-24 mt-4">
                     <Link as="button" :href="route('menu')" class="w-40 h-10 bg-indigo-500 text-sm text-white ml-0 hover:bg-indigo-600 rounded">Menu</Link>
                 </div>
-                <div class="ml-2 md:ml-24 mt-4">
+                <div  v-if="login_user.role_id <= 2" class="ml-2 md:ml-24 mt-4">
                     <Link as="button" :href="route('company.create')" class="w-40 h-10 bg-green-500 text-sm text-white ml-0 hover:bg-green-600 rounded">取引先登録</Link>
                 </div>
             </div>

@@ -21,6 +21,7 @@ class CompanyController extends Controller
      */
     public function index(Request $request)
     {
+        $login_user = Auth::user(); // ← これの方が安全
         $companies = Company::searchCompanies($request->search)
             ->join('users', 'companies.pic_id', '=', 'users.id')
             ->Where('companies.pic_id', 'like', '%' . $request->pic_id . '%')
@@ -47,6 +48,7 @@ class CompanyController extends Controller
         return Inertia::render('Company/Index', [
             'companies' => $companies,
             'pics' => $pics,
+            'login_user' => $login_user,
         ]);
     }
 

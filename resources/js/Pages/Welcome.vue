@@ -89,7 +89,7 @@
                                     <h2
                                         class="text-xl font-semibold text-black dark:text-white"
                                     >
-                                    Dijon販売管理 v2
+                                    Dijon販売管理 v1.1
                                     </h2>
 
                                     <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
@@ -128,10 +128,10 @@
                                         ①各項目別の売上・粗利・在庫状況<br>
                                         （年推移・月推移・週推移・期間累計）<br>
                                         　　　および12ヶ月移動平均値の確認<br>
-                                        ②商品別の売上推移および消化率の確認<br>
-                                        ③品番別の売上数推移（月・週）の確認<br>
-                                        ④画像付き商品リスト<br>
-                                        ⑤画像付き品番別売上ランキングの確認<br>
+                                        ②各項目別消化率の確認<br>
+                                        ③商品リストに画像がつきました<br>
+                                        ④品番別の売上数推移（月・週）の確認<br>
+                                        ⑤品番別売上ランキング(画像付)の確認<br>
                                         　
                                     </p>
 

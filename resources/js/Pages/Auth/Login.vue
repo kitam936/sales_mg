@@ -38,6 +38,12 @@ const submit = () => {
         </div>
 
         <form @submit.prevent="submit">
+
+            <h2
+            class="text-xl font-semibold leading-tight text-teal-700 mb-4"
+            >
+            Dijon販売管理 v1.1
+            </h2>
             <div>
                 <InputLabel for="email" value="Email" />
 
