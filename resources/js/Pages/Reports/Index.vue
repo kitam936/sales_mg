@@ -91,6 +91,7 @@
                 <tr class="bg-gray-100 text-sm">
                   <th class="py-1 px-2 hidden sm:table-cell">ID</th>
                   <th class="py-1 px-2">Date</th>
+                  <th class="py-1 px-2 hidden sm:table-cell">投稿</th>
                   <th class="py-1 px-2">社名</th>
                   <th class="py-1 px-2">店名</th>
                   <th class="py-1 px-2">ｺﾒﾝﾄ</th>
@@ -104,6 +105,9 @@
                     <a :href="route('reports.show', { report: report.id })" class="text-indigo-500">
                       {{ new Date(report.created_at).toLocaleDateString('ja-JP', { year:'2-digit', month:'2-digit', day:'2-digit' }) }}
                     </a>
+                  </td>
+                  <td class="py-1 px-2  hidden sm:table-cell">
+                        {{ report.name }}
                   </td>
                   <td class="py-1 px-2 ">{{ report.co_name }}</td>
                   <td class="py-1 px-2 ">{{ report.shop_name }}</td>

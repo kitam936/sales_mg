@@ -64,6 +64,12 @@ const goBack = () => {
 
                                     </div>
 
+                                    <div class="relative ml-2">
+                                        <label for="name" class="leading-7 text-sm text-gray-600">投稿者</label>
+                                        <div id="name" name="name" class="w-40 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">{{ comment.name }}</div>
+
+                                    </div>
+
 
                                     </div>
 

@@ -64,9 +64,13 @@
                                         </div>
 
                                         <div class="ml-2 md:ml-2 relative">
+                                            <label for="name" class="py-1 text-sm text-gray-600">投稿者</label>
+                                            <div id="name" name="name" class="text-sm w-40 h-8 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 transition-colors duration-200 ease-in-out">{{ report.name }}</div>
+                                        </div>
+                                        </div>
+                                        <div class="ml-0 md:ml-2 relative">
                                             <label for="co_id" class="py-1 text-sm text-gray-600">取引先</label>
                                             <div id="co_id" name="co_id" class="text-sm w-40 h-8 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 transition-colors duration-200 ease-in-out">{{ report.co_name }}</div>
-                                        </div>
                                         </div>
                                         <div class="ml-0 md:ml-2 relative">
                                             <label for="shop_id" class="py-1 text-sm text-gray-600">店名</label>

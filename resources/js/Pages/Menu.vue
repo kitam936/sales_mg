@@ -36,7 +36,7 @@ const logout = () => {
     <AuthenticatedLayout>
 
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight ">Dijon販売管理 v2</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight ">Dijon販売管理 v1.1</h2>
         </template>
 
         <div class="py-1">
@@ -113,7 +113,7 @@ const logout = () => {
                                 <div v-if="login_user.role_id <= 2" class="p-2  hidden md:block">
                                     <Link as="button" :href="route('admin.data.data_menu')" class="w-40 flex text-white bg-blue-500 border-0 h-10 py-2 pl-12 focus:outline-none hover:bg-blue-600 rounded text-ml">Data管理</Link>
                                 </div>
-                                <div v-if="login_user.role_id <= 2" class="p-2">
+                                <div class="p-2">
                                     <a :href="route('manual_download')"
                                     class="w-40 flex text-white bg-green-500 border-0 h-10 py-2 pl-11 focus:outline-none hover:bg-green-600 rounded text-ml">
                                     マニュアル

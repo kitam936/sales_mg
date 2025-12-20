@@ -21,6 +21,7 @@ class ShopController extends Controller
      */
     public function index(Request $request)
     {
+        $login_user = Auth::user(); // ← これの方が安全
         $shops = Shop::searchshops($request->search)
         ->join('companies', 'shops.company_id', '=', 'companies.id')
         ->join('areas', 'shops.area_id', '=', 'areas.id')
@@ -62,6 +63,7 @@ class ShopController extends Controller
             'shops' => $shops,
             'areas' => $areas,
             'companies' => $companies,
+            'login_user' => $login_user,
         ]);
     }
 
